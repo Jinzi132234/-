@@ -1,0 +1,142 @@
+<role>
+Write speech-locked A-roll + motion overlays for a ~10.00s talking-head course plate in the Tristen O’Brien MODS / Claude Code Just Dropped feel.
+Plate 40 — NEW this cut: M118 + M119 + M120 | I117 + I118 + I119 | E42
+(Library expanded this cut: M118–M120 / I117–I119 / E42 — prior codes through plate-39 used.)
+Hero overlay language THIS plate (anti-pill-default): QUICK SIDE NOTE thick cream side-note stamp (sparse full-face) → Lesson board (blue→teal frame + thick cream board + saturated mustard-gold INNER stage) with PREVIEW DEMO cream card + OR + PAYMENTS CRM cream card → FULL PRODUCT ONLINE product card + lower-left round host PiP → E42 A FULL PRODUCT ONLINE / FULL PRODUCT ONLINE cream stamp on full face. Black capsules only as tiny secondary kickers if needed — never the hero UI.
+CRITICAL layout THIS cut (user request — rotate families; Lesson+PiP is due after Split+Stage): sparse full-face → Lesson board + lower-left round PiP → sparse full-face end.
+Ban this plate: 50/50 Split face|UI / face LEFT / UI RIGHT half-screen (plate-39 Split / plate-36 Split / plate-33 Split / plate-30 Split families); saturated full Stage + corner round host PiP (plate-38/35/32/29 Stage+PiP family).
+OK to use Lesson+PiP — but MUST ≠ plate-37 content (no cobalt inner, no CONTENT MARKETING TEAM / BUILD THE BASE / SCALE THE TEAM / E39 NEXT LESSON — this cut = quick side note → more than a preview demo OR payments CRM → a full product online; mustard-gold inner; E42 FULL PRODUCT ONLINE); MUST ≠ plate-34 content (no peach inner, no stills→motion / GENERATE STILLS / E36 NEXT STEP IS MOTION); MUST ≠ plate-31 content (no localhost / LOCAL PREVIEW / navy inner / E33 STILL LOCAL); MUST ≠ plate-28 content (no Mobbin gallery / terracotta / TASTE|POLISH / E30 UPGRADE).
+Avoid used: M01–M117 · I01–I116 · E01–E41 (all prior).
+CRITICAL USER REQUEST: 需要讓動效規則輪用，不要一直給我同樣的動效指示詞 — M/I/E MUST be brand-new this cut; do NOT reuse prior motion language, icon shapes, or end treatments as primary.
+CRITICAL vs plate-39 (last A-roll): plate-39 = hot-pink Split face L | UI R + GENERATING ISN’T THE ONLY JOB → COMPETITOR ACCOUNTS | DOWNLOAD AS REFERENCE → E41 SO HOW DO YOU DO THAT? / HOW?. THIS cut MUST NOT use Split — Lesson+lower-left PiP mid; mustard-gold; quick side note → preview demo / payments CRM → full product online; E42 not E41.
+CRITICAL vs plate-38: plate-38 = terracotta Stage+corner PiP + FINISHED CLIP → WATCH THE MOUTH · WATCH THE HANDS → HEYGEN-CLASS → E40 TOP TIER FOR ME. THIS cut MUST NOT use Stage+PiP — Lesson board; mustard-gold; more-than preview/CRM → full product; E42 not E40.
+CRITICAL vs plate-37 (prior Lesson content-team): plate-37 = cobalt Lesson+lower-left PiP + CONTENT MARKETING TEAM → BUILD THE BASE → SCALE THE TEAM → E39 SEE YOU / NEXT LESSON. THIS cut = same Lesson+PiP family OK, different hue/story/end — mustard-gold inner; QUICK SIDE NOTE → PREVIEW DEMO · PAYMENTS CRM → FULL PRODUCT ONLINE (no base→scale team chalk); E42 A FULL PRODUCT ONLINE — no NEXT LESSON.
+CRITICAL vs plate-34 (Lesson stills→motion): plate-34 = peach Lesson+PiP + IMAGES AREN’T THE CEILING → STILLS→MOTION + E36. THIS cut = mustard-gold; more-than preview/CRM → full product; E42 not E36.
+CRITICAL vs plate-31 (Lesson local-preview): plate-31 = navy Lesson+PiP + localhost LOCAL PREVIEW + E33. THIS cut = mustard-gold; preview demo / payments CRM / full product (no localhost bar); E42 not E33.
+CRITICAL vs plate-28 (Lesson Mobbin): plate-28 = terracotta Lesson + Mobbin gallery + E30. THIS cut = mustard-gold; more-than contrast cards (no Mobbin / no TASTE|POLISH); E42 not E30.
+</role>
+
+<source>
+Talking-head plate (A-roll present). Host: East Asian man, glasses, black short-sleeve knit, boom mic, gray sofa + MacBook on wood table, window foliage daylight (same setup as plate-15/28–39). Source video is pure full-face ~10.00s — overlays/layouts are motion design, not in-camera cuts. Face center on open/close; mid = Lesson board with lower-left round PiP (face visible in PiP only — main UI is the board). Overlays clear face on full-face beats (negative space only).
+User script (authoritative VO — Whisper-locked medium model; no separate user VO text; do not invent VO):
+“Quick side note, if you want more than a preview demo, or payments, CRM, a full product online”
+Whisper lock file: /workspace/aroll-rules/prompts/plate-40-audio.json (ASR mostly clean; Whisper medium punctuates “payments,” + “CRM,” as adjacent nouns — on-screen lock as PAYMENTS CRM category pair vs FULL PRODUCT ONLINE; keep CRM uppercase acronym. Spoken lock exact. Speech ends ~8.30; hold E42 to ~10.00.)
+Visual direction: quick side note → more than a preview demo OR payments CRM → a full product online (more-than contrast → full product — not competitor download-ref HOW?, not finished-clip quality track, not content-team outro).
+</source>
+
+<script_timed>
+Whisper-locked (~10.00s video; medium model word times):
+0.00–0.46  Quick
+0.46–0.72  side
+0.72–1.00  note,
+1.74–1.80  if
+1.80–1.98  you
+1.98–2.18  want
+2.18–2.52  more
+2.52–2.68  than
+2.68–2.86  a
+2.86–3.14  preview
+3.14–3.58  demo,
+4.98–5.10  or
+5.10–5.58  payments,
+5.94–6.66  CRM,
+7.04–7.18  a
+7.18–7.40  full
+7.40–7.80  product
+7.80–8.30  online,
+(+ hold E42 through ~10.00)
+(Video ends ~10.00. Gaps ~1.00–1.74, ~3.58–4.98, ~5.58–5.94, ~6.66–7.04 silent hold OK — no invented VO. Trailing silence ~8.30–10.00.)
+Phrase locks (for on-screen):
+0.00–1.00  Quick side note.
+1.74–3.58  if you want more than a preview demo,
+4.98–6.66  or payments, CRM,
+7.04–8.30  a full product online,
+ASR notes: Whisper medium clean — keep Quick side note; preview demo; payments; CRM (uppercase on-screen); a full product online. Treat “payments, CRM” as PAYMENTS CRM category pair (payments / CRM tools) vs FULL PRODUCT ONLINE — do not invent extra VO. No major brand-name ASR fixes this cut.
+</script_timed>
+
+<style_lock>
+Palette MUST match MODS reference (saturated, not soft pastel):
+- Open (full face): live A-roll; cream accents OK — QUICK SIDE NOTE thick cream side-note stamp in lower-left / shoulder negative space.
+- Mid (REQUIRED Lesson board + lower-left PiP — NOT Split, NOT Stage+corner PiP): hard-cut → Lesson board (blue→teal gradient outer frame + thick white/cream rounded board) with saturated MODS mustard-gold / warm brand-mustard INNER stage for more-than preview/CRM → full-product progression mock (MODS mustard-gold transition wash — not washed pastel yellow; mustard-gold unused as recent Lesson inner — spaced from plate-37 cobalt / plate-34 peach / plate-31 navy / plate-28 terracotta Lessons; MUST ≠ hot-pink plate-39 Split; MUST ≠ terracotta plate-38 Stage). Host as lower-left rounded PiP (yellow or green thin stroke OK). NOT 50/50 Split. NOT Stage+corner PiP full-frame. NOT cobalt (plate-37 Lesson / plate-32 Stage), NOT peach (plate-34 Lesson), NOT navy (plate-31 Lesson), NOT terracotta (plate-38 Stage / plate-28 Lesson), NOT hot-pink (plate-39 Split / plate-35 Stage), NOT violet (plate-36 Split), NOT emerald (plate-33 Split), NOT teal (plate-30 Split) — prefer saturated mustard-gold.
+- Close: hard-cut FULL FACE; E42 A FULL PRODUCT ONLINE / FULL PRODUCT ONLINE cream stamp / thick card / kinetic strip.
+- Cards / board: cream QUICK SIDE NOTE stamp; on Lesson board — PREVIEW DEMO cream card + OR disc + PAYMENTS CRM cream card → FULL PRODUCT ONLINE cream product card; heavy soft shadow; kinetic type only.
+- Accents: coral punch on ONE keyword per beat (QUICK / SIDE / NOTE / MORE / PREVIEW / DEMO / PAYMENTS / CRM / FULL / PRODUCT / ONLINE); sticker-six blue / pink / green / purple / orange on board corners or more-than arrow (avoid pink/gold/blue set from plate-13 as a set; avoid hot-pink/violet/emerald/teal accents that read as plate-39/36/33/30 Split; avoid cobalt/terracotta that read as plate-37/38).
+- Type: Inter / SF, bold. Big kinetic words on cream cards / Lesson board — NOT capsule labels as default.
+Anti-PPT: no thin subtitle bars, no rainbow ①②③ cascade, no triple identical colored dots.
+Anti-pill-default: black capsules banned as primary overlay language.
+Anti-soft-theme: mustard-gold Lesson inner stage saturated (MODS mustard-gold), not washed pastel yellow.
+Almost no camera move; hard cuts; snappy spring ~0.3s; QUICK SIDE NOTE stamp → Lesson board wipe open + PiP settle → PREVIEW DEMO · PAYMENTS CRM → FULL PRODUCT ONLINE → A FULL PRODUCT ONLINE stamp.
+Layout variety THIS plate: sparse full-face → Lesson board + lower-left round PiP → full-face end — do NOT use Split; do NOT use Stage+corner PiP; do NOT skip the Lesson+PiP mid.
+</style_lock>
+
+<icons>
+I117 — QUICK SIDE NOTE thick cream side-note stamp/card (soft shadow; coral on QUICK / SIDE / NOTE; optional sticky-note / side-note corner micro disc) — sparse full-face lower-left / shoulder negative space; not a black capsule; not plate-39 GENERATING ISN’T THE ONLY JOB I114; not plate-38 FINISHED CLIP I111; not plate-37 CONTENT MARKETING TEAM I108; not plate-36 LATER CHAPTERS I105; not plate-35 HAND GROK BOT I102; not plate-34 IMAGES AREN’T THE CEILING I99.
+I118 — Lesson board more-than contrast mock: cream board + saturated mustard-gold INNER stage; PREVIEW DEMO cream preview card + OR disc + PAYMENTS CRM cream payments/CRM card stagger-spring onto mustard-gold inner → step-up / more-than arrow → FULL PRODUCT ONLINE cream full-product card (kinetic “PREVIEW DEMO” / “PAYMENTS CRM” / “FULL PRODUCT ONLINE” / “MORE THAN”; coral on PREVIEW then PAYMENTS / CRM then FULL / PRODUCT; optional tiny preview-window micro chrome + CRM meter micro disc) — kinetic type only; no localhost URL; no stills→motion film morph; no Mobbin gallery; no competitor profile tiles; no chat-app tiles; ≠ plate-37 Lesson base→scale I109 (cobalt + BUILD→SCALE); ≠ plate-34 GENERATE STILLS→MOTION Lesson I100 (peach + still→film morph); ≠ plate-31 localhost LOCAL PREVIEW I91 (navy + URL bar); ≠ plate-28 Mobbin gallery I82 (terracotta + polished UI stills); ≠ plate-39 competitor Split I115; ≠ plate-38 finished-clip Stage I112; ≠ plate-36 chat-app tiles I106.
+I119 — A FULL PRODUCT ONLINE / FULL PRODUCT ONLINE thick cream full-product stamp/card (soft shadow; coral on FULL or PRODUCT / ONLINE; optional full-site / product-window micro disc) — full-face E42 hero; not a black capsule; not plate-39 HOW? I116; not plate-38 TOP TIER / HEYGEN-CLASS I113; not plate-37 NEXT LESSON I110; not plate-36 CHAT APPS YOU ALREADY USE I107; not plate-35 SAME FACE·LOOK / NOW IT CAN SPEAK I104; not plate-34 NEXT STEP IS MOTION I101.
+</icons>
+
+<end>
+E42 — full face: bottom-center (or lower-left / shoulder negative space) thick cream stamp or kinetic strip “A FULL PRODUCT ONLINE” / “FULL PRODUCT ONLINE” / “FULL PRODUCT” with coral punch on FULL or PRODUCT / ONLINE; optional tiny full-site / product-window micro disc; hold through 7.04–10.00 (covers VO 7.04–8.30 a full product online + hold to end). No dual lower pills, no breadcrumb (E06), no title-bar peek (E09), no lower-third clone of E02, no tilt price card (E12), no step rail (E14), no Proven stamp (E15), no serverless ribbon (E16/E28), no LIVE strip (E17), no OR fork (E18), no rate-limits (E19), no check-before-pay (E20), no browse-first (E21), no same-move (E22), no when-to-bother (E23), no way-more-stable (E24), no four-ways (E25), no no-key-no-render (E26), no live-on-those-faces (E27), no logo+headshot generate (E29), no upgrade strip (E30), no not-a-toy-layout (E31), no AI-can-generate (E32), no still-local (E33), no heavy-lifting (E34), no whole-page-covered (E35), no next-step-is-motion (E36), no now-it-can-speak (E37), no chat-apps-already-use (E38), no see-you-next-lesson (E39), no top-tier-for-me (E40), no how? (E41).
+</end>
+
+<edit>
+Beat A · 0.00–3.80 · FULL FACE sparse · M118 + I117 · QUICK SIDE NOTE
+- Talking head; face center clear.
+- 0.00–1.00 · M118 + I117: thick cream “QUICK SIDE NOTE” / “SIDE NOTE” kinetic side-note stamp/card springs into lower-left or shoulder negative space (~0.3s); coral on QUICK / SIDE / NOTE; locked to “Quick side note.”; optional sticky-note / side-note corner micro disc — not a black pill.
+- Hold settled through ~3.80 (covers “if you want more than a preview demo,” VO 1.74–3.58 + pause before “or payments…”); optional tiny secondary kinetic “MORE THAN” plain type under the stamp after ~2.18 — not a black pill; face still clear. No Lesson board yet; no PiP; no Split; no Stage. HARD CUT at 3.80.
+- Optional alternate: keep QUICK SIDE NOTE through 3.80 and let PREVIEW DEMO land on Lesson mid with payments CRM — preferred.
+
+Beat B · 3.80–7.00 · HARD CUT → Lesson board + lower-left round PiP · M119 + I118 · PREVIEW DEMO · PAYMENTS CRM → FULL PRODUCT ONLINE  ← REQUIRED Lesson+PiP (NOT Split, NOT Stage+PiP)
+- Full Lesson board: blue→teal outer frame + thick cream rounded board; mustard-gold saturated INNER stage fills the board body.
+- Host live feed as lower-left rounded PiP (M119 PiP settle / slight scale — face visible only in PiP; main UI = board). Optional thin yellow/green PiP stroke.
+- 3.80–5.20 · M119 + I118 open: PREVIEW DEMO cream preview card springs onto mustard-gold inner (~0.3s) echoing VO “more than a preview demo” (carried from Beat A / 1.74–3.58); coral on PREVIEW / DEMO; optional tiny preview-window micro chrome. Kinetic type only — no localhost URL; no competitor tiles; no chat-app tiles; no finished-clip player.
+- 5.20–6.70 · M119 + I118 continue: OR disc + PAYMENTS CRM cream payments/CRM card stagger-springs (~0.3s) locked to VO 4.98–6.66 “or payments, CRM,”; coral on PAYMENTS / CRM; optional CRM meter micro disc.
+- 6.70–7.00 · M119 + I118 resolve: more-than / step-up arrow (~0.25–0.3s) peeks toward FULL PRODUCT ONLINE cream card start — full stamp lands Beat C / E42. Hold through silent gap ~6.66–7.04 — no invented VO text.
+- Contrast read: Beat A = quick side note; Beat B = more than a preview demo OR payments CRM (on Lesson board) → pointing to full product online.
+- Face stays clear inside PiP only; all more-than / preview / CRM UI stays on the Lesson board — NEVER a 50/50 Split face|UI panel. NEVER a Stage+corner PiP full-frame. No neon vertical Split divider. No plate-39 hot-pink Split competitor tiles. No plate-38 terracotta Stage finished-clip track. No plate-37 cobalt Lesson content-team base→scale. No plate-36 violet Split chat-app tiles. No plate-34 peach Lesson stills→motion. No plate-33 emerald Split shot-by-shot slots. No plate-31 navy localhost LOCAL PREVIEW. No plate-28 terracotta Mobbin gallery. No plate-30 teal Split matching-images.
+- Hold through 7.00; HARD CUT.
+
+Beat C · 7.00–10.00 · HARD CUT FULL FACE · M120 + I119 + E42 · A FULL PRODUCT ONLINE / FULL PRODUCT ONLINE
+- Full face returns; Lesson board / PiP / preview·CRM UI clear.
+- 7.04–8.30 · M120 + I119 + E42: thick cream stamp/strip “A FULL PRODUCT ONLINE” / “FULL PRODUCT ONLINE” / “FULL PRODUCT” springs into bottom-center or lower-left / shoulder negative space (~0.3s); coral punch on FULL or PRODUCT / ONLINE; optional tiny full-site / product-window micro disc — not a black pill.
+- Timed to VO 7.04–8.30; freeze E42 hold to 10.00.
+- Optional tiny secondary kinetic “FULL PRODUCT” plain type — not a black pill.
+</edit>
+
+<banned>
+- Black capsules / dual lower pills as hero or default labels
+- 50/50 Split face|UI / face LEFT | UI RIGHT half-screen (plate-39 / plate-36 / plate-33 / plate-30 / plate-15 families) — BANNED this plate
+- Saturated full Stage + corner round host PiP mid (plate-38 / plate-35 / plate-32 / plate-29 Stage+PiP family) — BANNED this plate
+- Skipping the Lesson board + lower-left PiP mid (full-face-only this plate is banned — user asked layout rotate; Lesson is due)
+- Cloning plate-37 Lesson content: cobalt inner, CONTENT MARKETING TEAM / BUILD THE BASE / SCALE THE TEAM, E39 NEXT LESSON — layout family OK, content/hue/end MUST differ
+- Cloning plate-34 Lesson content: peach inner, stills→motion / GENERATE STILLS morph, E36 NEXT STEP IS MOTION — layout family OK, content/hue/end MUST differ
+- Cloning plate-31 Lesson content: localhost URL, LOCAL PREVIEW badge, navy inner, E33 STILL LOCAL — layout family OK, content/hue/end MUST differ
+- Cloning plate-28 Lesson content: Mobbin gallery, terracotta inner, TASTE|POLISH, E30 UPGRADE — layout family OK, content/hue/end MUST differ
+- E01, E02, E03, E04, E05, E06, E07, E08, E09, E10, E11, E12, E13, E14, E15, E16, E17, E18, E19, E20, E21, E22, E23, E24, E25, E26, E27, E28, E29, E30, E31, E32, E33, E34, E35, E36, E37, E38, E39, E40, E41 (used or outro-only)
+- Reusing M01–M117 or I01–I116 as primary this cut
+- Cloning plate-39 Split competitor-accounts (hot-pink; E41 HOW?)
+- Cloning plate-38 Stage finished-clip / HeyGen-tier (terracotta; E40 TOP TIER FOR ME)
+- Cloning plate-36 Split chat-apps (violet; E38 ALREADY USE)
+- Cloning plate-33 Split shot-by-shot (emerald; E35 WHOLE PAGE COVERED)
+- Cloning plate-30 matching-images Split (teal; E32 AI CAN GENERATE)
+- Cobalt (plate-37/32) / peach (plate-34) / navy (plate-31) / terracotta (plate-38/28) / hot-pink (plate-39/35) / violet (plate-36) / emerald (plate-33) / teal (plate-30) as Lesson/stage lead this cut — mustard-gold OK (saturated MODS mustard-gold; unused as recent Lesson inner)
+- Soft washed pastel mustard / yellow stages
+- Triple identical colored dots / PPT checklist waterfall / rainbow ①②③
+- Covering face on full-face beats / covering face outside PiP mid / invented VO / Comment / Like / Subscribe
+</banned>
+
+<self_check>
+- [ ] Hero language = QUICK SIDE NOTE cream + Lesson PREVIEW DEMO · PAYMENTS CRM → FULL PRODUCT ONLINE + E42 A FULL PRODUCT ONLINE — not capsules
+- [ ] M118+M119+M120 / I117+I118+I119 / E42 (fresh — user asked 动效规则轮用)
+- [ ] Layout = sparse full-face → Lesson board + lower-left round PiP → full-face end — NOT Split, NOT Stage+PiP
+- [ ] Face clear on full-face; mid face only in PiP; mustard-gold inner saturated
+- [ ] Quick side note → more than preview demo OR payments CRM → a full product online reads
+- [ ] Whisper lock: ASR clean (Quick side note / preview demo / payments / CRM / full product online); spoken words exact; on-screen from VO only
+- [ ] ≠ plate-39 Split competitor HOW?; ≠ plate-38 Stage finished-clip; ≠ plate-37 cobalt Lesson content-team; ≠ plate-34 peach Lesson stills→motion; ≠ plate-31 Lesson local-preview; ≠ plate-28 Lesson Mobbin
+- [ ] E42 FULL PRODUCT ONLINE ≠ E41 HOW? / E40 TOP TIER / E39 NEXT LESSON
+- [ ] Not PPT
+</self_check>
+
+<deliver>
+Production-ready A-roll motion brief for Claude: Whisper-timecoded shots, exact VO-locked on-screen English (ASR clean — keep Quick side note / preview demo / payments / CRM / a full product online), spring notes, assets (QUICK SIDE NOTE thick cream side-note stamp, Lesson board blue→teal frame + cream board + saturated mustard-gold INNER + lower-left round host PiP, PREVIEW DEMO cream card + OR + PAYMENTS CRM cream card → FULL PRODUCT ONLINE cream product card, E42 A FULL PRODUCT ONLINE / FULL PRODUCT ONLINE cream stamp + product-window micro disc). Must use Lesson+lower-left PiP mid — must NOT use 50/50 Split — must NOT use Stage+corner PiP. Lesson content/hue/end must ≠ plate-37 cobalt content-team, ≠ plate-34 peach stills→motion, ≠ plate-31 navy localhost, ≠ plate-28 terracotta Mobbin. End = E42 FULL PRODUCT ONLINE — not E41 HOW?, not E40 TOP TIER, not E39 NEXT LESSON.
+</deliver>

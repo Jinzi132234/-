@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#f4ebe1" />
+<title>课程视频工作台 · 英文视频转中文文案</title>
+<link rel="stylesheet" href="/styles.css?v=20261026-2405" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23da7b4a'/%3E%3Cpath d='M12 9.5v13l11-6.5z' fill='%23101318'/%3E%3C/svg%3E" />
+</head>
+<body>
+<div id="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20v13H6.5A2.5 2.5 0 0 0 4 19.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="m10 8.5 4.5 2.5L10 13.5z" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <div class="brand-text">
+        <strong>课程视频工作台</strong>
+        <span>EN → 中文文案 · LOCAL</span>
+      </div>
+    </div>
+
+    <button class="new-project" id="newProjectBtn">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      新建项目
+    </button>
+
+    <div class="side-label"><span>项目</span><span id="jobCount">0</span></div>
+    <div class="job-list" id="jobList"></div>
+
+    <div class="side-footer">
+      <button class="ghost-btn" id="settingsBtn">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.12.37.4.7.77.9.3.16.63.24.96.24H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>
+        设置
+      </button>
+      <div class="health" id="health"><i></i><span>检查环境…</span></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="empty-view" id="emptyView">
+      <div class="empty-inner">
+        <div class="eyebrow">ENGLISH COURSE → CHINESE COPY</div>
+        <h1>把英文课程视频<br/>变成可<span class="hl">直接开拍</span>的中文文案</h1>
+        <p class="empty-sub">上传视频，本机完成英文转写，再交给 Claude / Grok 翻译、分段、润色。<br/>最后导出 SRT、口播文案和配音稿。</p>
+
+        <div class="dropzone" id="dropzone" tabindex="0" role="button">
+          <div class="dz-icon">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+          </div>
+          <strong>拖入课程视频，或点击选择</strong>
+          <span>mp4 · mov · mkv · webm，单文件最大 4GB</span>
+          <div class="dz-note">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            转写与视频都留在这台电脑，不上传云端
+          </div>
+        </div>
+
+        <div class="empty-steps">
+          <div><b>01</b><span>Whisper 英文转写</span><em>带时间戳</em></div>
+          <div><b>02</b><span>Claude / Grok 翻译改写</span><em>简体中文</em></div>
+          <div><b>03</b><span>语义分段 + 导出</span><em>SRT / 配音稿</em></div>
+        </div>
+      </div>
+      <div class="empty-foot">本地运行 · 数据目录 <code>data/</code> · 端口 4321</div>
+    </section>
+
+    <section class="job-view hidden" id="jobView">
+      <header class="topbar">
+        <div class="topbar-title">
+          <div class="crumb">项目 / <span id="jobIdShort"></span></div>
+          <h2 id="jobTitle" contenteditable="true" spellcheck="false"></h2>
+          <div class="chips" id="jobChips"></div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn ghost" id="focusToggle" title="显示或隐藏视频预览">显示视频</button>
+          <button class="btn ghost" id="cancelBtn" hidden>停止</button>
+          <button class="btn primary" id="runBtn">开始转写</button>
+          <button class="btn ghost icon-only" id="moreBtn" title="更多">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+          </button>
+          <div class="menu hidden" id="moreMenu">
+            <button data-action="rerun-asr">重新转写</button>
+            <button data-action="rerun-translate">重新翻译</button>
+            <button data-action="rerun-copy">重新分段</button>
+            <button data-action="rerun-english">重新生成英文分鏡</button>
+            <button data-action="rename">重命名</button>
+            <button data-action="delete" class="danger">删除项目</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="pipeline" id="pipeline">
+        <div class="pipe-step" data-step="asr" role="button" tabindex="0" title="点击跳转到字幕">
+          <div class="pipe-dot"><span>1</span></div>
+          <div class="pipe-body"><strong>英文转写</strong><em>等待开始</em></div>
+          <div class="pipe-pct"></div>
+        </div>
+        <div class="pipe-step" data-step="translate" role="button" tabindex="0" title="点击跳转到字幕">
+          <div class="pipe-dot"><span>2</span></div>
+          <div class="pipe-body"><strong>中文翻译</strong><em>等待转写</em></div>
+          <div class="pipe-pct"></div>
+        </div>
+        <div class="pipe-step" data-step="copy" role="button" tabindex="0" title="点击跳转到文案分段">
+          <div class="pipe-dot"><span>3</span></div>
+          <div class="pipe-body"><strong>文案分段</strong><em>等待翻译</em></div>
+          <div class="pipe-pct"></div>
+        </div>
+        <div class="pipe-step" data-step="english" role="button" tabindex="0" title="点击跳转到英文分鏡">
+          <div class="pipe-dot"><span>4</span></div>
+          <div class="pipe-body"><strong>英文分鏡</strong><em>等待文案</em></div>
+          <div class="pipe-pct"></div>
+        </div>
+        <div class="pipe-progress"><div id="pipeBar"></div></div>
+        <span class="pipe-overall" id="pipeOverall">0%</span>
+      </div>
+
+      <div class="notice hidden" id="notice"></div>
+
+      <div class="workspace">
+        <aside class="player-col">
+          <div class="player-wrap">
+            <video id="player" controls preload="metadata" playsinline></video>
+            <div class="player-empty" id="playerEmpty">视频加载中…</div>
+          </div>
+          <div class="now-line">
+            <div class="now-time" id="nowTime">00:00</div>
+            <div class="now-zh" id="nowZh">点击字幕行可以跳转播放位置</div>
+          </div>
+          <div class="player-meta" id="playerMeta"></div>
+        </aside>
+
+        <div class="editor-col">
+          <nav class="tabs" id="tabs">
+            <button data-tab="subtitles" class="active">字幕 <span class="badge" id="subCount">0</span></button>
+            <button data-tab="copy">文案分段 <span class="badge" id="copyCount">0</span></button>
+            <button data-tab="english">英文分鏡 <span class="badge" id="voCount">0</span></button>
+            <button data-tab="prompts">提示詞 <span class="badge" id="promptCount">0</span></button>
+            <button data-tab="edit">剪輯 <span class="badge" id="editCount">0</span></button>
+            <button data-tab="export">导出</button>
+            <button data-tab="logs">日志</button>
+          </nav>
+
+          <div class="panel" data-panel="subtitles">
+            <div class="panel-toolbar">
+              <div class="search">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input id="segSearch" placeholder="搜索英文或中文…" />
+              </div>
+              <label class="check"><input type="checkbox" id="showEn" checked /> 显示英文</label>
+              <label class="check"><input type="checkbox" id="followPlay" checked /> 跟随播放</label>
+              <span class="save-state" id="saveState"></span>
+            </div>
+            <div class="seg-list" id="segList"></div>
+          </div>
+
+          <div class="panel hidden" data-panel="copy">
+            <div class="panel-toolbar">
+              <span class="toolbar-hint" id="copyHint">把字幕整理成可直接口播的段落</span>
+              <div class="spacer"></div>
+              <button class="btn small ghost" id="copyBriefBtn">项目要求</button>
+              <button class="btn small ghost" id="regenerateCopyBtn">重新分段</button>
+            </div>
+            <div class="copy-list" id="copyList"></div>
+          </div>
+
+          <div class="panel hidden" data-panel="english">
+            <div class="panel-toolbar vo-toolbar">
+              <span class="toolbar-hint">中文文案 → 英文 YouTube 口播分鏡</span>
+              <div class="spacer"></div>
+              <button class="btn small ghost" id="voCopyBtn">複製表格</button>
+              <button class="btn small ghost" id="voDownloadBtn">下載 MD</button>
+              <button class="btn small ghost" id="voRegenerateBtn">重新生成</button>
+              <button class="btn small primary" id="goProductionBtn">下一步：提示詞 →</button>
+            </div>
+            <div class="vo-summary" id="voStats"></div>
+            <div class="vo-wrap" id="voWrap">
+              <table class="vo-table">
+                <thead>
+                  <tr><th>#</th><th>畫面類型</th><th>English VO</th><th>畫面／字卡</th><th></th></tr>
+                </thead>
+                <tbody id="voBody"></tbody>
+              </table>
+            </div>
+            <div class="vo-empty" id="voEmpty">完成中文文案後，生成英文 YouTube 分鏡。</div>
+            <div class="vo-footnote">AI 生成內容，請核對產品名與 UI 步驟；表格可直接編輯，存檔後匯出。</div>
+          </div>
+
+          <div class="panel hidden" data-panel="prompts">
+            <div class="prompt-hero">
+              <div>
+                <div class="eyebrow">STAGE 3 · PROMPTS</div>
+                <h3>提示詞</h3>
+                <p>人物口播：先做無動效 Base → 再出 AROLL；Broll：直接從英文 VO 出 BROLL；實操不需要提示詞。Opus 5.5 目前用外部交接，做好後上傳成片。</p>
+              </div>
+              <div class="prompt-actions">
+                <button class="btn small ghost" id="promptGenerateAll">生成缺少的 Broll 提示詞</button>
+                <button class="btn small primary" id="promptExport">導出全部提示詞</button>
+                <span class="prompt-progress" id="promptProgress"></span>
+              </div>
+            </div>
+            <div class="flow-rail">
+              <span>英文分鏡</span><i>→</i>
+              <span>提示詞</span><i>→</i>
+              <span>Opus 5.5 製作</span><i>→</i>
+              <span>上傳成片</span><i>→</i>
+              <span>剪輯</span>
+            </div>
+            <div class="model-map">
+              <div><span>轉寫</span><b>Whisper · 本機</b><em>已接入</em></div>
+              <div><span>文案／英文分鏡</span><b>DeepSeek Flash</b><em>已接入</em></div>
+              <div><span>Base 人物視頻</span><b>Flow VO</b><em>未接入</em></div>
+              <div><span>AROLL／BROLL</span><b>SKILL + DeepSeek</b><em>已接入</em></div>
+              <div><span>最終製作</span><b>Opus 5.5</b><em>未接入</em></div>
+              <div><span>剪輯</span><b>FFmpeg · 本機</b><em>已接入</em></div>
+            </div>
+            <div class="prompt-filters" id="promptFilters">
+              <button class="active" data-filter="all">全部</button>
+              <button data-filter="person">人物口播</button>
+              <button data-filter="broll">Broll</button>
+              <button data-filter="screen">實操</button>
+            </div>
+            <div class="prompt-list" id="promptList"></div>
+          </div>
+
+          <div class="panel hidden" data-panel="production">
+            <div class="panel-toolbar prod-toolbar">
+              <span class="toolbar-hint">第 2 步 · 提示詞與上傳素材</span>
+              <label class="check"><input type="checkbox" id="prodSelectAll" /> 全選</label>
+              <div class="prod-stats" id="prodStats"></div>
+              <div class="spacer"></div>
+              <button class="btn small ghost" id="prodGenerateBtn">生成提示詞</button>
+              <button class="btn small primary" id="goEditBtn">下一步：剪輯 →</button>
+            </div>
+            <div class="prod-hint-line">這一頁只生成提示詞，不直接做視頻。人物 Flow 影片、B-roll／B字卡 MP4、實操錄屏做好後，用卡片上的上傳按鈕放進來。</div>
+            <div class="prod-list" id="prodList"></div>
+          </div>
+
+          <div class="panel hidden" data-panel="edit">
+            <div class="edit-scroll">
+              <div class="edit-hero">
+                <div>
+                  <div class="eyebrow">STAGE 3 · ASSEMBLY</div>
+                  <h3>剪輯成片</h3>
+                  <p>把製作台完成的素材按分鏡順序拼接，加入英文旁白與可選字幕。缺素材的拍會自動用字卡佔位。</p>
+                </div>
+                <div class="edit-actions">
+                  <button class="btn ghost" id="editBackBtn">回製作台</button>
+                  <button class="btn primary" id="editRenderBtn">開始剪輯</button>
+                </div>
+              </div>
+
+              <div class="edit-stats" id="editStats"></div>
+
+              <div class="edit-config">
+                <label class="check"><input type="checkbox" id="editSubtitles" checked /> 燒錄英文字幕</label>
+                <span class="edit-spec">16:9 · 1920×1080 · 30fps</span>
+                <span class="edit-spec" id="editVoiceSpec">TTS 旁白</span>
+                <span class="edit-spec" id="editAssetNote">缺素材將用佔位卡</span>
+              </div>
+
+              <details class="edit-briefs" id="editBriefsBox">
+                <summary>
+                  <span><strong>剪輯指令</strong> <em id="briefCount">0</em></span>
+                  <span class="brief-summary-hint">Grok Bot / Claude 的 plate XML</span>
+                </summary>
+                <div class="brief-toolbar">
+                  <button class="btn small ghost" id="briefImportBtn" type="button">＋ 匯入 XML</button>
+                  <input type="file" id="briefFileInput" accept=".xml,.txt,.md" multiple hidden />
+                  <span class="brief-help">匯入後可指定套用到哪一拍；目前先存檔、顯示與對齊，不會自動改動成片。</span>
+                </div>
+                <div class="brief-list" id="briefList"></div>
+              </details>
+
+              <div class="edit-progress hidden" id="editProgress">
+                <div class="edit-bar"><i id="editProgressBar"></i></div>
+                <span id="editProgressMsg">準備剪輯…</span>
+              </div>
+
+              <details class="edit-final hidden" id="editFinalBox">
+                <summary class="edit-final-head">
+                  <strong>成片已就緒</strong>
+                  <span id="editFinalMeta"></span>
+                  <a class="btn small primary" id="editDownload" download>下載 MP4</a>
+                </summary>
+                <video id="editVideo" controls playsinline></video>
+              </details>
+
+              <div class="edit-list-head">
+                <strong>分鏡與素材</strong>
+                <span id="editListHint"></span>
+              </div>
+              <div class="edit-list" id="editList"></div>
+            </div>
+          </div>
+
+          <div class="panel hidden" data-panel="export">
+            <div class="export-grid" id="exportGrid"></div>
+            <div class="export-preview" id="exportPreview">
+              <div class="preview-empty">点上面的卡片预览内容</div>
+            </div>
+          </div>
+
+          <div class="panel hidden" data-panel="logs">
+            <div class="log-list" id="logList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="overlay hidden" id="uploadOverlay">
+  <div class="upload-card">
+    <div class="upload-ring"><svg viewBox="0 0 44 44"><circle class="ring-bg" cx="22" cy="22" r="19"/><circle class="ring-fg" id="ringFg" cx="22" cy="22" r="19"/></svg><span id="uploadPct">0%</span></div>
+    <strong id="uploadName">正在上传…</strong>
+    <span id="uploadSub">请保持页面打开</span>
+    <button class="btn ghost small" id="cancelUpload">取消</button>
+  </div>
+</div>
+
+<div class="modal-backdrop hidden" id="settingsModal">
+  <div class="modal">
+    <header class="modal-head">
+      <div><h3>设置</h3><p>固定流程已鎖定；不需要選 API／模型。要改配置請找開發者。</p></div>
+      <button class="icon-btn" id="closeSettings" aria-label="关闭">×</button>
+    </header>
+    <div class="modal-body" id="settingsBody"></div>
+    <footer class="modal-foot">
+      <span class="modal-msg" id="settingsMsg"></span>
+      <button class="btn ghost" id="settingsCancel">取消</button>
+      <button class="btn primary" id="settingsSave">保存设置</button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal-backdrop hidden" id="dialogModal">
+  <div class="dialog">
+    <h3 id="dialogTitle">标题</h3>
+    <p id="dialogText"></p>
+    <textarea id="dialogInput" class="dialog-input hidden"></textarea>
+    <div class="dialog-actions">
+      <button class="btn ghost" id="dialogCancel">取消</button>
+      <button class="btn primary" id="dialogOk">确定</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<input type="file" id="fileInput" accept="video/*,.mkv" hidden />
+<input type="file" id="prodFileInput" accept="video/*,.mkv,.mov" hidden />
+<input type="file" id="refFileInput" accept="image/png,image/jpeg,image/webp" hidden />
+<input type="file" id="prodBriefInput" accept=".xml,.txt,.md" hidden />
+<script src="/app.js?v=20261026-2405" type="module"></script>
+</body>
+</html>

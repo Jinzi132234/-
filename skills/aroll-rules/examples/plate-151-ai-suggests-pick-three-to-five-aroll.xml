@@ -1,0 +1,96 @@
+<role>
+Write speech-locked A-roll + motion overlays for a ~10.00s talking-head course plate in the Tristen O’Brien MODS / Claude Code Just Dropped feel.
+Plate 151 — NEW this cut: M451 + M452 + M453 | I450 + I451 + I452 | E153
+PART 2/4 of ONE long A-roll edit (plates 150 → 153).
+GUARD: This is A-roll: do not build or insert B-roll scenes; overlays are type/UI cards on the talking-head layout. The face stays the hero. NO illustrated props. Tool names TEXT ONLY — no logos. Blank cards/chips only — never invent brand names, keyword strings, or ad copy. Do not highlight the laptop in frame.
+HARD SPARSE RULE: On FULL-FACE beats, ONLY ONE thick cream stamp/card in lower-left OR shoulder negative space. NEVER stack NO KEYWORDS + AI/DISCUSS + numbered 1–5 discs + PICK 3–5 vertically over the host’s chest (user-rejected layout).
+HARD MULTI-UI RULE: PRODUCT → AI suggests blank chips + DISCUSS MUST hard-cut onto Lesson board (violet INNER) + lower-left PiP OR Split face|UI — face only in PiP/half; main UI on board/panel.
+MANDATORY SHAPE THIS PLATE (user rewrite):
+- Beat A: FULL FACE sparse — single cream “NO KEYWORDS IN MIND?” stamp lower-left/shoulder ONLY.
+- Beat B: HARD CUT → Lesson board violet inner + lower-left PiP — PRODUCT → AI suggests + DISCUSS live on the BOARD only.
+- Beat C: HARD CUT FULL FACE — single cream “PICK 3–5” stamp in negative space; optional tiny “3–5” range mark — NO five discs stacked on chest.
+Avoid used: M01–M450 · I01–I449 · E01–E152.
+CRITICAL vs prior short stub: rewrite to plate-39/40 depth; ban the rejected chest-stack composition.
+</role>
+
+<source>
+Talking-head plate (A-roll present). Same host setup. Source pure full-face ~10.00s — overlays are motion design. Face center on open/close; mid = Lesson board + lower-left PiP (face only in PiP).
+Clip: prompts/plate-151-source.mp4. Duration 10.00s.
+Authoritative VO (verbatim): “No keywords in mind? Send your product to the AI. It suggests some. You discuss, then pick three to five.”
+ASR notes: ASR “AI tool” after “the AI” (~3.96–4.30) — copy is “the AI”; on-screen AI only. ASR “pick 3-5 from that” → copy “pick three to five” (on-screen PICK 3–5 OK). No other extras; speech ends 8.98s.
+</source>
+
+<script_timed>
+Whisper-locked (~10.00s):
+0.00–1.94   No keywords in mind?
+2.56–4.30   Send your product to the AI.
+4.90–5.64   It suggests some.
+6.38–6.78   You discuss,
+7.28–8.98   then pick three to five.
+8.98–10.00  hold → soft handoff
+Phrase locks: NO KEYWORDS @1.12 · SEND PRODUCT / AI @2.88–3.96 · SUGGESTS @5.02 · DISCUSS @6.48 · PICK 3–5 @7.44–8.42.
+</script_timed>
+
+<stitch>
+PART 2/4. IN: soft from 150 (board clears or hard-cuts to full-face for Beat A). OUT: soft into 152 Split — after Beat C single PICK 3–5 stamp, face slides L as terracotta Split panel of 152 enters. No CTA.
+</stitch>
+
+<style_lock>
+Palette MUST match MODS reference (saturated, not soft pastel):
+- Open (full face): ONE cream “NO KEYWORDS IN MIND?” stamp in lower-left / shoulder ONLY — face center clear; ZERO other cards/discs/chips on torso.
+- Mid (REQUIRED Lesson board + lower-left PiP for multi-UI): hard-cut → Lesson board (blue→teal outer + thick cream board) with saturated MODS violet INNER stage. Host lower-left rounded PiP. PRODUCT stub → AI tray → blank suggestion chips + DISCUSS label ALL on the BOARD only.
+- Close (full face): ONE cream “PICK 3–5” stamp in lower-left / shoulder / bottom-center negative space; optional tiny plain “3–5” range mark beside it — NEVER five numbered discs on chest.
+- Accents: coral punch on ONE keyword per beat (KEYWORDS / PRODUCT / SUGGESTS / DISCUSS / PICK).
+Anti-PPT: no rainbow ①②③ cascade over face; no center-floating card wall; no torso stack.
+Anti-pill-default: black capsules banned as primary.
+Anti-soft-theme: violet Lesson inner saturated, not washed pastel purple.
+Almost no camera move; hard cuts; snappy spring ~0.3s.
+Layout variety THIS plate: sparse full-face → Lesson+PiP → sparse full-face — MANDATORY; do NOT keep multi-UI on full face.
+</style_lock>
+
+<icons>
+I450 — NO KEYWORDS IN MIND? thick cream question stamp (soft shadow; coral on KEYWORDS) — sparse full-face lower-left / shoulder ONLY; single stamp; not stacked with anything else; not over chest center.
+I451 — Lesson board PRODUCT → AI suggests mock: cream “PRODUCT” stub slides into plain-text “AI” tray on violet INNER; blank suggestion chips (grey stubs only — no invented strings) fan on the BOARD; cream “DISCUSS” label on board (coral on SUGGESTS then DISCUSS). Face only in lower-left PiP. NEVER these elements on full-face torso.
+I452 — PICK 3–5 thick cream stamp (soft shadow; coral on PICK) — full-face negative space ONLY; optional tiny “3–5” range mark; NO five numbered discs, NO select-range disc row on chest (user-rejected). Soft handoff hero into 152.
+</icons>
+
+<end>
+E153 — soft handoff: full-face with single PICK 3–5 stamp holds; then soft into 152 Split (face L). No CTA. No discs left on torso.
+</end>
+
+<edit>
+Beat A · 0.00–2.50 · FULL FACE sparse · M451 + I450 · NO KEYWORDS IN MIND?
+- Talking head; face center clear.
+- 0.00–1.94 · M451 + I450: thick cream “NO KEYWORDS IN MIND?” springs into lower-left or shoulder negative space (~0.3s); coral on KEYWORDS; locked to “No keywords in mind?”
+- Hold through pause ~1.94–2.50. ONE stamp only — no PRODUCT, no AI tray, no chips, no discs, no PICK label. Face clear. HARD CUT at ~2.50.
+
+Beat B · 2.50–7.20 · HARD CUT → Lesson board + lower-left round PiP · M452 + I451 · SEND PRODUCT · AI SUGGESTS · DISCUSS  ← REQUIRED board for multi-UI
+- Full Lesson board: blue→teal outer frame + thick cream rounded board; violet saturated INNER stage.
+- Host as lower-left rounded PiP (face only in PiP; main UI = board).
+- 2.56–4.40 · M452 + I451 open: cream “PRODUCT” stub slides into plain-text “AI” tray on violet inner (~0.3s) locked to “Send your product to the AI.”; coral on PRODUCT / AI. On-screen AI only (ignore ASR “tool”).
+- 4.90–6.00 · M452 + I451 continue: blank suggestion chips fan out on the BOARD (~0.25s stagger) locked to “It suggests some.”; coral on SUGGESTS; grey stubs only — never invent keyword strings.
+- 6.38–7.20 · M452 + I451: cream “DISCUSS” label springs on board (~0.25s) locked to “You discuss,”; coral on DISCUSS. Hold briefly.
+- Face stays clear inside PiP only; PRODUCT / AI / chips / DISCUSS stay on the Lesson board — NEVER over full-face chest. No numbered 1–5 discs anywhere this beat. HARD CUT at ~7.20.
+
+Beat C · 7.20–10.00 · HARD CUT FULL FACE · M453 + I452 + E153 · PICK 3–5
+- Full face returns; Lesson board / PiP / chips / DISCUSS clear completely.
+- 7.28–8.98 · M453 + I452 + E153: thick cream “PICK 3–5” / “PICK THREE TO FIVE” stamp springs into lower-left / shoulder / bottom-center negative space (~0.3s); coral on PICK; optional tiny plain “3–5” range mark beside the stamp — NOT five discs, NOT a select-range row on torso.
+- Timed to “then pick three to five.”; freeze hold to 10.00 as soft handoff into 152.
+- Confirm: torso is clear except the single stamp in negative space.
+</edit>
+
+<banned>
+- Torso-stacked NO KEYWORDS + AI/DISCUSS + 1–5 discs + PICK over chest (HARD BAN — user rejected)
+- Five numbered discs on full-face; rainbow cascade over face; card wall over torso
+- B-roll scenes; logos; invented keywords; illustrated people
+- Black capsules as hero; reusing M01–M450 / I01–I449 / E01–E152
+- CTA; “next lesson”
+</banned>
+
+<self_check>
+- [ ] Beat A ONE stamp only; Beat B ALL multi-UI on Lesson board+PiP; Beat C ONE PICK 3–5 stamp, NO discs on chest; codes M451–453/I450–452/E153; PART 2/4
+</self_check>
+
+<deliver>
+A-roll overlay brief locked to Whisper timings for PART 2/4 (plate-39 depth; chest-stack removed); soft handoff into plate-152.
+</deliver>

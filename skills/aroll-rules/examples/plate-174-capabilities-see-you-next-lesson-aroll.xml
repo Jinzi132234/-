@@ -1,0 +1,90 @@
+<role>
+Write speech-locked A-roll + motion overlays for a ~10.00s talking-head course plate in the Tristen O’Brien MODS / Claude Code Just Dropped feel.
+Plate 174 — NEW this cut: M520 + M521 + M522 | I519 + I520 + I521 | E176
+STANDALONE soft-strong bridge / next-lesson close (pairs with plate-173 soft intro open). Soft-strong on SEE YOU NEXT LESSON — BRIDGE to next lesson, NOT Subscribe / Comment / Like CTA.
+GUARD: This is A-roll: do not build or insert B-roll scenes; overlays are type/UI cards on the talking-head layout. The face stays the hero. NO illustrated props. Capability labels TEXT ONLY — blank bodies OK; never invent extra feature names beyond VO. Do not highlight the laptop in frame.
+HARD SPARSE RULE: On FULL-FACE beats, ONLY ONE thick cream stamp/card in lower-left OR shoulder negative space. NEVER stack capability chips over the torso/chest (ban plate-151 style).
+HARD MULTI-UI RULE: SENDING MESSAGES / POSTING CONTENT / REPLYING (INCOMING MESSAGES) / SO MUCH MORE chips MUST hard-cut onto Lesson board (cobalt INNER) + lower-left PiP — face only in PiP; chips on BOARD only. SEE YOU NEXT LESSON on full-face return as ONE stamp.
+Hero overlay language THIS plate: IT CAN HANDLE sparse stamp → Lesson cobalt + PiP capability chips → E176 SEE YOU NEXT LESSON soft-strong bridge. Black capsules only as tiny secondary kickers — never hero.
+CRITICAL layout THIS cut: sparse full-face → Lesson board + lower-left PiP → full-face soft-strong bridge. Ban torso stack.
+Avoid used: M01–M519 · I01–I518 · E01–E175.
+CRITICAL vs plate-173: hot-pink Stage+corner PiP FROM TODAY → INSTAGRAM AI SUPER ASSISTANT soft open. THIS = cobalt Lesson; capability chips → SEE YOU NEXT LESSON; E176 not E175.
+CRITICAL vs plate-162: navy Lesson benchmarks→extend. THIS = cobalt Lesson (≠ navy); capability list → next-lesson bridge; not ONE ROOM merge.
+Match plate-39/40 / 154–173 density — not short stubs.
+</role>
+
+<source>
+Talking-head plate (A-roll present). Host: East Asian man, glasses, black tee, boom mic, gray sofa + MacBook, window daylight. Source pure full-face ~10.00s — overlays are motion design. Face center on open; mid = Lesson board + lower-left PiP; close = full face.
+Clip: prompts/plate-174-source.mp4 (01M5KSRE4F0RMASY8KMH5DHV61; ~15:14 UTC+8; SHA1 4b735686b882cec07de680139e3f8963a375b9d6 unique). Duration 10.00s.
+Authoritative VO (verbatim): “It can handle things like sending messages, posting content, replying to incoming messages, and so much more. See you next lesson.”
+ASR notes: Matches copy (proper pause before “See”). Micro-pauses between list items (~2.28–2.72, ~3.58–4.04, ~5.34–5.78). Pause before close (~6.68–7.44). Speech ends 8.34s; hold to 10.00. No unscripted tail. (User paste lacked space before See — audio/ASR has normal sentence break.)
+</source>
+
+<script_timed>
+Whisper-locked (~10.00s):
+0.00–6.68   It can handle things like sending messages, posting content, replying to incoming messages, and so much more.
+7.44–8.34   See you next lesson.
+8.34–10.00  hold → soft-strong bridge
+Phrase locks: HANDLE @0.62 · SENDING MESSAGES @1.44–2.28 · POSTING CONTENT @2.72–3.58 · REPLYING @4.04 · INCOMING MESSAGES @4.52–5.34 · SO MUCH MORE @6.00–6.68 · SEE YOU NEXT LESSON @7.44–8.34.
+</script_timed>
+
+<stitch>
+STANDALONE soft-strong next-lesson bridge (pairs after 173 intro). IN: can follow 173. OUT: SOFT-STRONG CLOSE on SEE YOU NEXT LESSON — open handoff to the next lesson cut; NOT Subscribe, NOT Comment/Like, NOT dual pills, no iris outro.
+</stitch>
+
+<style_lock>
+Palette MUST match MODS reference (saturated, not soft pastel):
+- Open (full face): ONE cream IT CAN HANDLE / CAPABILITIES stamp in lower-left / shoulder ONLY — face clear; no chip stack on chest.
+- Mid (REQUIRED Lesson board + lower-left PiP): hard-cut → Lesson board (blue→teal outer + thick cream board) with saturated MODS cobalt INNER. Host lower-left rounded PiP. Capability chips ALL on BOARD only.
+- Close (full face): HARD CUT back; ONE cream SEE YOU NEXT LESSON stamp in lower-left / shoulder / bottom-center negative space.
+- Accents: coral punch on ONE keyword per beat (HANDLE / MESSAGES / CONTENT / REPLYING / MORE / NEXT LESSON).
+Anti-PPT: no thin subtitle bars; no rainbow ①②③ over face; no torso card wall.
+Anti-pill-default: black capsules banned as primary; no Subscribe / Comment / Like CTAs.
+Anti-soft-theme: cobalt Lesson inner saturated, not washed pastel blue.
+Almost no camera move; hard cuts; snappy spring ~0.3s.
+Layout: sparse full-face → Lesson+PiP → full-face soft-strong — ≠ 173 Stage hot-pink; ≠ 162 navy Lesson (this cobalt).
+</style_lock>
+
+<icons>
+I519 — IT CAN HANDLE thick cream stamp (soft shadow; coral on HANDLE) — sparse full-face lower-left / shoulder ONLY; single stamp.
+I520 — Lesson capability chips: cream chips labeled only “SENDING MESSAGES” · “POSTING CONTENT” · “REPLYING” / “REPLYING TO INCOMING MESSAGES” · optional blank “SO MUCH MORE” ellipsis chip (coral each as spoken) — blank bodies OK; never invent extra features; ALL on board — never over full-face torso.
+I521 — SEE YOU NEXT LESSON thick cream stamp (soft shadow; coral on NEXT LESSON) — full-face negative space; E176 soft-strong bridge hero — not Subscribe.
+</icons>
+
+<end>
+E176 — SOFT-STRONG BRIDGE: full-face “SEE YOU NEXT LESSON” locked from ~8.34s; freeze to 10.00. Next-lesson handoff — NOT Subscribe, NOT Comment/Like, no dual pills, no iris outro.
+</end>
+
+<edit>
+Beat A · 0.00–2.50 · FULL FACE sparse · M520 + I519 · IT CAN HANDLE
+- Talking head; face center clear.
+- 0.00–1.44 · M520 + I519: thick cream “IT CAN HANDLE” / “IT CAN HANDLE THINGS LIKE” stamp springs into lower-left or shoulder (~0.3s); coral on HANDLE.
+- Hold into list start; ONE stamp only — no chips on chest. HARD CUT at ~2.50 (after “sending messages” begins or just as posting approaches — prefer cut ~2.40–2.60 so first chip can land on board with remaining list).
+
+Beat B · 2.50–7.20 · HARD CUT → Lesson board + lower-left round PiP · M521 + I520 · capability chips
+- Full Lesson board: blue→teal outer + thick cream board; cobalt saturated INNER.
+- Host lower-left rounded PiP (face only in PiP; main UI = board).
+- ~2.50–6.68 · M521 + I520: chips stagger-spring onto board locked to speech — “SENDING MESSAGES” (may already be mid-phrase at cut — OK to echo/complete on board), “POSTING CONTENT” @2.72, “REPLYING” / “INCOMING MESSAGES” @4.04–5.34, “SO MUCH MORE” @6.00–6.68 (~0.25s each); coral on each label; blank bodies; never invent extra features.
+- Face clear in PiP only; ALL chips on board — NEVER stacked over full-face chest. No Stage+PiP this plate. No Split.
+
+Beat C · 7.20–10.00 · HARD CUT FULL FACE · M522 + I521 + E176 · SEE YOU NEXT LESSON soft-strong bridge
+- Full face returns; Lesson board / PiP / chips clear.
+- 7.44–8.34 · M522 + I521 + E176: thick cream “SEE YOU NEXT LESSON” stamp springs into lower-left / shoulder / bottom-center (~0.3s); coral on NEXT LESSON.
+- Freeze E176 to 10.00. Bridge only — no Subscribe, Comment, or Like.
+</edit>
+
+<banned>
+- Torso-stacked multi-card full-face (HARD BAN); invented extra feature names; logos; B-roll scenes
+- UI over PiP face; rainbow cascade over face; black capsules as hero
+- Subscribe / Comment / Like CTAs; dual pills; iris outro
+- Hot-pink Stage as lead (≠173); navy Lesson as lead (≠162)
+- Reusing M01–M519 / I01–I518 / E01–E175
+</banned>
+
+<self_check>
+- [ ] Beat A ONE stamp; Beat B ALL chips on Lesson board+PiP; Beat C ONE SEE YOU NEXT LESSON stamp; codes M520–522/I519–521/E176; cobalt ≠162 navy / ≠173 Stage; no chest stack
+</self_check>
+
+<deliver>
+A-roll overlay brief locked to Whisper timings for standalone plate-174 soft-strong next-lesson bridge (plate-39 depth); pairs with plate-173 intro.
+</deliver>

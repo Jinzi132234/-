@@ -1,0 +1,141 @@
+<role>
+Write speech-locked A-roll + motion overlays for a ~10.00s talking-head course plate in the Tristen O’Brien MODS / Claude Code Just Dropped feel.
+Plate 39 — NEW this cut: M115 + M116 + M117 | I114 + I115 + I116 | E41
+(Library expanded this cut: M115–M117 / I114–I116 / E41 — prior codes through plate-38 used.)
+Hero overlay language THIS plate (anti-pill-default): GENERATING ISN’T THE ONLY JOB thick cream caveat stamp (sparse full-face) → 50/50 Split face LEFT | saturated hot-pink UI RIGHT with COMPETITOR ACCOUNTS profile-tile stack + DOWNLOAD AS REFERENCE / download-ref cream cards cascade → E41 SO HOW DO YOU DO THAT? / HOW? question stamp on full face. Black capsules only as tiny secondary kickers if needed — never the hero UI.
+CRITICAL layout THIS cut (user request — rotate families; Split is due after Stage+Lesson): sparse full-face → 50/50 Split face LEFT | UI RIGHT → sparse full-face end.
+Ban this plate: saturated full Stage + corner round host PiP mid (plate-38/35/32/29 Stage+PiP family); Lesson board blue→teal frame + thick cream board + lower-left PiP (plate-37/34/31/28 Lesson+PiP family).
+OK to use Split — but MUST ≠ plate-36 content (no violet RIGHT, no LINE·Slack·Discord·WhatsApp chat-app tiles, no E38 CHAT APPS YOU ALREADY USE — this cut = Generating isn’t the only job → competitor accounts OR download their content as reference → so how do you do that?; hot-pink RIGHT; E41 HOW?); MUST ≠ plate-33 content (no emerald RIGHT, no SHOT BY SHOT image-slot fill, no E35 WHOLE PAGE COVERED); MUST ≠ plate-30 content (no teal RIGHT, no LAYOUT ALONE→MATCHING IMAGES flood, no E32 AI CAN GENERATE).
+Avoid used: M01–M114 · I01–I113 · E01–E40 (all prior).
+CRITICAL USER REQUEST: 需要讓動效規則輪用，不要一直給我同樣的動效指示詞 — M/I/E MUST be brand-new this cut; do NOT reuse prior motion language, icon shapes, or end treatments as primary.
+CRITICAL vs plate-38 (last A-roll): plate-38 = terracotta Stage+corner PiP + FINISHED CLIP → WATCH THE MOUTH · WATCH THE HANDS → HEYGEN-CLASS → E40 TOP TIER FOR ME. THIS cut MUST NOT use Stage+PiP — Split mid; hot-pink; competitor accounts / download-as-reference → HOW?; E41 not E40.
+CRITICAL vs plate-37: plate-37 = cobalt Lesson+lower-left PiP + CONTENT MARKETING TEAM → BUILD THE BASE → SCALE THE TEAM → E39 SEE YOU / NEXT LESSON. THIS cut MUST NOT use Lesson board — Split mid; hot-pink; competitor/download-ref pull; E41 not E39.
+CRITICAL vs plate-36 (prior Split chat-apps): plate-36 = violet Split face L | UI R + LATER CHAPTERS → LINE·Slack·Discord·WhatsApp → E38 CHAT APPS YOU ALREADY USE. THIS cut = same Split family OK, different hue/story/end — hot-pink RIGHT; competitor profile tiles + download-ref stack (not chat-app names); E41 SO HOW DO YOU DO THAT? / HOW? not E38.
+CRITICAL vs plate-33 (prior Split shot-by-shot): plate-33 = emerald Split + DON’T FILL EVERY → SHOT BY SHOT → E35 WHOLE PAGE COVERED. THIS cut = hot-pink; competitor/download-ref; E41 not E35.
+CRITICAL vs plate-30 (prior Split matching-images): plate-30 = teal Split + LAYOUT ALONE→MATCHING IMAGES + E32. THIS cut = hot-pink; competitor accounts / download as reference; E41 not E32.
+CRITICAL vs plate-35 (hot-pink Stage still→speak): plate-35 = hot-pink Stage+corner PiP + HAND GROK BOT still→talking-head + E37 NOW IT CAN SPEAK. THIS cut = hot-pink Split (not Stage); competitor/download-ref; E41 not E37 — hue OK to revisit as Split panel, layout/story/end MUST differ.
+</role>
+
+<source>
+Talking-head plate (A-roll present). Host: East Asian man, glasses, black short-sleeve knit, boom mic, gray sofa + MacBook on wood table, window foliage daylight (same setup as plate-15/28–38). Source video is pure full-face ~10.00s — overlays/layouts are motion design, not in-camera cuts. Face center on open/close; mid = 50/50 Split with face LEFT live, competitor-profile + download-ref UI on RIGHT. Overlays clear face on full-face beats (negative space only); mid face stays clear in LEFT half.
+User script (authoritative VO — Whisper-locked; ASR mostly clean; do not invent VO):
+“Generating isn’t the only job. Sometimes you need competitor accounts… or download their content as reference. So how do you do that?”
+Whisper lock file: /workspace/aroll-rules/prompts/plate-39-audio.json (ASR clean: Generating / isn’t the only job / competitor accounts / download their content as reference / So how do you do that? — keep Generating; competitor accounts; download their content as reference; So how do you do that?). Spoken lock exact. Ellipsis after accounts is stylistic pause OK — Whisper has continuous “accounts or download”.
+Visual direction: generating isn’t the only job → competitor accounts OR download their content as reference → so how do you do that? (competitor-account / download-as-reference pull — not finished-clip quality track, not content-team outro, not chat-app park).
+</source>
+
+<script_timed>
+Whisper-locked (~10.00s video; ASR clean — keep Generating / competitor / download / reference / how):
+0.00–0.60  Generating
+0.60–1.00  isn’t
+1.00–1.14  the
+1.14–1.36  only
+1.36–1.70  job.
+2.58–3.06  Sometimes
+3.06–3.30  you
+3.30–3.48  need
+3.48–3.90  competitor
+3.90–4.34  accounts
+4.34–4.92  or
+4.92–5.30  download
+5.30–5.52  their
+5.52–5.90  content
+5.90–6.20  as
+6.20–6.56  reference.
+7.32–7.78  So
+7.78–8.02  how
+8.02–8.12  do
+8.12–8.22  you
+8.22–8.36  do
+8.36–8.58  that?
+(+ hold E41 through ~10.00)
+(Video ends ~10.00. Gaps ~1.70–2.58 and ~6.56–7.32 silent hold OK — no invented VO.)
+Phrase locks (for on-screen):
+0.00–1.70  Generating isn’t the only job.
+2.58–4.34  Sometimes you need competitor accounts
+4.34–6.56  or download their content as reference.
+7.32–8.58  So how do you do that?
+ASR notes: Whisper clean — keep Generating (not generating lowercase as final on-screen hero); competitor accounts; download their content as reference; So how do you do that? Do not invent extra VO.
+</script_timed>
+
+<style_lock>
+Palette MUST match MODS reference (saturated, not soft pastel):
+- Open (full face): live A-roll; cream accents OK — GENERATING ISN’T THE ONLY JOB thick cream caveat stamp in lower-left / shoulder negative space.
+- Mid (REQUIRED 50/50 Split face LEFT | UI RIGHT — NOT Stage+PiP, NOT Lesson board): hard-cut → neon or cream vertical Split divider; LEFT = live host face (clear); RIGHT = saturated MODS hot-pink / deep brand-hot-pink panel (not washed pastel rose; hot-pink used plate-35 Stage still→speak — spaced OK for Split A-roll competitor/download-ref beat; MUST ≠ violet plate-36 Split; MUST ≠ emerald plate-33 Split; MUST ≠ teal plate-30 Split). Competitor profile cream tiles + DOWNLOAD AS REFERENCE / download-ref cream stack on RIGHT. NOT Stage+corner PiP. NOT Lesson board (no blue→teal outer frame + thick cream board). NOT violet (plate-36 Split / plate-29 Stage), NOT emerald (plate-33 Split), NOT teal (plate-30 Split), NOT terracotta (plate-38 Stage / plate-28 Lesson), NOT cobalt (plate-37 Lesson / plate-32 Stage), NOT peach (plate-34 Lesson), NOT navy (plate-31 Lesson), NOT mustard-gold as sole Split lead (optional mustard accent OK on tiles only).
+- Close: hard-cut FULL FACE; E41 SO HOW DO YOU DO THAT? / HOW? cream question stamp / thick card / kinetic strip.
+- Cards / Split UI: cream GENERATING ISN’T THE ONLY JOB stamp; cream COMPETITOR ACCOUNTS profile tiles; cream DOWNLOAD AS REFERENCE / download-ref stack cards; cream HOW? / SO HOW DO YOU DO THAT? question stamp — heavy soft shadow; kinetic type only.
+- Accents: coral punch on ONE keyword per beat (GENERATING / ONLY / JOB / COMPETITOR / ACCOUNTS / DOWNLOAD / REFERENCE / HOW); sticker-six blue / gold / green / purple / orange on Split divider or tile corners (avoid pink/gold/blue set from plate-13 as a set; avoid violet/emerald/teal accents that read as plate-36/33/30 Split; avoid terracotta that reads as plate-38 Stage).
+- Type: Inter / SF, bold. Big kinetic words on cream cards / Split RIGHT — NOT capsule labels as default.
+Anti-PPT: no thin subtitle bars, no rainbow ①②③ cascade, no triple identical colored dots.
+Anti-pill-default: black capsules banned as primary overlay language.
+Anti-soft-theme: hot-pink Split panel saturated (MODS hot pink), not washed pastel rose.
+Almost no camera move; hard cuts; snappy spring ~0.3s; GENERATING ISN’T THE ONLY JOB stamp → Split wipe + COMPETITOR ACCOUNTS → DOWNLOAD AS REFERENCE cascade → SO HOW DO YOU DO THAT? / HOW? stamp.
+Layout variety THIS plate: sparse full-face → 50/50 Split face L | UI R → full-face end — do NOT use Stage+PiP; do NOT use Lesson+PiP; do NOT skip the Split mid.
+</style_lock>
+
+<icons>
+I114 — GENERATING ISN’T THE ONLY JOB thick cream caveat stamp/card (soft shadow; coral on GENERATING or ONLY / JOB; optional generate-spark / “not-only” slash micro disc) — sparse full-face lower-left / shoulder negative space; not a black capsule; not plate-38 FINISHED CLIP I111; not plate-37 CONTENT MARKETING TEAM I108; not plate-36 LATER CHAPTERS I105; not plate-35 HAND GROK BOT I102; not plate-34 IMAGES AREN’T THE CEILING I99; not plate-33 DON’T FILL EVERY I96.
+I115 — Split RIGHT competitor + download-ref mock: 2–3 thick cream competitor-account profile tiles (anonymous avatar circle + soft handle/handlebar chrome — no real brand locks) stagger-spring onto saturated hot-pink RIGHT + DOWNLOAD AS REFERENCE / DOWNLOAD · AS REFERENCE cream download-ref stack card (down-arrow / folder-stack glyph) cascade (~0.3s each); kinetic type COMPETITOR ACCOUNTS / DOWNLOAD AS REFERENCE; coral on COMPETITOR then DOWNLOAD / REFERENCE. Reads competitor-account OR download-as-reference pull — NOT plate-36 chat-app tiles I106; ≠ plate-33 SHOT BY SHOT image-slot grid I97; ≠ plate-30 LAYOUT ALONE→MATCHING IMAGES flood I88; ≠ plate-38 finished-clip mouth/hands Stage I112; ≠ plate-37 Lesson base→scale I109; ≠ plate-35 still→talking-head Stage I103; ≠ plate-23 X/Gmail/Calendar connector chips I68; ≠ plate-17 YT/IG/Threads rate-limit trio I50; ≠ plate-21 crawl meter I61.
+I116 — SO HOW DO YOU DO THAT? / HOW? thick cream question stamp/card (soft shadow; coral on HOW; optional big “?” disc / kinetic HOW stamp) — full-face E41 hero; not a black capsule; not plate-38 TOP TIER I113; not plate-37 NEXT LESSON I110; not plate-36 CHAT APPS YOU ALREADY USE I107; not plate-35 SAME FACE·LOOK / NOW IT CAN SPEAK I104; not plate-34 NEXT STEP IS MOTION I101; not plate-29 PREMIUM|BENCHMARK I86.
+</icons>
+
+<end>
+E41 — full face: bottom-center (or lower-left / shoulder negative space) thick cream question stamp or kinetic strip “SO HOW DO YOU DO THAT?” / “HOW DO YOU DO THAT?” / “HOW?” with coral punch on HOW; optional big “?” disc / download-ref micro card peek; hold through 7.32–10.00 (covers VO 7.32–8.58 So how do you do that? + hold to end). No dual lower pills, no breadcrumb (E06), no title-bar peek (E09), no lower-third clone of E02, no tilt price card (E12), no step rail (E14), no Proven stamp (E15), no serverless ribbon (E16/E28), no LIVE strip (E17), no OR fork (E18), no rate-limits (E19), no check-before-pay (E20), no browse-first (E21), no same-move (E22), no when-to-bother (E23), no way-more-stable (E24), no four-ways (E25), no no-key-no-render (E26), no live-on-those-faces (E27), no logo+headshot generate (E29), no upgrade strip (E30), no not-a-toy-layout (E31), no AI-can-generate (E32), no still-local (E33), no heavy-lifting (E34), no whole-page-covered (E35), no next-step-is-motion (E36), no now-it-can-speak (E37), no chat-apps-already-use (E38), no see-you-next-lesson (E39), no top-tier-for-me (E40).
+</end>
+
+<edit>
+Beat A · 0.00–2.58 · FULL FACE sparse · M115 + I114 · GENERATING ISN’T THE ONLY JOB
+- Talking head; face center clear.
+- 0.00–1.70 · M115 + I114: thick cream “GENERATING ISN’T THE ONLY JOB” / “ISN’T THE ONLY JOB” / “GENERATING” kinetic caveat stamp/card springs into lower-left or shoulder negative space (~0.3s); coral on GENERATING or ONLY / JOB; locked to “Generating isn’t the only job.”; optional generate-spark / not-only slash micro disc — not a black pill.
+- Hold settled through ~2.58 (covers pause before “Sometimes you need…”); face still clear. No Split yet; no Stage; no Lesson board; no PiP. HARD CUT at 2.58.
+
+Beat B · 2.58–7.32 · HARD CUT → 50/50 Split face LEFT | hot-pink UI RIGHT · M116 + I115 · COMPETITOR ACCOUNTS · DOWNLOAD AS REFERENCE  ← REQUIRED Split (NOT Stage+PiP, NOT Lesson)
+- Neon or cream vertical Split divider wipes open (~0.25–0.3s); LEFT = live host face (clear in LEFT half only); RIGHT = saturated hot-pink panel.
+- 2.58–4.50 · M116 + I115 open: COMPETITOR ACCOUNTS cream profile-tile stack springs on RIGHT (~0.3s stagger, 2–3 anonymous profile tiles) locked through “Sometimes you need competitor accounts” (VO 2.58–4.34); coral on COMPETITOR / ACCOUNTS. Kinetic type only — no real competitor brand logo lockups.
+- 4.50–6.56 · M116 + I115 continue: DOWNLOAD AS REFERENCE / DOWNLOAD · AS REFERENCE cream download-ref stack card springs (~0.3s) locked to “or download their content as reference.” (VO 4.34–6.56); down-arrow / folder-stack glyph; coral on DOWNLOAD or REFERENCE. Optional tiny OR kinetic between competitor tiles and download card — not a black pill.
+- Hold through silent gap ~6.56–7.32 — no invented VO text.
+- Contrast read: Beat A = generating isn’t the only job; Beat B = competitor accounts OR download their content as reference.
+- Face stays clear in LEFT half only; all competitor / download-ref UI stays on RIGHT hot-pink panel — NEVER a Stage+corner PiP full-frame. NEVER a Lesson board (no blue→teal frame + thick cream board). No neon Stage wipe. No plate-36 violet Split chat-app tiles. No plate-33 emerald Split image-slot grid. No plate-30 teal Split matching-images flood. No plate-38 terracotta Stage finished-clip track. No plate-37 cobalt Lesson content-team. No plate-35 hot-pink Stage still→talking-head (this = Split RIGHT tiles, not full Stage+PiP). No plate-23 connector chips clone. No plate-21 crawl meter clone.
+- Hold through 7.32; HARD CUT.
+
+Beat C · 7.32–10.00 · HARD CUT FULL FACE · M117 + I116 + E41 · SO HOW DO YOU DO THAT? / HOW?
+- Full face returns; Split / hot-pink panel / competitor / download-ref UI clear.
+- 7.32–8.58 · M117 + I116 + E41: thick cream question stamp/strip “SO HOW DO YOU DO THAT?” / “HOW DO YOU DO THAT?” / “HOW?” springs into bottom-center or lower-left / shoulder negative space (~0.3s); coral punch on HOW; optional big “?” disc / tiny download-ref micro peek — not a black pill.
+- Timed to VO 7.32–8.58; freeze E41 hold to 10.00.
+- Optional tiny secondary kinetic “HOW?” plain type — not a black pill.
+</edit>
+
+<banned>
+- Black capsules / dual lower pills as hero or default labels
+- Saturated full Stage + corner round host PiP mid (plate-38 / plate-35 / plate-32 / plate-29 Stage+PiP families) — BANNED this plate
+- Lesson board blue→teal frame + thick cream board / Lesson+PiP mid (plate-37 / plate-34 / plate-31 / plate-28 families) — BANNED this plate
+- Skipping the 50/50 Split mid (full-face-only this plate is banned — user asked layout rotate; Split is due)
+- Cloning plate-36 Split content: violet RIGHT, LINE·Slack·Discord·WhatsApp chat-app tiles, E38 CHAT APPS YOU ALREADY USE — layout family OK, content/hue/end MUST differ (this = hot-pink; competitor+download-ref; E41 HOW?)
+- Cloning plate-33 Split content: emerald RIGHT, SHOT BY SHOT image-slot fill, E35 WHOLE PAGE COVERED — layout family OK, content/hue/end MUST differ
+- Cloning plate-30 Split content: teal RIGHT, LAYOUT ALONE→MATCHING IMAGES flood, E32 AI CAN GENERATE — layout family OK, content/hue/end MUST differ
+- Cloning plate-35 hot-pink Stage still→speak (Stage+PiP + HAND GROK BOT + E37) — hue may revisit as Split panel only; layout/story/end MUST differ
+- E01, E02, E03, E04, E05, E06, E07, E08, E09, E10, E11, E12, E13, E14, E15, E16, E17, E18, E19, E20, E21, E22, E23, E24, E25, E26, E27, E28, E29, E30, E31, E32, E33, E34, E35, E36, E37, E38, E39, E40 (used or outro-only)
+- Reusing M01–M114 or I01–I113 as primary this cut
+- Cloning plate-38 Stage finished-clip / HeyGen-tier (terracotta; E40 TOP TIER FOR ME)
+- Cloning plate-37 Lesson content-team (cobalt; E39 SEE YOU / NEXT LESSON)
+- Violet (plate-36 Split) / emerald (plate-33 Split) / teal (plate-30 Split) / terracotta (plate-38 Stage) / cobalt (plate-37/32) / peach (plate-34 Lesson) / navy (plate-31 Lesson) as Split RIGHT lead this cut — hot-pink OK (saturated MODS hot pink; Split panel not Stage+PiP)
+- Soft washed pastel hot-pink / rose stages
+- Trademark exact competitor brand logo lockups as hero (anonymous profile tiles + kinetic COMPETITOR ACCOUNTS type OK)
+- Triple identical colored dots / PPT checklist waterfall / rainbow ①②③
+- Covering face on full-face beats / covering face outside LEFT half mid / invented VO / Comment / Like / Subscribe
+</banned>
+
+<self_check>
+- [ ] Hero language = GENERATING ISN’T THE ONLY JOB cream + Split COMPETITOR ACCOUNTS + DOWNLOAD AS REFERENCE + E41 SO HOW DO YOU DO THAT? / HOW? — not capsules
+- [ ] M115+M116+M117 / I114+I115+I116 / E41 (fresh — user asked 动效规则轮用)
+- [ ] Layout = sparse full-face → 50/50 Split face L | UI R → full-face end — NOT Stage+PiP, NOT Lesson+PiP
+- [ ] Face clear on full-face; mid face only in LEFT half; hot-pink Split RIGHT saturated
+- [ ] Generating isn’t the only job → competitor accounts OR download as reference → so how do you do that? reads
+- [ ] Whisper lock: ASR clean (Generating / competitor / download / reference / how); spoken words exact; on-screen from VO only
+- [ ] ≠ plate-38 Stage finished-clip; ≠ plate-37 Lesson content-team; ≠ plate-36 violet chat-apps Split; ≠ plate-33 emerald shot-by-shot Split; ≠ plate-30 teal matching-images Split; ≠ plate-35 hot-pink Stage still→speak
+- [ ] Not PPT
+</self_check>
+
+<deliver>
+Production-ready A-roll motion brief for Claude: Whisper-timecoded shots, exact VO-locked on-screen English (ASR clean — keep Generating / competitor accounts / download their content as reference / So how do you do that?), spring notes, assets (GENERATING ISN’T THE ONLY JOB thick cream caveat stamp, saturated hot-pink Split face L | UI R, COMPETITOR ACCOUNTS cream profile-tile stack + DOWNLOAD AS REFERENCE cream download-ref card — kinetic type not real brand lockups, E41 SO HOW DO YOU DO THAT? / HOW? cream question stamp + “?” disc). Must use 50/50 Split mid — must NOT use Stage+corner PiP — must NOT use Lesson board. Split content/hue/end must ≠ plate-36 violet chat-apps, ≠ plate-33 emerald shot-by-shot, and ≠ plate-30 teal matching-images.
+</deliver>

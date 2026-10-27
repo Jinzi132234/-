@@ -1,0 +1,247 @@
+plate-01 (rev no-pill-default): M14 M03 M05 | I05 I04 I02 | E08
+plate-02 boundary IG/X niches: M01 M11 M20 | I18 I11 I07 | E07
+plate-03 filter screen: M21 M12 M06 | I13 I06 I09 | E10
+plate-04 path anyone can follow: M02 M04 M19 | I03 I14 I16 | E05
+plate-05 workflow keywords A-roll: M17 M08 M13 | I08 I17 I10 | E13
+plate-06 job brief glued A-roll: M16 M18 M15 | I20 I12 I01 | E03
+plate-07 publishing permission A-roll: M10 M09 M07 | I15 I19 | E04
+plate-08 ban granted A-roll: M22 M23 M24 | I21 I22 I23 | E12
+plate-09 task conditions keywords A-roll: M25 M26 M27 | I24 I25 I26 | E02
+plate-10 pitch memory A-roll: M28 M29 M30 | I27 I28 I29 | E09
+plate-11 lock four blocks A-roll: M31 M32 M33 | I30 I31 I32 | E06
+plate-12 onboarding tools-first B-roll: M34 M35 M36 | I33 I34 I35 | E14
+plate-13 mobbin search bank B-roll: M37 M38 M39 | I36 I37 I38 | E15
+plate-14 ship path serverless B-roll: M40 M41 M42 | I39 I40 I41 | E16
+plate-15 grokbot brand site A-roll: M43 M44 M45 | I42 I43 I44 | E17
+plate-16 video vs stills api B-roll: M46 M47 M48 | I45 I46 I47 | E18
+plate-17 static vs social rate limits B-roll: M49 M50 M51 | I48 I49 I50 | E19
+plate-18 cheaper multiplatform pulls B-roll (VO rev): M52 M53 M54 | I51 I52 I53 | E20
+
+plate-19 xAI bot marketplace B-roll: M55 M56 M57 | I54 I55 I56 | E21
+
+plate-20 third-party lists B-roll: M58 M59 M60 | I57 I58 I59 | E22
+
+plate-21 when-to-bother B-roll: M61 M62 M63 | I60 I61 I62 | E23
+
+plate-22 third-party crawl tools B-roll: M64 M65 M66 | I63 I64 I65 | E24
+
+plate-23 four ways pull B-roll: M67 M68 M69 | I66 I67 I68 | E25
+
+plate-24 api-key no-render B-roll: M70 M71 M72 | I69 I70 I71 | E26
+
+plate-25 photos-video-gap B-roll: M73 M74 M75 | I72 I73 I74 | E27 — VO/visual rev: Demo site vs 真人形象照／影片 (empty demo/wireframe vs talent photos+video stills; not abstract-silhouette-only)
+
+plate-26 github-vercel-netlify B-roll: M76 M77 M78 | I75 I76 I77 | E28 — VO same as plate-14 but layout/hue differ (emerald mid; GH→V|N OR fork; E28 micro-path strip ≠ E16 ribbon)
+plate-27 logos-premium-headshots B-roll: M79 M80 M81 | I78 I79 I80 | E29 — mustard-gold mid; SAME STACK + LOGOS|PREMIUM HEADSHOTS twin deliverables + GROK BOT GENERATE cascade; capability ≠ plate-25 gap/LIVE ON THOSE FACES; ≠ plate-26 ship path
+plate-28 mobbin-upgrade A-roll: M82 M83 M84 | I81 I82 I83 | E30 — terracotta Lesson-board mid + lower-left PiP (NOT Split); screenshots fine → Mobbin’s references totally different → TASTE|POLISH → E30 UPGRADE; Whisper ASR fix mobbing’s→Mobbin’s; ≠ plate-13 hot-pink search B-roll; ≠ plate-15 Split brand-site
+plate-29 masterclass-site A-roll: M85 M86 M87 | I84 I85 I86 | E31 — violet Stage+corner PiP mid (NOT Lesson+PiP / NOT Split); Boom→New site→MasterClass style→premium/benchmark→E31 NOT A TOY LAYOUT; Whisper-locked; ≠ plate-15 Split; ≠ plate-28 Lesson
+
+plate-30 matching-images A-roll: M88 M89 M90 | I87 I88 I89 | E32 — teal Split mid (face L | UI R; NOT Stage+PiP / NOT Lesson); WHY THIS MATTERS → LAYOUT ALONE wireframe → MATCHING IMAGES fill → E32 AI CAN GENERATE / GOOD NEWS; Whisper drop ASR Okay; ≠ plate-15 Split content (cobalt/LIVE); ≠ plate-29 Stage; ≠ plate-28 Lesson; ≠ plate-25 gap; ≠ plate-27 generate
+
+plate-31 local-preview A-roll: M91 M92 M93 | I90 I91 I92 | E33 — navy Lesson-board mid + lower-left PiP (NOT Split / NOT Stage+PiP); ONE DETAIL THOUGH caveat → localhost:3000 / LOCAL PREVIEW → E33 STILL LOCAL PREVIEW ONLY; Whisper-locked; ≠ plate-30 Split matching-images; ≠ plate-29 Stage; ≠ plate-28 Lesson Mobbin; ≠ plate-26 ship path
+
+plate-32 weak-spot-photos A-roll: M94 M95 M96 | I93 I94 I95 | E34 — cobalt Stage+corner PiP mid (NOT Lesson+PiP / NOT Split); WEAK SPOT’S OBVIOUS caveat → REAL PHOTOS | HIGH-END AI STILLS swap → BRAND FEEL JUMPS → E34 LAYOUT’S ALREADY / HEAVY LIFTING; Whisper ASR fixes Weekspot’s→Weak spot’s, brand-field→brand feel; ≠ plate-31 Lesson local-preview; ≠ plate-30 Split matching-images; ≠ plate-29 violet MasterClass Stage; ≠ plate-27 generate; ≠ plate-25 gap
+
+plate-33 shot-by-shot A-roll: M97 M98 M99 | I96 I97 I98 | E35 — emerald Split mid (face L | UI R; NOT Stage+PiP / NOT Lesson); DON’T FILL EVERY / ONE GO → SHOT BY SHOT sequential section matching stills (then next, then next) → E35 WHOLE PAGE COVERED; Whisper ASR truncate restore “page is covered” / second “then the next”; ≠ plate-32 Stage weak-spot; ≠ plate-30 teal flood-fill matching-images; ≠ plate-31 Lesson; ≠ plate-29 Stage; ≠ plate-27 generate; ≠ plate-25 gap
+
+plate-34 stills-to-motion A-roll: M100 M101 M102 | I99 I100 I101 | E36 — peach Lesson-board mid + lower-left PiP (NOT Split / NOT Stage+PiP); IMAGES AREN'T THE CEILING → WHY THIS MATTERS → GENERATE STILLS morph → NEXT STEP IS MOTION → E36 MOTION; Whisper ASR drop “buyers”; ≠ plate-33 emerald Split shot-by-shot; ≠ plate-32 cobalt Stage weak-spot; ≠ plate-31 navy Lesson local-preview; ≠ plate-30 teal Split matching-images; ≠ plate-28 terracotta Lesson Mobbin; ≠ plate-16 video-vs-stills
+
+plate-35 reference-still-talking-head A-roll: M103 M104 M105 | I102 I103 I104 | E37 — hot-pink Stage+corner PiP mid (NOT Lesson+PiP / NOT Split); HAND GROK BOT / ONE REFERENCE STILL handoff → still morph→talking-head video → SAME FACE · SAME LOOK → E37 NOW IT CAN SPEAK / CAN SPEAK; Whisper ASR fix handgrock bought→Hand Grok Bot; ≠ plate-34 peach Lesson stills→motion; ≠ plate-33 emerald Split shot-by-shot; ≠ plate-32 cobalt Stage weak-spot; ≠ plate-29 violet MasterClass Stage; ≠ plate-27 generate; ≠ plate-25 gap
+
+plate-36 chat-apps-ai-employee A-roll: M106 M107 M108 | I105 I106 I107 | E38 — violet Split mid (face L | UI R; NOT Stage+PiP / NOT Lesson); LATER CHAPTERS / GO DEEPER → LINE · Slack · Discord · WhatsApp cream app-tile cascade → PARK AN AI EMPLOYEE → E38 CHAT APPS YOU ALREADY USE / ALREADY USE; Whisper ASR fix line→LINE brand; ≠ plate-35 hot-pink Stage still→speak; ≠ plate-34 peach Lesson stills→motion; ≠ plate-33 emerald Split shot-by-shot; ≠ plate-30 teal Split matching-images; ≠ plate-29 violet Stage MasterClass; ≠ plate-23 connectors
+
+plate-37 content-team-next-lesson A-roll: M109 M110 M111 | I108 I109 I110 | E39 — cobalt Lesson-board mid + lower-left PiP (NOT Split / NOT Stage+PiP); CONTENT MARKETING TEAM / PULLS LEADS → BUILD THE BASE NOW → SCALE THE TEAM NEXT → E39 SEE YOU IN THE NEXT LESSON / NEXT LESSON (outro next-lesson only — NO Comment/Like/Subscribe dual pills; NO Thanks+Sponsor); Whisper-locked ~8.00s; ≠ plate-36 violet Split chat-apps; ≠ plate-35 hot-pink Stage still→speak; ≠ plate-34 peach Lesson stills→motion; ≠ plate-33 emerald Split shot-by-shot; ≠ plate-31 navy Lesson local-preview; ≠ plate-28 terracotta Lesson Mobbin
+
+plate-38 finished-clip-heygen-tier A-roll: M112 M113 M114 | I111 I112 I113 | E40 — terracotta Stage+corner PiP mid (NOT Lesson+PiP / NOT Split); FINISHED CLIP → WATCH THE MOUTH · WATCH THE HANDS → IT TRACKS → HEYGEN-CLASS → E40 TOP TIER FOR ME; Whisper ASR fixes Finish→Finished, Hagen→HeyGen-class; ≠ plate-37 cobalt Lesson content-team; ≠ plate-36 violet Split chat-apps; ≠ plate-35 hot-pink Stage still→speak; ≠ plate-32 cobalt Stage weak-spot; ≠ plate-29 violet MasterClass Stage; ≠ plate-34 peach Lesson stills→motion
+
+plate-39 competitor-accounts-reference A-roll: M115 M116 M117 | I114 I115 I116 | E41 — hot-pink Split mid (face L | UI R; NOT Stage+PiP / NOT Lesson); GENERATING ISN'T THE ONLY JOB → COMPETITOR ACCOUNTS | DOWNLOAD AS REFERENCE → E41 SO HOW DO YOU DO THAT? / HOW?; Whisper ASR clean (Generating / competitor / download / reference / how); ≠ plate-38 terracotta Stage finished-clip; ≠ plate-37 cobalt Lesson content-team; ≠ plate-36 violet Split chat-apps; ≠ plate-33 emerald Split shot-by-shot; ≠ plate-30 teal Split matching-images; ≠ plate-35 hot-pink Stage still→speak
+
+plate-40 full-product-online A-roll: M118 M119 M120 | I117 I118 I119 | E42 — mustard-gold Lesson-board mid + lower-left PiP (NOT Split / NOT Stage+PiP); QUICK SIDE NOTE → PREVIEW DEMO · PAYMENTS CRM → FULL PRODUCT ONLINE → E42 A FULL PRODUCT ONLINE / FULL PRODUCT ONLINE; Whisper-locked medium (~10.00s; payments/CRM as category pair; no major brand ASR fixes); ≠ plate-39 hot-pink Split competitor HOW?; ≠ plate-38 terracotta Stage finished-clip; ≠ plate-37 cobalt Lesson content-team; ≠ plate-34 peach Lesson stills→motion; ≠ plate-31 navy Lesson local-preview; ≠ plate-28 terracotta Lesson Mobbin
+
+plate-41 separate-ai-website-course A-roll: M121 M122 M123 | I120 I121 I122 | E43 — emerald Stage+corner PiP mid (NOT Lesson+PiP / NOT Split); SEPARATE AI WEBSITE COURSE → AI WEBSITE BUILDING COURSE → E43 BACK TO THIS LESSON / THIS LESSON; Whisper-locked medium (~6.08s; ASR clean; no major brand fixes); ≠ plate-40 mustard-gold Lesson full-product; ≠ plate-39 hot-pink Split competitor HOW?; ≠ plate-38 terracotta Stage finished-clip; ≠ plate-37 cobalt Lesson NEXT LESSON; ≠ plate-35 hot-pink Stage still→speak; ≠ plate-32 cobalt Stage weak-spot; ≠ plate-29 violet MasterClass Stage
+
+plate-42 platform-blocks-instability A-roll: M124 M125 M126 | I123 I124 I125 | E44 — cobalt Split mid (face L | UI R; NOT Stage+PiP / NOT Lesson); NEXT DAY / PLATFORM BLOCKS YOU → WORKS AGAIN · CREATE EVERY WEEK → E44 PAINFUL FAST / INSTABILITY GETS PAINFUL FAST; Whisper-locked medium (~10.00s; ASR clean; no major brand fixes); ≠ plate-41 emerald Stage separate-course; ≠ plate-40 mustard-gold Lesson full-product; ≠ plate-39 hot-pink Split competitor HOW?; ≠ plate-36 violet Split chat-apps; ≠ plate-33 emerald Split shot-by-shot; ≠ plate-30 teal Split matching-images; ≠ E24 WAY MORE STABLE
+
+plate-43 longest-hire-part1 A-roll: M127 M128 M129 | I126 I127 I128 | E45 — violet Lesson-board mid + lower-left PiP (NOT Split / NOT Stage+PiP); LAST LESSON / HIRING AN AI EMPLOYEE → HERE’S THE THING → LONGEST HIRE · FIVE · TEN · MAYBE LONGER → E45 MAYBE LONGER / LONGEST HIRE soft handoff (PART 1 OPEN into plate-44 — NO closed outro / NO NEXT LESSON); Whisper ASR notes Okay filler optional drop; 10→TEN years; stitch with plate-44 into ONE long video; ≠ plate-42 cobalt Split; ≠ plate-41 emerald Stage; ≠ plate-40 mustard-gold Lesson; ≠ plate-37 cobalt Lesson NEXT LESSON; ≠ plate-44 navy Stage sibling
+
+plate-44 gets-you-part2 A-roll: M130 M131 M132 | I129 I130 I131 | E46 — navy Stage+corner PiP mid (NOT Lesson+PiP / NOT Split); CAN’T SPEND THAT LONG / STILL UNHAPPY → FROM DAY ONE · EMPLOYEE THAT GETS YOU → E46 YOU SAY IT ONCE / IT GETS IT strong close (PART 2 CONTINUE+CLOSE after plate-43); Whisper-locked clean (~10.00s); stitch after plate-43 into ONE long video; ≠ plate-43 violet Lesson soft handoff; ≠ plate-42 cobalt Split; ≠ plate-41 emerald Stage BACK TO THIS LESSON; ≠ plate-38 terracotta Stage TOP TIER; ≠ plate-35 hot-pink Stage still→speak
+
+plate-45 three-words B-roll PART 1/4: M133 M134 M135 | I132 I133 I134 | E47 — peach stage; three thick cream SLOT cards slamming into a 3-slot rail + numbered discs 1·2·3 + 'brain' loading bar (no windows, no files); est. timing (~2.6 wps, re-lock to Whisper); stitch 45→48 one long video
+
+plate-46 memory-bank B-roll PART 2/4: M136 M137 M138 | I135 I136 I137 | E48 — terracotta stage; near-black mac code-editor window (BASE CODE) + rule lines that turn into stamps + MEMORY BANK vault door that locks (no cream slot slam, no files); est. timing (~2.6 wps, re-lock to Whisper); stitch 45→48 one long video
+
+plate-47 knowledge-base B-roll PART 3/4: M139 M140 M141 | I138 I139 I140 | E49 — emerald stage; file/folder stack — labeled folders fanning out, then filing as spines onto a KNOWLEDGE BASE bookshelf (no editor window, no stamps, no slot slam); est. timing (~2.6 wps, re-lock to Whisper); stitch 45→48 one long video
+
+plate-48 skill-layer B-roll PART 4/4: M142 M143 M144 | I141 I142 I143 | E50 — cobalt stage; chat bubbles (commands) that convert into tool tiles snapping into a SKILL LAYER grid / plug-in deck (no folders, no vault, no editor window); est. timing (~2.6 wps, re-lock to Whisper); stitch 45→48 one long video
+
+plate-49 decision-tree B-roll PART 5/6: M145 M146 M147 | I144 I145 I146 | E51 — violet; cream diamond flowchart + coral ball YES/NO into MEMORY/KNOWLEDGE/SKILL leaves; 4th branch SYSTEM INSTRUCTIONS no slot open handoff; est. ~18.8s
+
+plate-50 system-instructions B-roll PART 6/6: M148 M149 M150 | I147 I148 I149 | E52 — mustard-gold; near-black settings window ROLE/GOALS/PERMISSIONS + 4 toggles + striped human gate strong-open close; est. ~12.6s
+
+plate-51 complete-brain B-roll PART 7/8: M151 M152 M153 | I150 I151 I152 | E53 — navy; iso layer-cake gravity stack SYSTEM PROMPT/MEMORY/KNOWLEDGE/SKILLS/APPROVAL GATES → COMPLETE BRAIN morph; match-cut in on plate-50 gate arm; open page-curl handoff; est. ~11.6s
+
+plate-52 markdown-files B-roll PART 8/8 FINAL: M154 M155 M156 | I153 I154 I155 | E54 — hot-pink; cream paper .md typewriter raw syntax + read-scan + lossless dual-copy check + NOTION/OBSIDIAN/FEISHU plain-text name fan; final strong-open close; est. ~13.0s
+
+plate-53 context-limit B-roll PAIR PART 1/2: M157 M158 M159 | I156 I157 I158 | E55 — cobalt; chrome-less near-black chat column + rising fill meter to AROUND A HUNDRED THOUSAND CHARACTERS (words only) + top-message pixel dissolve + coral ? confused; open tip-over match-cut into 54; soft entry from plate-52 cards if appended; est. ~16.6s
+
+plate-54 stuffed-drawer B-roll PAIR PART 2/2: M160 M161 M162 | I159 I160 I161 | E56 — terracotta; side-view cream drawer, three rigid-body bundle drops, bulge+jam, magnifier NOT FOUND for NOT YOU / NOT THE AI; strong-open problem close; est. ~15.0s
+
+plate-55 wrong-drawer B-roll SEGMENT PART 3/3 FINAL: M163 M164 M165 | I162 I163 I164 | E57 — peach; front-view MEMORY/KNOWLEDGE/SKILL cabinet + conveyor + buzz/WRONG DRAWER stamp-card eject (x2, escalated) + desk-vs-drawer split EVERY JOB | SPECIFIC PROBLEM; strong close THAT’S THIS LESSON; match-cut in from plate-54 jammed drawer; 53/54 relabeled 1/3, 2/3; est. ~16.0s
+
+plate-56 event-skill-map B-roll SEGMENT PART 1/3: M166 M167 M168 | I165 I166 I167 | E58 — violet; railway junction, EVENT trains routed by switch levers into cobalt SKILL stations, route map, rejected pencil redraw vs reusable run; optional soft entry from plate-55; steam-scrap match-cut out; est. ~12.4s
+
+plate-57 not-a-trash-bin B-roll SEGMENT PART 2/3: M169 M170 M171 | I168 I169 I170 | E59 — emerald; terracotta MEMORY bin lid bats away CHAT LOGS scraps, bin→sieve shake, three keepers stay; rim→plaque match-cut out; est. ~9.4s
+
+plate-58 carve-it-in B-roll SEGMENT PART 3/3 FINAL: M172 M173 M174 | I171 I172 I173 | E60 — navy; LONG TERM | ONE OFF split, chisel engraves PRODUCT NAME CHANGED + FOREVER on bronze MEMORY plaque vs pencil TEST sticky note, chisel stops, note peels; strong close DON’T CARVE IT IN; est. ~11.2s
+
+plate-59 convenience-layer B-roll (insert after plate-52 as PART 9/9 new final close, or standalone): M175 M176 M177 | I174 I175 I176 | E61 — mustard-gold; plate-52 cards flatten into a dock strip of three plain-text ports, .md cartridges latch in, CLI $ + MCP plugs pulse current into AI node, strip slims to CONVENIENCE LAYER bar; no logos; est. ~12.2s
+
+plate-60 right-drawer A-roll (standalone): M178 M179 M180 | I177 I178 I179 | E62 — sparse full-face whole plate (NOT Split / Lesson / Stage), emerald backplates in negative space; DUMP EVERYTHING IN? swirl → NO. slam → MORE IS NOT SMARTER stack vs flat gauge → EVERY PIECE HAS A DRAWER apothecary wall → E62 PUT IT IN THE RIGHT ONE magnet snap; Whisper-locked ~9.96s; ASR matches copy (punctuation only); ≠ plate-54/55 drawer motion; ≠ plate-44 navy Stage
+
+plate-61 messy-thread A-roll (standalone): M181 M182 M183 | I180 I181 I182 | E63 — sparse full-face → Lesson board + lower-left PiP (terracotta inner) → full-face; MOST PEOPLE stamp → ONE CHAT UI card crowding + MESSY highlight + WORSE chevron + 01/02/03 discs → E63 IT FALLS APART crack-split; type/UI only, guard against B-roll scenes; Whisper-locked ~10.00s; ASR matches copy
+
+plate-62 lifelong-employee A-roll PART 1/2: M184 M185 M186 | I183 I184 I185 | E64 — full-face → violet Stage + lower-right PiP; LIFELONG AI EMPLOYEE → GET CLEAR ON A FEW THINGS → Y-flip ALWAYS REMEMBER? (MEMORY tag) / GO LOOK SOMETHING UP? (KNOWLEDGE tag) → soft handoff layout-morph into 63 Split; ASR off-copy 'Instagram, YouTube?' 4.88–5.82 ignored; ~10.00s
+
+plate-63 break-it-down A-roll PART 2/2: M187 M188 M189 | I186 I187 I188 | E65 — hot-pink Split (face L | UI R) → full face; EVENTS mac card rows 01 EVENT ONE + HOW DO YOU TWO WORK? / 02 EVENT TWO / 03 EVENT THREE with odometer discs → E65 LET’S BREAK THIS DOWN staircase strong close; ASR numerals→words; ~10.00s
+
+plate-64 build-the-hire A-roll outro PART 1/3: M190 M191 M192 | I189 I190 I191 | E66 — full-face → cobalt Lesson + lower-left PiP; karaoke prompt bubble, IT CREATES THE HIRE, WHERE YOU DEPLOY THAT HIRE?, NEXT LESSON tease; ASR See you and→Where you; PiP-glide out; 10.00s
+
+plate-65 homework A-roll outro PART 2/3: M193 M194 M195 | I192 I193 I194 | E67 — mustard-gold Stage + lower-right PiP; THAT’S IT FOR TODAY, HOMEWORK card, SORT, unfurling checklist MEMORY?; iris-expand out; 6.51s
+
+plate-66 right-drawer-outro A-roll PART 3/3 FINAL: M196 M197 M198 | I195 I196 I197 | E68 — sparse full-face; checklist KNOWLEDGE BASE? / SKILL?, solid-fill sequence PUT EACH ONE IN THE RIGHT DRAWER, navy band SEE YOU IN THE NEXT LESSON + BYE strong close; 10.00s
+
+plate-67 obsidian B-roll OPEN TOOL SERIES PART 1: M199 M200 M201 | I198 I199 I200 | E69 — violet; OBSIDIAN · LOCAL FIRST plain-text card, line-art laptop + folder glyph + local glow, FAST speed streak, note→note.md chip, cloud + dashed tether + PAID lock tag (no price); optional soft entry from plate-59 OBSIDIAN label; empty-slot open handoff; est. ~14.0s
+
+plate-68 feishu-quick-note A-roll (standalone, can follow 67): M202 M203 M204 | I201 I202 I203 | E70 — sparse full-face + right peach corner card stack; QUICK NOTE tab, NOT FULL FEISHU DEPLOY strike, FOCUS brackets KNOWLEDGE BASE ONLINE, FEISHU VAULT = NOTION, NO SECOND FULL BUILD fast-forward chip; ASR Feshu→Feishu; 10.00s
+
+plate-69 plant-what-you-have A-roll (standalone, can follow 68): M205 M206 M207 | I204 I205 I206 | E71 — emerald Split (face L | UI R) → full face; query bar ping IT QUERIES HERE, ↻ spin-down YOU DON’T RE-EXPLAIN, PRODUCT DOCS / COMPANY DOCS tabs + DON’T REWRITE shimmer, E71 JUST PLANT WHAT YOU HAVE sprout type; ASR clean (hyphen only); 10.00s
+
+plate-70 memory-first A-roll PART 1/7 (MEMORY): M208 M209 M210 | I207 I208 I209 | E72 — Lesson terracotta; pin-drop (card drops 40px with ease-in, round pin glyph pokes in at the top with a 2px dimple squash); clip 01M5ECZ9J587MJAVHAR1WXYTMZ.mp4; 10.00s
+
+plate-71 boss-answer-first A-roll PART 2/7 (MEMORY): M211 M212 M213 | I210 I211 I212 | E73 — Full peach; quote-mark bounce-open (the two big quotation marks spring apart and the line appears between them) + ink-in fill (outline letters flood solid bottom→top 0.4s); clip 01M5ECPCF1WE4A75MCBXXD112N.mp4; 10.00s
+
+plate-72 corrections-into-memory A-roll PART 3/7 (MEMORY): M214 M215 M216 | I213 I214 I215 | E74 — Split cobalt; peek-reveal (a back card slides out from behind the front card) + fly-to-tab (bubble shrinks and arcs into the section tab); clip 01M5ECPHJE268C8E12457AG6W9.mp4; 10.00s
+
+plate-73 knowledge-no-full-scan A-roll PART 4/7 (KNOWLEDGE): M217 M218 M219 | I216 I217 I218 | E75 — Stage violet; split-flap tab flip + scan-sweep stall (sweep line decelerates and freezes, rows desaturate) + inflate pulse (cards scale 100→118% in two beats); clip 01M5ECPRRMTWHSR5KJ54F225GZ.mp4; 10.00s
+
+plate-74 faq-look-it-up A-roll PART 5/7 (KNOWLEDGE): M220 M221 M222 | I219 I220 I221 | E76 — Full hot-pink; badge pop-up (small “!” badge rises over a card corner with a 2-step bounce) + pointer hop (arrow hops row to row and lands); clip 01M5ECW9ESAXDGQEGQSZQBTSPJ.mp4; 10.00s
+
+plate-75 skill-packaged-workflow A-roll PART 6/7 (SKILL): M223 M224 M225 | I222 I223 I224 | E77 — Split navy; shrink-wrap outline (oversized outline tightens onto the card) + disc link-up (connector draws between discs) + circular install ring fill; clip 01M5ECWFH1R8PW3CW33X7T26TS.mp4; 9.96s
+
+plate-76 role-steps-output A-roll PART 7/7 (SKILL): M226 M227 M228 | I225 I226 I227 | E78 — Lesson mustard-gold; ribbon swing (back-link ribbon swings down on a hinge) + center-out stencil reveal + single long underline sweep; clip 01M5ECWHYBP6YX90G0CHZC36JF.mp4; 10.00s
+
+plate-77 routines B-roll PAIR PART 1/2: M229 M230 M231 | I228 I229 I230 | E79 — emerald; day-arc + AM/PM SEND chips + NEW PRODUCT email cards flying out; soft handoff log-row silhouettes into 78; est. ~11.0s
+
+plate-78 proof-of-work B-roll PAIR PART 2/2: M232 M233 M234 | I231 I232 I233 | E80 — terracotta; PROOF OF WORK stamp, COUNT(N)·WHO·MATERIALS·ANSWER headers, customer-by-customer receipt stamp-down strong close; est. ~12.4s
+
+plate-79 where-to-start-store B-roll TRIO PART 1/3: M235 M236 M237 | I234 I235 I236 | E81 — cobalt; ? fan-out → ONLINE STORE + PRODUCT RECOMMENDER / TONS OF SUPPORT orbit-lock; soft handoff token into 80; est. ~11.4s
+
+plate-80 real-estate-beauty B-roll TRIO PART 2/3: M238 M239 M240 | I237 I238 I239 | E82 — peach; Rolodex flip REAL ESTATE / BEAUTY + GREETER / BOOKING / AI CONTENT MARKETING chips; soft handoff into 81; est. ~9.2s
+
+plate-81 restaurants-consultants-freelancers B-roll TRIO PART 3/3: M241 M242 M243 | I240 I241 I242 | E83 — hot-pink; profession progress rail RESTAURANTS / CONSULTANTS / FREELANCERS + role panels; strong close A LOT YOU CAN TRY; est. ~13.8s
+
+plate-82 lock-knowledge-base B-roll PAIR PART 1/2: M244 M245 M246 | I243 I244 I245 | E84 — navy; KEY RULE, padlock slam on KNOWLEDGE BASE, barred OUTSIDE/UNVERIFIED/MAKE THINGS UP/WEB chips, ONLY YOUR LIBRARY check ring; soft handoff blank form into 83; est. ~15.0s
+
+plate-83 fixed-quote-format B-roll PAIR PART 2/2: M247 M248 M249 | I246 I247 I248 | E85 — mustard-gold; FIXED FORMAT quote form with PRICE/HOW MANY/WHEN READY/WHAT SERVICE labels only (blank values), YOU ALREADY KNOW THIS strong close; est. ~13.8s
+
+plate-84 know-your-work-path B-roll (standalone, may follow 83): M250 M251 M252 | I249 I250 I251 | E86 — violet; HERE’S THE BIG ONE header drop, winding work path self-draw through waypoints + REALLY WELL re-trace, AI EMPLOYEE notch card clicks into YOUR BUSINESS slot strong close; est. ~10.0s
+
+plate-85 output-format-you-decide B-roll TRIO PART 1/3: M253 M254 M255 | I252 I253 I254 | E87 — emerald; QUOTE / PLAN layout swatches with block shuffle, lift-select YOU DECIDE (distinct from 83 form); soft handoff bubbles into 86; est. ~9.4s
+
+plate-86 customer-info-weekly-headers B-roll TRIO PART 2/3: M256 M257 M258 | I255 I256 I257 | E88 — terracotta; chat bubbles accordion into CUSTOMER INFO, WEEKLY week strip / MONTHLY grid, EASY TRICK sheet rows wipe to blank YOUR HEADERS row that wraps the bundle EVERY WEEK; soft handoff line into 87; est. ~16.8s
+
+plate-87 approval-rights B-roll TRIO PART 3/3: M259 M260 M261 | I258 I259 I260 | E89 — cobalt; APPROVAL RIGHTS checkpoint line + hand glyph + PERSON badge, GIFT / EXTRA DISCOUNT cards stop dead, AI chip bounces back, baton handoff, AI CAN’T MAKE THAT CALL strong close; est. ~11.0s
+
+plate-88 prices-first-order-flow B-roll STANDALONE: M262 M263 M264 | I261 I262 I263 | E90 — hot pink; message ping, tri-fold PRICES/PRODUCTS menu (grey blank tags), ring hop THEY CHOOSE, ORDER into DONE tray, + EXTRA REQUESTS chip diverted by elbow chute to HUMAN tag; strong close; est. ~12.2s
+
+plate-89 A-roll PART 1/6: M265 M266 M267 | I264 I265 I266 | E91 — mustard Stage+PiP; 10.0s
+plate-90 A-roll PART 2/6: M268 M269 M270 | I267 I268 I269 | E92 — cobalt Split; 10.0s
+plate-91 A-roll PART 3/6: M271 M272 M273 | I270 I271 I272 | E93 — peach full-face; 10.0s
+plate-92 A-roll PART 4/6: M274 M275 M276 | I273 I274 I275 | E94 — emerald Lesson+PiP; 10.0s
+plate-93 A-roll PART 5/6: M277 M278 M279 | I276 I277 I278 | E95 — navy Split; 10.0s
+plate-94 A-roll PART 6/6: M280 M281 M282 | I279 I280 I281 | E96 — violet Stage+PiP STRONG CLOSE; 10.0s
+plate-95 follow-up-questions A-roll STANDALONE: M283 M284 M285 | I282 I283 I284 | E97 — terracotta Lesson+PiP; 10.0s
+plate-96 quick-note-brain-logic A-roll PART 1/2: M286 M287 M288 | I285 I286 I287 | E98 — cobalt Split; 10.0s
+plate-97 step-two-adding-knowledge A-roll PART 2/2: M289 M290 M291 | I288 I289 I290 | E99 — mustard Stage+PiP; 10.0s (off-script tail 6.06–9.40)
+plate-98 complaint-hand-it-off A-roll PART 1/3: M292 M293 M294 | I291 I292 I293 | E100 — emerald Lesson+PiP; 10.0s
+plate-99 junior-goes-to-manager A-roll PART 2/3: M295 M296 M297 | I294 I295 I296 | E101 — peach full-face; 10.0s
+plate-100 permissions-meet-your-standard A-roll PART 3/3: M298 M299 M300 | I297 I298 I299 | E102 — hot pink Split STRONG CLOSE; 10.0s
+plate-101 first-month-keep-tweaking A-roll STANDALONE: M301 M302 M303 | I300 I301 I302 | E103 — violet Stage+PiP; 10.0s
+plate-101 NOTE: now PART 1/2 of pair 101→102 (E103 converted to soft handoff; no new codes). Resent clip 01M5ET7B1XS8CB555X5XV6T3EK = identical duplicate (same SHA1).
+plate-102 test-the-sales-process A-roll PART 2/2: M304 M305 M306 | I303 I304 I305 | E104 — navy Lesson+PiP STRONG CLOSE; 10.0s
+plate-103 flow-fewer-steps A-roll STANDALONE: M307 M308 M309 | I306 I307 I308 | E105 — terracotta Split; 10.0s (RE-TIMED to clip 01M5EWX1JPE93ABHV1JDBVN8RS, Whisper-locked)
+plate-104 break-in-period A-roll STANDALONE: M310 M311 M312 | I309 I310 I311 | E106 — cobalt Stage+top-left PiP; 10.0s
+plate-105 sort-customers-into-groups A-roll STANDALONE: M313 M314 M315 | I312 I313 I314 | E107 — mustard-gold Lesson+PiP; 9.96s
+plate-106 quick-recap-build-list A-roll PART 1/3: M316 M317 M318 | I315 I316 I317 | E108 — emerald Split; 10.0s
+plate-107 takeaway-not-a-chatbot A-roll PART 2/3: M319 M320 M321 | I318 I319 I320 | E109 — hot pink full-face; 10.0s
+plate-108 go-build-one-outro A-roll PART 3/3: M322 M323 M324 | I321 I322 I323 | E110 — violet Stage+PiP LESSON OUTRO; 6.42s
+plate-109 pick-a-schedule B-roll TRIO PART 1/3: M325 M326 M327 | I324 I325 I326 | E111 — peach; weekday strip + 8AM/5PM pins, hour dial, BOTH WORK; ≠77 day-arc; est. ~10.5s
+plate-110 check-more-often B-roll TRIO PART 2/3: M328 M329 M330 | I327 I328 I329 | E112 — emerald; density meter, 30MIN/1HR metronome, reply-on-rhythm; est. ~11.0s
+plate-111 email-tells-you B-roll TRIO PART 3/3: M331 M332 M333 | I330 I331 I332 | E113 — navy; four blank email fields (WHO/DUE/IGNORE/PAYMENT) soft-strong close; est. ~11.0s
+plate-112 reply-templates-type-abc B-roll FIVE PART 1/5: M334 M335 M336 | I333 I334 I335 | E114 — cobalt; est. ~10.5s
+plate-113 templates-into-knowledge-base B-roll FIVE PART 2/5: M337 M338 M339 | I336 I337 I338 | E115 — mustard; open shelves ≠82 lock; est. ~9.0s
+plate-114 set-the-reply-rules B-roll FIVE PART 3/5: M340 M341 M342 | I339 I340 I341 | E116 — hot pink; est. ~11.5s
+plate-115 missing-info-ask-or-send B-roll FIVE PART 4/5: M343 M344 M345 | I342 I343 I344 | E117 — violet; est. ~9.5s
+plate-116 name-the-template-ads-filter B-roll FIVE PART 5/5: M346 M347 M348 | I345 I346 I347 | E118 — terracotta soft-strong; est. ~11.0s
+plate-117 feishu-canva-works-on-its-own A-roll PART 1/7: M349 M350 M351 | I348 I349 I350 | E119 — emerald Stage+PiP; 10.0s
+plate-118 reports-at-set-times A-roll PART 2/7: M352 M353 M354 | I351 I352 I353 | E120 — peach Lesson+PiP; 10.0s
+plate-119 connect-grok-bot-to-inbox A-roll PART 3/7: M355 M356 M357 | I354 I355 I356 | E121 — cobalt full-face; 10.0s
+plate-120 inbox-over-an-hour A-roll PART 4/7: M358 M359 M360 | I357 I358 I359 | E122 — mustard Split; 10.0s
+plate-121 email-plan-sort-to-send A-roll PART 5/7: M361 M362 M363 | I360 I361 I362 | E123 — navy Stage+top-left PiP; 10.0s
+plate-122 no-approval-no-send A-roll PART 6/7: M364 M365 M366 | I363 I364 I365 | E124 — terracotta Lesson+PiP; 10.0s
+plate-123 read-vs-answer-teach-your-ai A-roll PART 7/7: M367 M368 M369 | I366 I367 I368 | E125 — violet full-face soft-strong; 10.0s
+plate-124 why-start-with-email-workflow A-roll PART 1/3: M370 M371 M372 | I369 I370 I371 | E126 — emerald Split; 10.0s
+plate-125 show-results-client-a A-roll PART 2/3: M373 M374 M375 | I372 I373 I374 | E127 — peach Lesson+PiP; 10.0s
+plate-126 reply-read-or-skip A-roll PART 3/3: M376 M377 M378 | I375 I376 I377 | E128 — cobalt Stage+PiP soft-strong; 10.0s
+plate-127 order-sort-decide-template A-roll PART 1/3: M379 M380 M381 | I378 I379 I380 | E129 — mustard full-face; 10.0s
+plate-128 ai-sets-up-templates-full-prompt A-roll PART 2/3: M382 M383 M384 | I381 I382 I383 | E130 — hot pink Split; 10.0s
+plate-129 gmail-filter-ads-newsletters A-roll PART 3/3: M385 M386 M387 | I384 I385 I386 | E131 — emerald Lesson+PiP soft-strong; 10.0s
+plate-130 ad-library-search B-roll PAIR PART 1/2: M388 M389 M390 | I387 I388 I389 | E132 — emerald; Ad Library text only; est. ~8.0s
+plate-131 lock-position-keywords B-roll PAIR PART 2/2: M391 M392 M393 | I390 I391 I392 | E133 — peach soft-strong; bracket lock ≠82 padlock; est. ~8.0s
+plate-132 keywords-short-list B-roll STANDALONE PAIR PART 1/2: M394 M395 M396 | I393 I394 I395 | E134 — cobalt; est. ~9.0s
+plate-133 without-api-broader-words B-roll STANDALONE PAIR PART 2/2: M397 M398 M399 | I396 I397 I398 | E135 — mustard soft-strong; est. ~7.5s
+plate-134 time-window B-roll FOUR PART 1/4: M400 M401 M402 | I399 I400 I401 | E136 — violet; est. ~8.0s
+plate-135 rival-ads-three-months B-roll FOUR PART 2/4: M403 M404 M405 | I402 I403 I404 | E137 — terracotta; est. ~7.5s
+plate-136 flow-check-ad-library B-roll FOUR PART 3/4: M406 M407 M408 | I405 I406 I407 | E138 — emerald; est. ~8.0s
+plate-137 dedupe-by-ad-id B-roll FOUR PART 4/4: M409 M410 M411 | I408 I409 I410 | E139 — hot pink soft-strong; est. ~9.0s
+plate-138 ad-fields-keep B-roll PAIR PART 1/2: M412 M413 M414 | I411 I412 I413 | E140 — navy; est. ~9.5s
+plate-139 brand-dates-creative-type B-roll PAIR PART 2/2: M415 M416 M417 | I414 I415 I416 | E141 — peach soft-strong; est. ~9.0s
+plate-140 cloud-storage-notion B-roll PAIR PART 1/2: M418 M419 M420 | I417 I418 I419 | E142 — cobalt; Notion text only; est. ~9.5s
+plate-141 feishu-obsidian-compare B-roll PAIR PART 2/2: M421 M422 M423 | I420 I421 I422 | E143 — mustard soft-strong; text names only; ≠67; est. ~9.5s
+plate-142 cloud-brain-agents B-roll TRIO PART 1/3: M424 M425 M426 | I423 I424 I425 | E144 — emerald; est. ~9.0s
+plate-143 notion-feishu-cloud-docs B-roll TRIO PART 2/3: M427 M428 M429 | I426 I427 I428 | E145 — violet; est. ~9.0s
+plate-144 cloud-computer-after-lid B-roll TRIO PART 3/3: M430 M431 M432 | I429 I430 I431 | E146 — peach soft-strong; est. ~10.5s
+plate-145 prompt-product-card B-roll PAIR PART 1/2: M433 M434 M435 | I432 I433 I434 | E147 — navy; est. ~8.0s
+plate-146 docs-folder-is-product-card B-roll PAIR PART 2/2: M436 M437 M438 | I435 I436 I437 | E148 — hot pink soft-strong; est. ~7.5s
+plate-147 connect-grok-bot-ad-library A-roll PART 1/3: M439 M440 M441 | I438 I439 I440 | E149 — emerald Stage+PiP; 8.0s
+plate-148 research-rivals-ad-styles A-roll PART 2/3: M442 M443 M444 | I441 I442 I443 | E150 — peach Lesson+PiP; 10.0s
+plate-149 make-ad-images-videos-run A-roll PART 3/3: M445 M446 M447 | I444 I445 I446 | E151 — cobalt full-face soft-strong; 8.0s
+plate-150 product-niche-keyword-ideas A-roll PART 1/4: M448 M449 M450 | I447 I448 I449 | E152 — mustard Lesson+PiP; 10.0s
+plate-151 ai-suggests-pick-three-to-five A-roll PART 2/4: M451 M452 M453 | I450 I451 I452 | E153 — violet full-face; 10.0s
+plate-152 ad-library-rivals-save-notion A-roll PART 3/4: M454 M455 M456 | I453 I454 I455 | E154 — terracotta Split; 8.0s (partial VO; off-script tail)
+plate-153 two-ways-api-or-grok-bot A-roll PART 4/4: M457 M458 M459 | I456 I457 I458 | E155 — navy Stage+PiP STRONG CLOSE; 10.0s (ASR garble first half)
+NOTE 2026-10-22: plates 150–153 A-roll XMLs REWRITTEN to plate-39/40 depth (same M/I/E). Ban torso-stacked multi-card full-face; 151 = sparse→Lesson+PiP→sparse (no chest discs).
+plate-154 prepare-product-card A-roll PART 1/3: M460 M461 M462 | I459 I460 I461 | E156 — emerald Split (sparse→Split); 10.0s
+plate-155 clearer-card-sharper-rivals A-roll PART 2/3: M463 M464 M465 | I462 I463 I464 | E157 — peach Lesson+PiP (sparse→Lesson); 10.0s
+plate-156 grok-bot-no-wild-claims A-roll PART 3/3: M466 M467 M468 | I465 I466 I467 | E158 — hot-pink Stage+PiP → full-face STRONG CLOSE; 9.96s (off-script tail)
+plate-157 phone-app-same-flow B-roll PAIR PART 1/2: M469 M470 M471 | I468 I469 I470 | E159 — cobalt; ESTIMATED ~9.0s (no video; re-time)
+plate-158 benchmark-accounts-fork B-roll PAIR PART 2/2: M472 M473 M474 | I471 I472 I473 | E160 — terracotta soft-strong; ESTIMATED ~8.0s (no video; re-time)
+plate-159 landing-page-full-path A-roll PART 1/3: M475 M476 M477 | I474 I475 I476 | E161 — mustard Lesson+PiP (sparse→Lesson); 10.0s
+plate-160 study-ads-decide-run A-roll PART 2/3: M478 M479 M480 | I477 I478 I479 | E162 — violet Split (sparse→Split); 10.0s
+plate-161 ai-help-differentiate A-roll PART 3/3: M481 M482 M483 | I480 I481 I482 | E163 — emerald Stage+PiP → full-face STRONG CLOSE; 10.0s
+plate-162 benchmarks-one-room-extend A-roll STANDALONE soft bridge: M484 M485 M486 | I483 I484 I485 | E164 — navy Lesson+PiP (sparse→Lesson→full-face bridge); 10.0s
+plate-163 ai-employee-inside-apps B-roll FOUR PART 1/4: M487 M488 M489 | I486 I487 I488 | E165 — emerald; ESTIMATED ~8.0s (no video; re-time)
+plate-164 line-chat-anytime B-roll FOUR PART 2/4: M490 M491 M492 | I489 I490 I491 | E166 — peach; ESTIMATED ~7.5s (no video; re-time)
+plate-165 line-group-team B-roll FOUR PART 3/4: M493 M494 M495 | I492 I493 I494 | E167 — violet; ESTIMATED ~8.0s (no video; re-time)
+plate-166 ai-super-customer-service B-roll FOUR PART 4/4: M496 M497 M498 | I495 I496 I497 | E168 — mustard soft-strong; ESTIMATED ~8.0s (no video; re-time)
+plate-167 why-agents-into-messengers B-roll SIX PART 1/6: M499 M500 M501 | I498 I499 I500 | E169 — cobalt; ESTIMATED ~7.5s (no video; re-time)
+plate-168 ai-employee-apps-real-life B-roll SIX PART 2/6: M502 M503 M504 | I501 I502 I503 | E170 — terracotta mac-window (≠163 emerald tiles); ESTIMATED ~8.0s (no video; re-time)
+plate-169 whatsapp-chat-anytime B-roll SIX PART 3/6: M505 M506 M507 | I504 I505 I506 | E171 — hot-pink WhatsApp (≠164 LINE peach); ESTIMATED ~7.5s (no video; re-time)
+plate-170 line-group-team B-roll SIX PART 4/6: M508 M509 M510 | I507 I508 I509 | E172 — navy (≠165 violet); ESTIMATED ~8.0s (no video; re-time)
+plate-171 super-cs-whatsapp-everyday B-roll SIX PART 5/6: M511 M512 M513 | I510 I511 I512 | E173 — peach WhatsApp CS (≠166 mustard LINE); ESTIMATED ~8.0s (no video; re-time)
+plate-172 ai-teaching-assistant-discord-slack B-roll SIX PART 6/6: M514 M515 M516 | I513 I514 I515 | E174 — emerald soft-strong; ESTIMATED ~8.5s (no video; re-time)
+plate-173 instagram-ai-super-assistant-intro A-roll STANDALONE soft open: M517 M518 M519 | I516 I517 I518 | E175 — hot-pink Stage+PiP (sparse→Stage; ≠162 navy Lesson); 10.0s
+plate-174 capabilities-see-you-next-lesson A-roll STANDALONE soft-strong bridge: M520 M521 M522 | I519 I520 I521 | E176 — cobalt Lesson+PiP (sparse→Lesson→full-face; ≠173 Stage / ≠162 navy); 10.0s
+plate-175 grok-bot-facebook-messenger-intro A-roll STANDALONE soft open: M523 M524 M525 | I522 I523 I524 | E177 — emerald Split (sparse→Split→full-face; ≠174 Lesson / ≠173 Stage); 10.0s (ASR Grockbot→Grok BOT)
+plate-176 connected-messenger-composio A-roll PART 1/2: M526 M527 M528 | I525 I526 I527 | E178 — peach Lesson+PiP (sparse→Lesson); 10.0s (ASR Grockbot→Grok Bot)
+plate-177 facebook-page-not-profile A-roll PART 2/2: M529 M530 M531 | I528 I529 I530 | E179 — violet Stage+PiP → full-face soft-strong; 10.0s

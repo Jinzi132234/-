@@ -1,0 +1,91 @@
+<role>
+Write speech-locked A-roll + motion overlays for a ~10.00s talking-head course plate in the Tristen O’Brien MODS / Claude Code Just Dropped feel.
+Plate 162 — NEW this cut: M484 + M485 + M486 | I483 + I484 + I485 | E164
+STANDALONE soft lesson bridge (can follow 161; not PART of 159–161 trio). Soft-strong close on “We'll extend this next” — BRIDGE, not Subscribe / next-lesson CTA.
+GUARD: This is A-roll: do not build or insert B-roll scenes; overlays are type/UI cards on the talking-head layout. The face stays the hero. NO illustrated props. Blank benchmark cards only — never invent account names, ad copy, or room labels beyond the VO words. Do not highlight the laptop in frame.
+HARD SPARSE RULE: On FULL-FACE beats, ONLY ONE thick cream stamp/card in lower-left OR shoulder negative space. NEVER stack ACCOUNT + AD benchmark cards over the torso/chest.
+HARD MULTI-UI RULE: ACCOUNT BENCHMARKS + AD BENCHMARKS → ONE ROOM → MAKE CONTENT TOGETHER MUST hard-cut onto Lesson board (navy INNER) + lower-left PiP — face only in PiP; cards/merge on BOARD only. Soft-strong bridge stamp on full-face return.
+Hero overlay language THIS plate: ACCOUNT + AD BENCHMARKS sparse opener stamp → Lesson navy + PiP blank ACCOUNT BENCHMARKS | AD BENCHMARKS merge into ONE ROOM → MAKE CONTENT TOGETHER → E164 WE'LL EXTEND THIS NEXT soft-strong bridge. Black capsules only as tiny secondary kickers — never hero.
+CRITICAL layout THIS cut: sparse full-face → Lesson board + lower-left PiP → full-face soft-strong bridge. Ban torso-stacked multi-card full-face.
+Avoid used: M01–M483 · I01–I482 · E01–E163.
+CRITICAL vs plate-161: emerald Stage WHERE TO DIFFERENTIATE strong close. THIS = navy Lesson; benchmarks → one room → extend bridge; E164 not E163.
+CRITICAL vs plate-158 B-roll ACCOUNT→POSITIONING fork / 155 clearer chips: this = A-roll Lesson dual blank benchmark cards merging ONE ROOM + bridge stamp — not terracotta faceless fork.
+Match plate-39/40 / rewritten-151/154–161 density (hard cuts, placement, banned clones) — not short stubs.
+</role>
+
+<source>
+Talking-head plate (A-roll present). Host: East Asian man, glasses, black tee, boom mic, gray sofa + MacBook, window daylight. Source pure full-face ~10.00s — overlays are motion design. Face center on open; mid = Lesson board + lower-left PiP; close = full face.
+Clip: prompts/plate-162-source.mp4 (01M5HFZE7WFTNANYG7MJAM8EMQ; ~17:44 UTC+8; SHA1 unique). Duration 10.00s.
+Authoritative VO (verbatim): “You've got account benchmarks and ad benchmarks. Bring them into one room and make content together. We'll extend this next.”
+ASR notes: Matches copy. Speech ends 8.28s; hold to 10.00. Pause after first. (~2.58–3.16); short pause before “We'll” (~6.28–6.98).
+</source>
+
+<script_timed>
+Whisper-locked (~10.00s):
+0.00–2.58   You've got account benchmarks and ad benchmarks.
+3.16–6.28   Bring them into one room and make content together.
+6.98–8.28   We'll extend this next.
+8.28–10.00  hold → soft-strong bridge
+Phrase locks: ACCOUNT BENCHMARKS @0.52–1.36 · AD BENCHMARKS @1.82–2.58 · ONE ROOM @3.98–4.58 · MAKE CONTENT TOGETHER @5.34–6.28 · WE'LL EXTEND THIS NEXT @6.98–8.28.
+</script_timed>
+
+<stitch>
+STANDALONE soft lesson bridge. IN: can follow 161 (or any prior). OUT: SOFT-STRONG CLOSE / bridge on WE'LL EXTEND THIS NEXT — open handoff to a future lesson, NOT a Subscribe pill, NOT “next lesson” CTA card. No dual pills. No iris outro.
+</stitch>
+
+<style_lock>
+Palette MUST match MODS reference (saturated, not soft pastel):
+- Open (full face): ONE cream ACCOUNT + AD BENCHMARKS / YOU'VE GOT BENCHMARKS stamp in lower-left / shoulder ONLY — face center clear; do NOT place two separate benchmark cards on chest.
+- Mid (REQUIRED Lesson board + lower-left PiP): hard-cut → Lesson board (blue→teal outer + thick cream board) with saturated MODS navy INNER. Host lower-left rounded PiP. Blank ACCOUNT BENCHMARKS + AD BENCHMARKS cards merge into ONE ROOM + MAKE CONTENT TOGETHER — ALL on BOARD only.
+- Close (full face): HARD CUT back to full face; ONE cream WE'LL EXTEND THIS NEXT bridge stamp in lower-left / shoulder / bottom-center negative space.
+- Accents: coral punch on ONE keyword per beat (ACCOUNT / AD / ONE ROOM / CONTENT / EXTEND).
+Anti-PPT: no thin subtitle bars; no rainbow ①②③ over face; no torso card wall.
+Anti-pill-default: black capsules banned as primary; no Subscribe CTA.
+Anti-soft-theme: navy Lesson inner saturated, not washed pastel blue-grey.
+Almost no camera move; hard cuts; snappy spring ~0.3s.
+Layout: sparse full-face → Lesson+PiP → full-face soft-strong bridge — multi-UI NEVER on full-face torso.
+</style_lock>
+
+<icons>
+I483 — ACCOUNT + AD BENCHMARKS thick cream stamp (soft shadow; coral on ACCOUNT then AD, or on BENCHMARKS) — sparse full-face lower-left / shoulder ONLY; single combined stamp (two-line OK inside ONE card); NOT two separate cards stacked on chest.
+I484 — Lesson board blank ACCOUNT BENCHMARKS | AD BENCHMARKS → ONE ROOM: two blank cream cards labeled only “ACCOUNT BENCHMARKS” + “AD BENCHMARKS” slide/merge into a cream “ONE ROOM” tray/board zone on navy INNER (coral on ONE ROOM) — grey stubs only; never invent account names or ad copy; face in PiP only.
+I485 — MAKE CONTENT TOGETHER + WE'LL EXTEND THIS NEXT: kinetic “MAKE CONTENT TOGETHER” on board (coral on CONTENT) then full-face cream bridge stamp “WE'LL EXTEND THIS NEXT” (coral on EXTEND) — E164 soft-strong bridge; not Subscribe.
+</icons>
+
+<end>
+E164 — SOFT-STRONG BRIDGE: full-face “WE'LL EXTEND THIS NEXT” locked from ~8.28s; freeze to 10.00. Open handoff to future cut — NOT Subscribe, NOT “next lesson” CTA, no dual pills, no iris outro.
+</end>
+
+<edit>
+Beat A · 0.00–2.90 · FULL FACE sparse · M484 + I483 · ACCOUNT + AD BENCHMARKS
+- Talking head; face center clear.
+- 0.00–2.58 · M484 + I483: thick cream “ACCOUNT BENCHMARKS + AD BENCHMARKS” / “YOU'VE GOT BENCHMARKS” stamp springs into lower-left or shoulder (~0.3s); coral on ACCOUNT then AD (or BENCHMARKS); locked to first sentence.
+- Hold through pause ~2.58–2.90; ONE stamp only — no second card on chest. HARD CUT at ~2.90.
+
+Beat B · 2.90–6.70 · HARD CUT → Lesson board + lower-left round PiP · M485 + I484 · ONE ROOM · MAKE CONTENT TOGETHER
+- Full Lesson board: blue→teal outer + thick cream board; navy saturated INNER.
+- Host lower-left rounded PiP (face only in PiP; main UI = board).
+- 3.16–4.80 · M485 + I484: blank “ACCOUNT BENCHMARKS” + blank “AD BENCHMARKS” cards spring on board (~0.25s stagger) then slide/merge into cream “ONE ROOM” tray (~0.3s); coral on ONE ROOM; never invent names/copy.
+- 4.80–6.28 · I485 (board half): kinetic “MAKE CONTENT TOGETHER” springs on board under ONE ROOM (~0.25s); coral on CONTENT.
+- Face clear in PiP only; ALL multi-UI on board — NEVER stacked over full-face chest. No Split this plate. No Stage+PiP. HARD CUT at ~6.70.
+
+Beat C · 6.70–10.00 · HARD CUT FULL FACE · M486 + I485 + E164 · WE'LL EXTEND THIS NEXT soft-strong bridge
+- Full face returns; Lesson board / PiP / cards clear.
+- 6.98–8.28 · M486 + I485 + E164: thick cream “WE'LL EXTEND THIS NEXT” bridge stamp springs into lower-left / shoulder / bottom-center (~0.3s); coral on EXTEND.
+- Freeze E164 to 10.00. Bridge only — no Subscribe, no “next lesson” CTA card.
+</edit>
+
+<banned>
+- Torso-stacked multi-card full-face (HARD BAN); invented account names / ad copy; logos; B-roll scenes
+- UI over PiP face; rainbow cascade over face; black capsules as hero
+- Subscribe CTA; “next lesson” CTA card; dual pills; iris outro
+- Reusing M01–M483 / I01–I482 / E01–E163
+</banned>
+
+<self_check>
+- [ ] Beat A ONE stamp; Beat B ALL multi-UI on Lesson board+PiP; Beat C ONE bridge stamp; codes M484–486/I483–485/E164; soft-strong bridge not Subscribe; no chest stack
+</self_check>
+
+<deliver>
+A-roll overlay brief locked to Whisper timings for standalone plate-162 (plate-39 depth); soft-strong “We'll extend this next” bridge.
+</deliver>

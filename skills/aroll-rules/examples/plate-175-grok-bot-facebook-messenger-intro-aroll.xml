@@ -1,0 +1,88 @@
+<role>
+Write speech-locked A-roll + motion overlays for a ~10.00s talking-head course plate in the Tristen O’Brien MODS / Claude Code Just Dropped feel.
+Plate 175 — NEW this cut: M523 + M524 + M525 | I522 + I523 + I524 | E177
+STANDALONE soft lesson OPEN (intro into Grok Bot × Facebook Messenger control). Soft open on LET’S GET STARTED — not Subscribe CTA.
+GUARD: This is A-roll: do not build or insert B-roll scenes; overlays are type/UI cards on the talking-head layout. The face stays the hero. NO illustrated props. Grok BOT / Grok Bot / Facebook Messenger TEXT ONLY — never logos. Blank message stubs only — never invent chat text or account names. Do not highlight the laptop in frame.
+HARD SPARSE RULE: On FULL-FACE beats, ONLY ONE thick cream stamp/card in lower-left OR shoulder negative space. NEVER stack Grok Bot + Messenger + send chips over the torso/chest (ban plate-151 style).
+HARD MULTI-UI RULE: GROK BOT → CONTROL FACEBOOK MESSENGER → SEND MESSAGES chips MUST hard-cut onto Split RIGHT panel (face LEFT clear) — never as a card wall over full-face torso.
+Hero overlay language THIS plate: TODAY / GOING OVER thick cream stamp (sparse) → 50/50 Split face LEFT | saturated emerald UI RIGHT with GROK BOT · CONTROL FACEBOOK MESSENGER · SEND MESSAGES text chips → E177 LET’S GET STARTED soft open. Black capsules only as tiny secondary kickers — never hero.
+CRITICAL layout THIS cut: sparse full-face → Split face L | UI R → full-face soft open. Ban torso stack.
+Avoid used: M01–M522 · I01–I521 · E01–E176.
+CRITICAL vs plate-174: cobalt Lesson capability chips → SEE YOU NEXT LESSON. THIS = emerald Split; TODAY → Grok Bot / Messenger / send → LET’S GET STARTED; E177 not E176.
+CRITICAL vs plate-173: hot-pink Stage Instagram AI Super Assistant. THIS = emerald Split Messenger control intro; not Stage.
+Match plate-39/40 / 154–174 density — not short stubs.
+</role>
+
+<source>
+Talking-head plate (A-roll present). Host: East Asian man, glasses, black tee, boom mic, gray sofa + MacBook, window daylight. Source pure full-face ~10.00s — overlays are motion design. Face center on open; mid = Split face LEFT | UI RIGHT; close = full face.
+Clip: prompts/plate-175-source.mp4 (01M5KXPBSW2HV0XJWRV32BNV16; ~16:23 UTC+8; SHA1 68ba0c119a6a4dd377d16b485105045feb18ff5a unique). Duration 10.00s.
+Authoritative VO (verbatim): “Today we’re going over how to use Grok BOT to control Facebook Messenger and send messages. Alright, let’s get started.”
+ASR notes: ASR “Grockbot” → copy/on-screen **Grok BOT** / **Grok Bot**. Lead silence ~0–0.92. Pause before “Alright,” (~5.86–6.58); micro-gap before “let’s” (~6.92–7.30). Speech ends 7.90s; hold to 10.00. No unscripted tail.
+</source>
+
+<script_timed>
+Whisper-locked (~10.00s):
+0.92–5.86   Today we’re going over how to use Grok BOT to control Facebook Messenger and send messages.
+6.58–7.90   Alright, let’s get started.
+7.90–10.00  hold → soft open
+Phrase locks: TODAY @0.92–1.58 · GOING OVER @1.80–2.24 · GROK BOT @2.80–3.36 · CONTROL @3.64 · FACEBOOK MESSENGER @4.04–4.88 · SEND MESSAGES @5.24–5.86 · LET’S GET STARTED @7.30–7.90.
+</script_timed>
+
+<stitch>
+STANDALONE soft lesson OPEN. IN: can open a new Messenger-control block (after 174 or any prior). OUT: SOFT OPEN hold on LET’S GET STARTED — invites the how-to ahead; NOT Subscribe, NOT “next lesson” CTA card, no dual pills, no iris outro.
+</stitch>
+
+<style_lock>
+Palette MUST match MODS reference (saturated, not soft pastel):
+- Open (full face): ONE cream TODAY / GOING OVER stamp in lower-left / shoulder ONLY — face center clear; no multi chips on chest.
+- Mid (REQUIRED 50/50 Split face LEFT | UI RIGHT): neon or cream vertical Split divider; LEFT = live host face clear; RIGHT = saturated MODS emerald panel. GROK BOT · CONTROL FACEBOOK MESSENGER · SEND MESSAGES on RIGHT only.
+- Close (full face): HARD CUT back; ONE cream LET’S GET STARTED stamp in lower-left / shoulder / bottom-center.
+- Accents: coral punch on ONE keyword per beat (TODAY / GROK BOT / MESSENGER / SEND / STARTED).
+Anti-PPT: no thin subtitle bars; no rainbow ①②③ over face; no torso card wall.
+Anti-pill-default: black capsules banned as primary; no Subscribe CTA.
+Anti-soft-theme: emerald Split RIGHT saturated, not washed pastel green.
+Almost no camera move; hard cuts; snappy spring ~0.3s.
+Layout: sparse full-face → Split face L | UI R → full-face soft open — ≠ 174 Lesson cobalt; ≠ 173 Stage hot-pink.
+</style_lock>
+
+<icons>
+I522 — TODAY / GOING OVER thick cream stamp (soft shadow; coral on TODAY) — sparse full-face lower-left / shoulder ONLY; single stamp (two-line OK inside ONE card).
+I523 — Split RIGHT path chips: cream text chips “GROK BOT” → “CONTROL FACEBOOK MESSENGER” → “SEND MESSAGES” stagger on RIGHT (coral on GROK BOT then MESSENGER then SEND) — TEXT ONLY, no logos; optional blank message stub under SEND; never invent chat text; face clear LEFT.
+I524 — LET’S GET STARTED thick cream stamp (soft shadow; coral on STARTED) — full-face negative space; E177 soft-open hero — not Subscribe. On-screen may omit spoken “Alright,” filler.
+</icons>
+
+<end>
+E177 — SOFT OPEN: full-face “LET’S GET STARTED” locked from ~7.90s; freeze to 10.00. Opens the how-to — NOT Subscribe, NOT “next lesson” CTA, no dual pills, no iris outro.
+</end>
+
+<edit>
+Beat A · 0.92–3.40 · FULL FACE sparse · M523 + I522 · TODAY / GOING OVER
+- Talking head; face center clear.
+- 0.92–2.80 · M523 + I522: thick cream “TODAY” / “TODAY WE’RE GOING OVER” stamp springs into lower-left or shoulder (~0.3s); coral on TODAY; locked to open.
+- Hold into “how to use…”; ONE stamp only — no Grok/Messenger chips on chest. HARD CUT at ~3.40 (as Grok Bot lands).
+
+Beat B · 3.40–6.40 · HARD CUT → 50/50 Split face LEFT | emerald UI RIGHT · M524 + I523 · GROK BOT · MESSENGER · SEND MESSAGES
+- Neon/cream vertical Split divider wipes open (~0.25–0.3s); LEFT = live host face clear; RIGHT = saturated emerald panel.
+- 3.40–5.86 · M524 + I523: chips stagger on RIGHT — “GROK BOT” @~2.80–3.36 (echo/lock at cut), “CONTROL FACEBOOK MESSENGER” @4.04–4.88, “SEND MESSAGES” @5.24–5.86 (~0.25s each); coral on each; text only — no logos; copy wins over ASR “Grockbot”.
+- Face stays clear in LEFT half only; ALL multi-UI on RIGHT — NEVER over full-face torso. No Lesson board this plate. No Stage+PiP.
+
+Beat C · 6.40–10.00 · HARD CUT FULL FACE · M525 + I524 + E177 · LET’S GET STARTED soft open
+- Full face returns; Split / chips clear.
+- 7.30–7.90 · M525 + I524 + E177: thick cream “LET’S GET STARTED” stamp springs into lower-left / shoulder / bottom-center (~0.3s); coral on STARTED. (“Alright,” may stay off-screen as filler.)
+- Freeze E177 to 10.00. Soft open only — no Subscribe.
+</edit>
+
+<banned>
+- Torso-stacked multi-card full-face (HARD BAN); Grok Bot / Facebook Messenger logos; invented chat text
+- UI over LEFT face half; rainbow cascade over face; black capsules as hero
+- Lesson board as lead (≠174); hot-pink Stage as lead (≠173); Subscribe CTA
+- Reusing M01–M522 / I01–I521 / E01–E176
+</banned>
+
+<self_check>
+- [ ] Beat A ONE stamp; Beat B ALL chips on Split RIGHT; Beat C ONE LET’S GET STARTED; codes M523–525/I522–524/E177; ASR Grockbot→Grok BOT flagged; ≠174 Lesson / ≠173 Stage; no chest stack
+</self_check>
+
+<deliver>
+A-roll overlay brief locked to Whisper timings for standalone plate-175 soft lesson open (plate-39 depth).
+</deliver>

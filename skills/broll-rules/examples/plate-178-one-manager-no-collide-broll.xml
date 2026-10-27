@@ -1,0 +1,76 @@
+<role>
+Write faceless empty B-roll motion graphics (no talking-head) in the Tristen O’Brien MODS / Claude Code Just Dropped feel.
+Plate 178 — NEW this cut: M532 + M533 + M534 | I531 + I532 + I533 | E180
+STANDALONE faceless B-roll (whole VO = one shot — 複製整拍). Soft-strong close — not Subscribe.
+Hero overlay family THIS plate: ONE MANAGER cream stamp/card → blank WORK lanes / task stubs that STOP COLLIDING (merge or fence as type/UI) → SAVES YOU FROM CHATTING WITH EVERYONE (chat bubbles dim / collapse into one hub). Flat graphic MODS; blank fields only — never invent manager names, task titles, or chat text. No illustrated people.
+Avoid used: M01–M531 · I01–I530 · E01–E179. Black capsules only as tiny secondary kickers — never hero.
+CRITICAL — ≠ 162 A-roll ONE ROOM merge, ≠ 165/170 LINE group invite, ≠ 157 phone same-flow. Signature: one-manager hub + anti-collide lanes + chat-collapse-to-hub.
+ESTIMATED — no video yet; re-time when clip arrives.
+</role>
+
+<source>
+Faceless B-roll only, from copy (no video). Authoritative VO (verbatim):
+“One manager keeps the work from colliding, and saves you from chatting with everyone.”
+On-screen: ONE MANAGER · WORK · FROM COLLIDING · SAVES YOU · CHATTING WITH EVERYONE. Blank task stubs + blank chat bubbles only — never invent names or message text.
+</source>
+
+<script_timed>
+ESTIMATED timing (no audio): ~2.6 words/sec, 16 words ≈ 6.2s + hold ≈ 7.5s. MARKED ESTIMATED — RE-LOCK to Whisper when clip arrives.
+0.00–2.40   One manager keeps the work
+2.40–4.20   from colliding,
+4.20–6.20   and saves you from chatting with everyone.
+6.20–7.50   hold E180 soft-strong close.
+Phrase locks (EST): ONE MANAGER ~0.2–1.0 · WORK ~1.6 · FROM COLLIDING ~2.6–4.0 · SAVES YOU ~4.4 · CHATTING WITH EVERYONE ~5.0–6.2.
+RE-LOCK: manager stamp on “One manager”; anti-collide lanes on “work from colliding”; chat-collapse on “saves you from chatting with everyone”.
+</script_timed>
+
+<stitch>
+STANDALONE soft-strong close (whole VO one shot). IN: can follow any prior plate. OUT: SOFT-STRONG CLOSE on ONE MANAGER hub + collapsed chat. No CTA, no Subscribe, no “next lesson”.
+</stitch>
+
+<style_lock>
+Palette = exact MODS. Stage: saturated MUSTARD-GOLD full stage (≠ emerald 172, ≠ peach 171, ≠ navy 170, ≠ hot-pink 169).
+- ONE MANAGER: thick cream stamp/card center-top.
+- Work lanes: 2–3 blank cream task stubs on parallel dashed lanes that fence/merge so they STOP COLLIDING (type/UI fence or merge arrows — no illustrated people).
+- Chat collapse: multiple blank cream chat bubbles dim/scale-down into one hub under the manager card.
+- Coral punch on ONE keyword per beat (MANAGER / COLLIDING / CHATTING / EVERYONE).
+Motion: manager stamp 0.25s; lanes fence/merge 0.35s; bubbles collapse to hub 0.35s. No camera move. Faceless.
+Anti-soft-theme: mustard-gold saturated, not washed pastel yellow.
+Anti-pill-default: black capsules banned as primary; no Subscribe.
+</style_lock>
+
+<icons>
+I531 — ONE MANAGER: thick cream “ONE MANAGER” stamp/card (coral on MANAGER) — text only; no person illustration; no invented name.
+I532 — WORK FROM COLLIDING: blank cream task stubs on 2–3 dashed lanes; fence bar or merge arrows lock “FROM COLLIDING” (coral on COLLIDING) — blank stubs only; never invent task titles.
+I533 — SAVES YOU FROM CHATTING WITH EVERYONE: blank chat bubbles dim/collapse into one cream hub under manager (coral on CHATTING / EVERYONE) — grey stubs only; never invent message text. Soft-strong close.
+</icons>
+
+<end>
+E180 — SOFT-STRONG CLOSE: mustard stage; ONE MANAGER hub + collapsed chat locked; freeze ~1.2s. No CTA, no Subscribe, no “next lesson”, no dual black pills.
+</end>
+
+<edit>
+Beat A · 0.00–2.40 · mustard · M532 + I531 · ONE MANAGER
+- Full mustard-gold stage; thick cream “ONE MANAGER” stamp/card springs center-top (~0.25s); coral on MANAGER.
+
+Beat B · 2.40–4.40 · mustard · M533 + I532 · WORK · FROM COLLIDING
+- Blank task stubs appear on parallel dashed lanes; fence/merge motion locks so lanes STOP COLLIDING (~0.35s); kinetic “FROM COLLIDING” (coral on COLLIDING); blank stubs only.
+
+Beat C · 4.40–7.50 · mustard · M534 + I533 + E180 · CHATTING WITH EVERYONE → soft-strong close
+- Multiple blank chat bubbles pop then dim/collapse into one hub under the manager card (~0.35s); “SAVES YOU FROM CHATTING WITH EVERYONE” kicker (coral on CHATTING / EVERYONE); freeze E180 soft-strong ~1.2s. No Subscribe.
+</edit>
+
+<banned>
+- Invented manager/task/chat text; illustrated people; talking-head required
+- 162 ONE ROOM as identical hero; 165/170 group invite as identical hero
+- Reusing M01–M531 / I01–I530 / E01–E179
+- Emerald / peach / navy / hot-pink as stage lead; Subscribe / “next lesson”
+</banned>
+
+<self_check>
+- [ ] M532–534 / I531–533 / E180 fresh; mustard; STANDALONE soft-strong; ESTIMATED ~7.5s; blank fields only; no people
+</self_check>
+
+<deliver>
+Faceless B-roll brief: ESTIMATED beats (~7.5s), STANDALONE soft-strong (whole VO one shot). Re-time when clip arrives.
+</deliver>

@@ -1,0 +1,88 @@
+<role>
+Write speech-locked A-roll + motion overlays for a ~10.00s talking-head course plate in the Tristen O’Brien MODS / Claude Code Just Dropped feel.
+Plate 177 — NEW this cut: M529 + M530 + M531 | I528 + I529 + I530 | E179
+PART 2/2 — FINAL soft-strong close of ONE long A-roll edit (plates 176 → 177).
+GUARD: This is A-roll: do not build or insert B-roll scenes; overlays are type/UI cards on the talking-head layout. The face stays the hero. NO illustrated props. Facebook Page / personal profile TEXT ONLY — never logos. Never invent page names. Do not highlight the laptop in frame.
+HARD SPARSE RULE: FULL-FACE = ONE cream stamp only.
+HARD MULTI-UI RULE: FACEBOOK PAGE vs PERSONAL PROFILE contrast MUST live on Stage (violet) with face in corner PiP — UI on stage body, not over PiP face. Soft-strong I’LL SEE YOU NEXT TIME on full-face return.
+Hero overlay language THIS plate: SUPER IMPORTANT / REMEMBER sparse stamp → Stage violet + corner PiP FACEBOOK PAGE (yes) vs PERSONAL PROFILE (no) contrast → E179 I’LL SEE YOU NEXT TIME soft-strong. Black capsules only as tiny secondary kickers — never hero.
+CRITICAL layout: sparse full-face → Stage + corner PiP → full-face soft-strong. Ban torso stack. ≠ both Split with 176; ≠ 175 Split; ≠ 176 Lesson as twin.
+Avoid used: M01–M528 · I01–I527 · E01–E178.
+CRITICAL vs plate-176: peach Lesson connection wrap. THIS = violet Stage; Page≠profile rule; E179 soft-strong next-time.
+CRITICAL vs plate-174 SEE YOU NEXT LESSON: this = I’LL SEE YOU NEXT TIME wording; violet Stage contrast not cobalt Lesson list.
+Match plate-39/40 density.
+</role>
+
+<source>
+Talking-head plate (A-roll present). Mid = Stage + corner PiP; close = full face.
+Clip: prompts/plate-177-source.mp4 (01M5KXW1ZGBH9HYH9JK7H6DJZG). Duration 10.00s.
+Authoritative VO (verbatim): “One super important thing to remember: you must use a Facebook Page, not a personal profile. I’ll see you next time!”
+ASR notes: Matches copy (ASR “Facebook page” lowercase p → on-screen **Facebook Page**). Lead silence ~0–0.76. Pause after “remember,” (~2.68–3.30); pause before close (~6.56–7.34). Speech ends 8.42s; hold to 10.00. No unscripted tail.
+</source>
+
+<script_timed>
+Whisper-locked (~10.00s):
+0.76–2.68   One super important thing to remember,
+3.30–6.56   you must use a Facebook Page, not a personal profile.
+7.34–8.42   I’ll see you next time!
+8.42–10.00  hold → soft-strong close
+Phrase locks: SUPER IMPORTANT / REMEMBER @1.36–2.68 · FACEBOOK PAGE @4.28–5.18 · NOT · PERSONAL PROFILE @5.38–6.56 · I’LL SEE YOU NEXT TIME @7.34–8.42.
+</script_timed>
+
+<stitch>
+PART 2/2 · FINAL soft-strong close. IN: soft from 176. OUT: soft-strong on I’LL SEE YOU NEXT TIME — next-time bridge; NOT Subscribe, NOT Comment/Like, no dual pills, no iris outro.
+</stitch>
+
+<style_lock>
+Palette MUST match MODS reference (saturated, not soft pastel):
+- Open (full face): ONE cream SUPER IMPORTANT / REMEMBER stamp in lower-left / shoulder ONLY.
+- Mid (REQUIRED Stage + corner PiP): hard-cut → saturated MODS violet full stage; host corner PiP (~36–38%); FACEBOOK PAGE (check/yes) vs PERSONAL PROFILE (strike/no) contrast cards on STAGE body — clear of PiP face.
+- Close: HARD CUT FULL FACE; ONE cream I’LL SEE YOU NEXT TIME stamp in negative space.
+- Accents: coral punch on ONE keyword per beat (IMPORTANT / PAGE / PROFILE / NEXT TIME).
+Anti-PPT: no torso stack; no invented page names.
+Anti-pill-default: black capsules banned as primary; no Subscribe.
+Anti-soft-theme: violet stage saturated.
+Almost no camera move; hard cuts; snappy spring ~0.3s.
+Layout: sparse → Stage+corner PiP → full-face soft-strong — ≠ 176 Lesson; ≠ 175 Split.
+</style_lock>
+
+<icons>
+I528 — SUPER IMPORTANT / REMEMBER thick cream stamp (coral on IMPORTANT / REMEMBER) — sparse full-face lower-left / shoulder ONLY.
+I529 — Stage FACEBOOK PAGE vs PERSONAL PROFILE: cream “FACEBOOK PAGE” card with small YES/check accent + cream “PERSONAL PROFILE” card with NO/strike accent on violet STAGE (coral on PAGE then PROFILE) — text only, no logos; never invent page names; clear of PiP face.
+I530 — I’LL SEE YOU NEXT TIME thick cream stamp (coral on NEXT TIME) — full-face negative space; E179 soft-strong hero — not Subscribe.
+</icons>
+
+<end>
+E179 — SOFT-STRONG CLOSE: full-face “I’LL SEE YOU NEXT TIME” locked from ~8.42s; freeze to 10.00. Next-time bridge — NOT Subscribe, NOT Comment/Like, no dual pills, no iris outro.
+</end>
+
+<edit>
+Beat A · 0.76–3.10 · FULL FACE sparse · M529 + I528 · SUPER IMPORTANT · REMEMBER
+- Talking head; face center clear.
+- 0.76–2.68 · M529 + I528: thick cream “ONE SUPER IMPORTANT THING TO REMEMBER” / “SUPER IMPORTANT · REMEMBER” stamp springs into lower-left / shoulder (~0.3s); coral on IMPORTANT / REMEMBER.
+- Hold through pause ~2.68–3.10; ONE stamp only. HARD CUT at ~3.10.
+
+Beat B · 3.10–7.10 · HARD CUT → Stage + corner PiP · M530 + I529 · FACEBOOK PAGE vs PERSONAL PROFILE
+- Saturated violet full stage; host corner PiP (prefer bottom-right ~38%); face clear in PiP only.
+- 3.30–6.56 · M530 + I529: “FACEBOOK PAGE” yes-card springs (~0.25s) then “PERSONAL PROFILE” no/strike card (~0.25s); coral on PAGE then PROFILE; text only — on-screen Page (copy casing).
+- UI on stage — NEVER over PiP face. No Lesson. No Split. HARD CUT at ~7.10.
+
+Beat C · 7.10–10.00 · HARD CUT FULL FACE · M531 + I530 + E179 · I’LL SEE YOU NEXT TIME soft-strong
+- Full face returns; Stage/PiP/contrast clear.
+- 7.34–8.42 · M531 + I530 + E179: thick cream “I’LL SEE YOU NEXT TIME” stamp springs into lower-left / shoulder / bottom-center (~0.3s); coral on NEXT TIME.
+- Freeze E179 to 10.00. No Subscribe.
+</edit>
+
+<banned>
+- Torso stack; Facebook logos; invented page names; Subscribe/Comment/Like CTAs
+- Lesson as lead (≠176); emerald Split as lead (≠175)
+- Reusing M01–M528 / I01–I527 / E01–E178
+</banned>
+
+<self_check>
+- [ ] Beat A ONE stamp; Beat B contrast on Stage clear of PiP; Beat C ONE NEXT TIME stamp; codes M529–531/I528–530/E179; PART 2/2 soft-strong
+</self_check>
+
+<deliver>
+A-roll overlay brief locked to Whisper timings for PART 2/2 (plate-39 depth); soft-strong close of 176–177.
+</deliver>

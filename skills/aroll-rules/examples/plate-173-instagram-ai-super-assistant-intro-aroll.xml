@@ -1,0 +1,88 @@
+<role>
+Write speech-locked A-roll + motion overlays for a ~10.00s talking-head course plate in the Tristen O’Brien MODS / Claude Code Just Dropped feel.
+Plate 173 — NEW this cut: M517 + M518 + M519 | I516 + I517 + I518 | E175
+STANDALONE soft lesson OPEN (intro bridge into the Instagram AI Super Assistant build path). Soft open — not Subscribe CTA, not hard lesson-end close.
+GUARD: This is A-roll: do not build or insert B-roll scenes; overlays are type/UI cards on the talking-head layout. The face stays the hero. NO illustrated props. Instagram / AI Super Assistant TEXT ONLY — no logos. Blank step stubs only — never invent step titles, feature lists, or product claims beyond the VO words. Do not highlight the laptop in frame.
+HARD SPARSE RULE: On FULL-FACE beats, ONLY ONE thick cream stamp/card in lower-left OR shoulder negative space. NEVER stack 2+ cards/chips/numbered discs over the torso/chest (ban plate-151 style).
+HARD MULTI-UI RULE: STEP BY STEP blank stubs + INSTAGRAM AI SUPER ASSISTANT title MUST hard-cut onto Stage (hot-pink) with face in corner PiP — UI on stage body, not over PiP face.
+Hero overlay language THIS plate: FROM TODAY thick cream stamp (sparse full-face) → Stage hot-pink + corner PiP with blank STEP BY STEP stubs → INSTAGRAM AI SUPER ASSISTANT title lock → E175 soft open hold. Black capsules only as tiny secondary kickers — never hero.
+CRITICAL layout THIS cut: sparse full-face → Stage + corner PiP → soft open hold (may stay on stage or brief full-face return with ONE title stamp). Ban torso-stacked multi-card full-face.
+Avoid used: M01–M516 · I01–I515 · E01–E174.
+CRITICAL vs plate-162: navy Lesson+PiP benchmarks→ONE ROOM→extend bridge. THIS = hot-pink Stage+corner PiP; FROM TODAY → STEP BY STEP → INSTAGRAM AI SUPER ASSISTANT soft open; E175 not E164.
+CRITICAL vs plate-161 emerald Stage differentiate: this = intro build title, not WHERE TO DIFFERENTIATE close.
+Match plate-39/40 / rewritten-151 / 154–162 density (hard cuts, placement, banned clones) — not short stubs.
+</role>
+
+<source>
+Talking-head plate (A-roll present). Host: East Asian man, glasses, black tee, boom mic, gray sofa + MacBook, window daylight. Source pure full-face ~10.00s — overlays are motion design. Face center on open; mid = Stage + corner PiP.
+Clip: prompts/plate-173-source.mp4 (01M5KS9ZTSCBH5RVY18A66DNRB; ~15:06 UTC+8; SHA1 acee9dd2c6f62dc8ee52b0b71a8ed19834d73fcf unique). Duration 10.00s.
+Authoritative VO (verbatim): “From today, I'll walk you step by step to build your own Instagram AI Super Assistant.”
+ASR notes: Matches copy (ASR “super assistant” lowercase). Lead hold on “From” ~0–1.30. Short pause after “today,” (~1.62–2.14). Speech ends 7.94s; hold to 10.00. No unscripted tail.
+</source>
+
+<script_timed>
+Whisper-locked (~10.00s):
+0.00–1.62   From today,
+2.14–7.94   I'll walk you step by step to build your own Instagram AI Super Assistant.
+7.94–10.00  hold → soft open
+Phrase locks: FROM TODAY @0.00–1.62 · STEP BY STEP @2.94–3.96 · BUILD @4.46 · INSTAGRAM @5.40–6.38 · AI @6.38–7.00 · SUPER ASSISTANT @7.00–7.94.
+</script_timed>
+
+<stitch>
+STANDALONE soft lesson OPEN. IN: can open a new lesson block (after 172 B-roll or any prior). OUT: SOFT OPEN hold on INSTAGRAM AI SUPER ASSISTANT — invites the build path ahead; NOT Subscribe, NOT “next lesson” CTA card, no dual pills, no iris outro.
+</stitch>
+
+<style_lock>
+Palette MUST match MODS reference (saturated, not soft pastel):
+- Open (full face): ONE cream FROM TODAY stamp in lower-left / shoulder ONLY — face center clear; no step discs on chest.
+- Mid (REQUIRED Stage + corner PiP): hard-cut → saturated MODS hot-pink full stage; host bottom-right or top-right corner PiP (~36–38%); blank STEP BY STEP stubs + INSTAGRAM AI SUPER ASSISTANT title on STAGE body — clear of PiP face.
+- Soft open hold: title locks on stage (preferred) OR brief full-face return with ONE cream title stamp in negative space only.
+- Accents: coral punch on ONE keyword per beat (TODAY / STEP / INSTAGRAM / SUPER ASSISTANT).
+Anti-PPT: no thin subtitle bars; no rainbow ①②③ over face; no torso card wall.
+Anti-pill-default: black capsules banned as primary; no Subscribe CTA.
+Anti-soft-theme: hot-pink stage saturated, not washed pastel rose.
+Almost no camera move; hard cuts; snappy spring ~0.3s.
+Layout: sparse full-face → Stage+corner PiP — multi-UI NEVER on full-face torso. ≠ 162 navy Lesson.
+</style_lock>
+
+<icons>
+I516 — FROM TODAY thick cream stamp (soft shadow; coral on TODAY) — sparse full-face lower-left / shoulder ONLY; single stamp; not over chest center.
+I517 — STEP BY STEP blank stubs on STAGE: 3 cream blank step chips/discs labeled only “STEP” / “BY” / “STEP” or “1 · 2 · 3” blank bodies (coral on STEP) — no invented step titles; clear of PiP face; NEVER on full-face torso.
+I518 — INSTAGRAM AI SUPER ASSISTANT title: thick cream title card on STAGE (or full-face negative-space only if returning) — plain-text “Instagram” + “AI SUPER ASSISTANT” (coral on INSTAGRAM then SUPER ASSISTANT); TEXT ONLY — no Instagram logo; no invented feature list. E175 soft-open hero.
+</icons>
+
+<end>
+E175 — SOFT OPEN: Stage (preferred) or full-face “INSTAGRAM AI SUPER ASSISTANT” locked from ~7.94s; freeze to 10.00. Opens the build path — NOT Subscribe, NOT “next lesson” CTA, no dual pills, no iris outro.
+</end>
+
+<edit>
+Beat A · 0.00–2.80 · FULL FACE sparse · M517 + I516 · FROM TODAY
+- Talking head; face center clear.
+- 0.00–1.62 · M517 + I516: thick cream “FROM TODAY” stamp springs into lower-left or shoulder (~0.3s); coral on TODAY; locked to “From today,”.
+- Hold through pause ~1.62–2.80 into “I'll walk you…”; ONE stamp only — no step discs on chest yet. HARD CUT at ~2.80.
+
+Beat B · 2.80–5.20 · HARD CUT → Stage + corner PiP · M518 + I517 · STEP BY STEP
+- Saturated hot-pink full stage; host corner PiP (prefer bottom-right ~38%); face clear in PiP only.
+- 2.94–3.96 · M518 + I517: blank STEP BY STEP stubs / 1·2·3 blank chips stagger-spring onto STAGE body clear of PiP (~0.25s); coral on STEP; never invent step titles.
+- Hold briefly through “to build your own…”. UI on stage — NEVER over PiP face. No Lesson board this plate. No Split.
+
+Beat C · 5.20–10.00 · Stage hold (preferred) · M519 + I518 + E175 · INSTAGRAM AI SUPER ASSISTANT soft open
+- 5.40–7.94 · M519 + I518 + E175: thick cream “INSTAGRAM AI SUPER ASSISTANT” title springs onto STAGE body clear of PiP (~0.3s); coral on INSTAGRAM then SUPER ASSISTANT; text only — no logo.
+- Optional alternate: HARD CUT full face at ~7.50 with ONE title stamp in shoulder/lower-left only (if Stage feels crowded) — still ONE stamp, never a card wall.
+- Freeze E175 soft open to 10.00. No Subscribe, no “next lesson” CTA.
+</edit>
+
+<banned>
+- Torso-stacked multi-card full-face (HARD BAN); Instagram logo; invented step titles / feature lists
+- UI covering PiP face; rainbow cascade over face; black capsules as hero
+- Lesson board as lead (rotate away from 162 navy Lesson); Subscribe CTA; “next lesson” CTA card
+- Reusing M01–M516 / I01–I515 / E01–E174
+</banned>
+
+<self_check>
+- [ ] Beat A ONE stamp; Beat B STEP stubs on Stage clear of PiP; Beat C title soft open; codes M517–519/I516–518/E175; ≠162 Lesson; no chest stack; ASR clean
+</self_check>
+
+<deliver>
+A-roll overlay brief locked to Whisper timings for standalone plate-173 soft lesson open (plate-39 depth).
+</deliver>

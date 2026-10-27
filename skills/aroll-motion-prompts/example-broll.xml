@@ -1,0 +1,66 @@
+<role>
+Write faceless empty B-roll motion graphics (no talking-head) in the Tristen O’Brien MODS / Claude Code Just Dropped feel.
+Plate 131 — NEW this cut: M391 + M392 + M393 | I390 + I391 + I392 | E133
+PART 2/2 — soft-strong close of the stitched B-roll pair (plate-130 → 131).
+Hero overlay family THIS plate: cream PRODUCT POSITION card framed by four corner brackets that SNAP LOCK (not a padlock) → WHAT DO YOU SELL? blank product stub → SEARCH KEYWORDS chips that magnet onto the locked position card. Soft-strong close. Flat graphic MODS; text only; no logos; no invented product names or keyword strings beyond blank chips.
+Avoid used: M01–M390 · I01–I389 · E01–E132.
+CRITICAL — ≠ 82 padlock slam (this is corner-bracket snap lock on a position card, no vault, no lock glyph). ≠ 109–116 email motifs, ≠ 130 search-bar/ad fan as main motif. Signature: corner-bracket snap lock + blank sell card + keyword magnet dock.
+</role>
+
+<source>
+Faceless B-roll only, from copy (no video). Authoritative VO (verbatim):
+“First, lock your product position. What do you sell? Then pick search keywords that match it.”
+On-screen: FIRST · PRODUCT POSITION · WHAT DO YOU SELL? · SEARCH KEYWORDS · MATCH IT. Blank product stub and blank keyword chips only — no invented product names or keyword text.
+</source>
+
+<script_timed>
+ESTIMATED timing (no audio): ~2.6 words/sec, 18 words ≈ 6.9s + hold ≈ 8.0s.
+0.00–2.70   First, lock your product position.
+2.70–4.20   What do you sell?
+4.20–6.90   Then pick search keywords that match it.
+6.90–8.00    hold E133 soft-strong close.
+RE-LOCK to Whisper when audio exists: bracket lock on “lock your product position”; sell card on “What do you sell”; keywords on “search keywords” / “match it”.
+</script_timed>
+
+<stitch>
+PAIR · PART 2/2 · FINAL soft-strong close. IN: MATCH-CUT on the compressed PRODUCT card from plate-130 — on the peach stage it enlarges and corner brackets snap around it. Ending: SOFT-STRONG CLOSE on locked position + keyword chips. No CTA, no “next lesson”.
+</stitch>
+
+<style_lock>
+Palette = exact MODS. Stage: saturated PEACH full stage (≠ emerald 130, ≠ terracotta 116).
+- Position card: thick cream. Corner brackets: coral strokes.
+- Keyword chips: cream with grey stub text only.
+- Coral punch on ONE keyword per beat (POSITION / SELL / KEYWORDS).
+Motion: brackets snap in from four corners 0.25s; sell card pops 0.2s; keyword chips magnet-dock 0.15s each. No camera move. Faceless.
+</style_lock>
+
+<icons>
+I390 — PRODUCT POSITION corner-bracket lock: cream card “PRODUCT POSITION” enlarges from the handoff; on “lock your product position” four coral corner brackets SNAP onto its corners (M391 bracket snap — no padlock glyph) (coral POSITION); small tab “FIRST”.
+I391 — WHAT DO YOU SELL? blank stub: on “What do you sell?” a cream question card “WHAT DO YOU SELL?” pops below with a blank grey product stub only (coral SELL) — no invented product name.
+I392 — SEARCH KEYWORDS magnet dock: on “search keywords that match it” 4–5 blank cream keyword chips magnet-dock onto the locked position card; caption “MATCH IT” (coral KEYWORDS) (M393 magnet dock). Soft-strong close.
+</icons>
+
+<end>
+E133 — SOFT-STRONG CLOSE: peach stage; PRODUCT POSITION card with snapped brackets; blank sell stub; keyword chips docked; freeze 1.2s. No CTA, no “next lesson”, no dual pills.
+</end>
+
+<edit>
+Beat A · 0.00–2.70 · MATCH-CUT product → peach · M391 + I390 · PRODUCT POSITION bracket snap
+Beat B · 2.70–4.20 · peach · M392 + I391 · WHAT DO YOU SELL?
+Beat C · 4.20–8.00 · peach · M393 + I392 + E133 · SEARCH KEYWORDS magnet dock → soft-strong close
+</edit>
+
+<banned>
+- Padlock / vault (82); invented product names or keyword strings; logos; faces
+- Email B-roll 109–116; plate-130 search-bar/ad fan as main motif
+- Reusing M01–M390 / I01–I389 / E01–E132
+- Emerald as stage lead; CTA / “next lesson”
+</banned>
+
+<self_check>
+- [ ] M391–393 / I390–392 / E133 fresh; peach; bracket lock ≠ padlock; PART 2/2 soft-strong; ESTIMATED
+</self_check>
+
+<deliver>
+Faceless B-roll brief: estimated beats, bracket-lock + keyword notes, PART 2/2 soft-strong close after 130.
+</deliver>

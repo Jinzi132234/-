@@ -1,0 +1,85 @@
+<role>
+Write speech-locked A-roll + motion overlays for a ~10.00s talking-head course plate in the Tristen O’Brien MODS / Claude Code Just Dropped feel.
+Plate 176 — NEW this cut: M526 + M527 + M528 | I525 + I526 + I527 | E178
+PART 1/2 of ONE long A-roll edit (plates 176 → 177).
+GUARD: This is A-roll: do not build or insert B-roll scenes; overlays are type/UI cards on the talking-head layout. The face stays the hero. NO illustrated props. Facebook Messenger / Composio / Grok Bot TEXT ONLY — never logos. Blank plugin/connection stubs only — never invent account names or API keys. Do not highlight the laptop in frame.
+HARD SPARSE RULE: FULL-FACE = ONE cream stamp in lower-left/shoulder ONLY — never stack Messenger + Composio + Grok Bot over chest.
+HARD MULTI-UI RULE: FACEBOOK MESSENGER + COMPOSIO PLUGIN + GROK BOT chips MUST hard-cut onto Lesson board (peach INNER) + lower-left PiP — face only in PiP; chips on BOARD only.
+Hero overlay language THIS plate: EVERYTHING FOR THIS LESSON / THAT’S EVERYTHING stamp (sparse) → Lesson peach + PiP with FACEBOOK MESSENGER · COMPOSIO PLUGIN · GROK BOT chips → E178 soft handoff. Black capsules only as tiny secondary kickers — never hero.
+CRITICAL layout: sparse full-face → Lesson board + lower-left PiP → soft handoff. Ban torso stack.
+Avoid used: M01–M525 · I01–I524 · E01–E177.
+CRITICAL vs plate-175: emerald Split Grok Bot→Messenger intro soft open. THIS = peach Lesson; lesson wrap + connected via Composio; E178 soft into 177.
+Match plate-39/40 / 154–175 density — not short stubs.
+</role>
+
+<source>
+Talking-head plate (A-roll present). Same host setup. Mid = Lesson board + lower-left PiP.
+Clip: prompts/plate-176-source.mp4 (01M5KXW1XZTFQF91TVKZWYYCM1; ~16:26 UTC+8; SHA1 unique). Duration 10.00s.
+Authoritative VO (verbatim): “Alright, that’s everything for this lesson. We connected Facebook Messenger using the Composio plugin inside our Grok Bot.”
+ASR notes: Matches copy. ASR “Grockbot” → on-screen **Grok Bot**. “Alright,” filler may stay off-screen. Pause after first. (~2.88–3.62). Speech ends 8.32s; hold to 10.00.
+</source>
+
+<script_timed>
+Whisper-locked (~10.00s):
+0.00–2.88   Alright, that’s everything for this lesson.
+3.62–8.32   We connected Facebook Messenger using the Composio plugin inside our Grok Bot.
+8.32–10.00  hold → soft handoff
+Phrase locks: EVERYTHING / THIS LESSON @1.82–2.88 · CONNECTED @3.84 · FACEBOOK MESSENGER @4.22–5.16 · COMPOSIO PLUGIN @6.14–7.08 · GROK BOT @7.82–8.32.
+</script_timed>
+
+<stitch>
+PART 1/2 · order 176 → 177. IN: can follow 175. OUT: soft handoff — Lesson connection chips hold; soft into 177 (or clear to full-face for 177 Beat A). No CTA.
+</stitch>
+
+<style_lock>
+Palette MUST match MODS reference (saturated, not soft pastel):
+- Open (full face): ONE cream THAT’S EVERYTHING / EVERYTHING FOR THIS LESSON stamp in lower-left / shoulder ONLY.
+- Mid (REQUIRED Lesson board + lower-left PiP): hard-cut → Lesson board (blue→teal outer + thick cream board) with saturated MODS peach INNER. Host lower-left rounded PiP. Connection chips ALL on BOARD only.
+- Soft handoff: board may hold toward 177.
+- Accents: coral punch on ONE keyword per beat (EVERYTHING / MESSENGER / COMPOSIO / GROK BOT).
+Anti-PPT: no torso stack; no rainbow cascade over face.
+Anti-pill-default: black capsules banned as primary.
+Anti-soft-theme: peach Lesson inner saturated.
+Almost no camera move; hard cuts; snappy spring ~0.3s.
+Layout: sparse → Lesson+PiP — ≠ 175 emerald Split.
+</style_lock>
+
+<icons>
+I525 — THAT’S EVERYTHING / EVERYTHING FOR THIS LESSON thick cream stamp (coral on EVERYTHING / LESSON) — sparse full-face lower-left / shoulder ONLY; single stamp. “Alright,” optional off-screen.
+I526 — Lesson FACEBOOK MESSENGER cream chip (coral on MESSENGER) — text only, no logo; face in PiP.
+I527 — COMPOSIO PLUGIN + GROK BOT chips on BOARD: cream “COMPOSIO PLUGIN” + “GROK BOT” stagger (coral on COMPOSIO then GROK BOT) — text only, no logos; soft handoff hold.
+</icons>
+
+<end>
+E178 — soft handoff: Lesson connection chips hold; soft into 177. No CTA, no Subscribe.
+</end>
+
+<edit>
+Beat A · 0.00–3.40 · FULL FACE sparse · M526 + I525 · EVERYTHING FOR THIS LESSON
+- Talking head; face center clear.
+- 0.00–2.88 · M526 + I525: thick cream “THAT’S EVERYTHING FOR THIS LESSON” / “EVERYTHING FOR THIS LESSON” stamp springs into lower-left / shoulder (~0.3s); coral on EVERYTHING / LESSON.
+- Hold through pause ~2.88–3.40; ONE stamp only. HARD CUT at ~3.40.
+
+Beat B · 3.40–8.50 · HARD CUT → Lesson board + lower-left round PiP · M527 + M528 · I526 + I527 · MESSENGER · COMPOSIO · GROK BOT
+- Full Lesson board; peach saturated INNER; host lower-left PiP.
+- 3.84–5.40 · M527 + I526: “FACEBOOK MESSENGER” chip springs on board (~0.25s); coral on MESSENGER; text only.
+- 5.90–8.32 · M528 + I527: “COMPOSIO PLUGIN” @6.14 then “GROK BOT” @7.82 stagger on board (~0.25s); coral each; copy wins over ASR Grockbot; text only — no logos.
+- Face clear in PiP only; ALL chips on board — NEVER over full-face torso. No Split. No Stage.
+
+Beat C · 8.32–10.00 · board hold · E178 soft handoff
+- Connection chips hold; soft toward 177 Beat A.
+</edit>
+
+<banned>
+- Torso stack (HARD BAN); logos for Messenger/Composio/Grok Bot; invented keys/names
+- Emerald Split as lead (≠175); Subscribe CTA
+- Reusing M01–M525 / I01–I524 / E01–E177
+</banned>
+
+<self_check>
+- [ ] Beat A ONE stamp; Beat B chips on Lesson+PiP; codes M526–528/I525–527/E178; PART 1/2 soft; ASR Grockbot flagged
+</self_check>
+
+<deliver>
+A-roll overlay brief locked to Whisper timings for PART 1/2 (plate-39 depth); soft handoff into plate-177.
+</deliver>
