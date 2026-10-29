@@ -1,0 +1,5 @@
+name: employee_agent_team
+title: Employee agent team
+description: Run a team of named AI employee agents with a chief of staff, specialist bots, shared cloud-computer logins, approvals, and repeat jobs saved as skills and routines.
+category: Productivity
+include_in_prompt: true
