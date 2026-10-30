@@ -192,6 +192,21 @@ function normalizeApiModelsBase(baseUrl = '') {
     .replace(/\/+$/, '');
 }
 
+/** APIMODELS 走 Cloudflare，長連線偶爾會 reset；一次 fetch 斷掉就整個任務失敗太脆，所以重試。 */
+async function fetchWithRetry(url, options = {}, { attempts = 4, label = '請求' } = {}) {
+  let lastError;
+  for (let i = 0; i < attempts; i += 1) {
+    try {
+      return await fetch(url, options);
+    } catch (error) {
+      lastError = error;
+      if (options.signal?.aborted) throw error;
+      await sleep(Math.min(15000, 1500 * 2 ** i));
+    }
+  }
+  throw new Error(`${label}網路中斷（已重試 ${attempts} 次）：${lastError?.message || lastError}`);
+}
+
 async function generateApiModelsVideo({
   apiKey,
   model,
@@ -221,12 +236,12 @@ async function generateApiModelsVideo({
   const imageUrls = referenceImages.map((ref) => ref.url).filter(Boolean);
   if (imageUrls.length) body.images = imageUrls;
   onProgress?.({ phase: 'submit', message: '提交 APIMODELS 影片任務…' });
-  const submit = await fetch(`${base}/video/generations`, {
+  const submit = await fetchWithRetry(`${base}/video/generations`, {
     method: 'POST',
     headers,
     body: JSON.stringify(body),
     signal,
-  });
+  }, { attempts: 3, label: '提交 Omni 任務' });
   const submitText = await submit.text();
   let submitJson;
   try { submitJson = JSON.parse(submitText); } catch { submitJson = null; }
@@ -242,7 +257,7 @@ async function generateApiModelsVideo({
     if (signal?.aborted) throw new Error('CANCELLED');
     if (Date.now() - started > timeoutMs) throw new Error('Omni 生成超时（12 分钟）。');
     await sleep(pollIntervalMs);
-    const poll = await fetch(`${base}/video/generations?task_id=${encodeURIComponent(taskId)}`, { headers, signal });
+    const poll = await fetchWithRetry(`${base}/video/generations?task_id=${encodeURIComponent(taskId)}`, { headers, signal }, { attempts: 6, label: '輪詢 Omni 進度' });
     const text = await poll.text();
     let data;
     try { data = JSON.parse(text); } catch { data = null; }
@@ -256,7 +271,7 @@ async function generateApiModelsVideo({
       const url = data?.data?.resultUrls?.[0] || data?.data?.resultUrl;
       if (!url) throw new Error('Omni 已完成，但沒有 resultUrls。');
       onProgress?.({ phase: 'download', message: '下載 Omni 影片…' });
-      const download = await fetch(url, { signal });
+      const download = await fetchWithRetry(url, { signal }, { attempts: 3, label: '下載 Omni 影片' });
       if (!download.ok) throw new Error(`下載 Omni 影片失敗：HTTP ${download.status}`);
       const buffer = Buffer.from(await download.arrayBuffer());
       if (!buffer.length) throw new Error('Omni 回傳了空影片。');

@@ -1,80 +1,335 @@
+# A-roll 指示词 · API 段
+
+**使用方法**：在 Opus 5.5 里新开一个对话，先粘贴【第 0 部分 · 共用风格说明】，再粘贴镜头指示词（可以一次粘贴全部 6 个镜头，也可以一个一个来），同时附上下面 3 段口播视频，以及 Claude Code / Codex / GPT / Opus 的 logo（可选）。
+
+> ⚠ **人物画面的硬性约束**：全程一条连续镜头（single continuous shot），不剪切（no cuts），不给电脑特写（no laptop close-up），固定机位。详细要求见第 0 部分的第一条。
+
+**素材**（按顺序拼接，共 25.375s，1920×1080，24fps）
+| 文件 | 时长 | 拼接时间 | 对应镜头 |
+|---|---|---|---|
+| c292ee8e-38.mp4 | 7.375s | 0–7.375 | A01、A02、A03 开头 |
+| ca7ac4f4-39.mp4 | 9.963s | 7.375–17.338 | A03、A04、A05 开头 |
+| bb51c900-42.mp4 | 8.042s | 17.338–25.375 | A05、A06 |
+
+**镜头总表**（全部是 A-roll，每个镜头都有人脸）
+| 镜头 | 版式 | 时间 | 口播 | 画面 |
+|---|---|---|---|---|
+| A01 | A2 左脸分屏 · 橙 | 0–2.20 | So what about API? | A / P / I 字母方块落下，加一个 "?" |
+| A02 | A4 画中画 · 海军蓝 | 2.20–7.10 | Early on… called APIs. Simpler. | 左边逐行出标题；右边三个平台节点连到 Your app，hook 标签翻成 API；最后贴 "Simpler." |
+| A03 | A2 左脸分屏 · 蓝 | 7.10–12.60 | Today the API you actually care about is mostly models. | 标题逐行出现，最后是 "models."；下方代码卡的 "model" 被框出 |
+| A04 | A4 画中画 · 粉 | 12.60–17.30 | Claude Code, Codex, GPT, Opus. | 四张模型卡，每说一个名字弹出一张 |
+| A05 | A2 左脸分屏 · 紫 | 17.30–21.70 | Here is the real focus: iterating your employees. | "Iterating your employees."，下方 v1 → v2 → v3 ↻ |
+| A06 | A4 画中画 · 绿 | 21.70–25.375 | AI moves fast. Your work and product will too. | 大字 "fast." 配速度线和快进图标，最后三张贴纸 |
+
+镜头之间全部用 T1 斜切擦除。全脸画面上不放文字卡。
+
 ---
-name: AROLL motion prompts
-description: >-
-  Use when writing Claude-ready MODS A-roll or faceless B-roll motion XML from
-  course copy and/or talking-head clips — rotate layouts, M/I/E codes, keep face
-  as hero on A-roll, and deliver speech-locked prompts.
+
+## 第 0 部分 · 共用风格说明
+
+```
+你要制作彩色 SaaS 卡片风的 A-roll 视频片段（每个镜头都有人脸）。请严格按照下面的规格制作。
+
+【人物画面硬性约束 · 最高优先级，违反任何一条都必须重做】
+1. Single continuous shot（全程一条连续镜头）
+   - 三段口播视频按顺序首尾相接，当成一条连续的长镜头。
+   - 从第 0 帧一直播到最后一帧，时间和帧严格一一对应：第 t 秒用第 floor(t*30)+1 帧。
+   - 不跳帧、不重复帧、不倒放、不变速、不删停顿、不调换顺序。
+2. No cuts（不剪切）
+   - 人物画面内部不允许任何剪切、跳切、换角度、插入其他镜头或空镜。
+   - 镜头之间唯一允许的变化是下面规定的 T1 斜切擦除。擦除只改变人脸窗口的版式（分屏 ↔ 画中画），
+     人物视频本身照常连续播放：擦除期间新旧两个窗口在同一时刻显示的是同一帧。
+3. No laptop close-up（不给电脑特写）
+   - 不允许放大、特写或单独裁出桌上的笔记本电脑、手、桌面或任何道具。
+   - 不允许生成或插入任何电脑屏幕画面。
+   - 人脸窗口里，人物的脸必须始终在画面中央附近，头顶到胸口完整可见。
+4. 固定机位（locked-off camera）
+   - 每种版式里，人物画面的缩放和位置都是固定值，整个镜头内保持不变：
+     - A2：img 1920×1080（1:1），left -781，top 0
+     - A4：img 960×540，left -336，top -10
+   - 不推拉、不平移、不缩放、不旋转、不抖动；不加 Ken Burns，不加数码变焦。
+   - 只有舞台卡片里的图形元素和背景柔光可以动。
+5. 只用原片
+   - 只能使用我附上的原始口播视频。
+   - 不要用 AI 生成或补全人物画面，不要补帧、换脸、美颜，也不要调色。
+
+【技术规格】
+- 1920×1080，30fps，H.264 mp4（crf 17，yuv420p），音频为 AAC 192k，使用口播原声。保留口播全长，不要剪掉停顿。
+- 做法：写一个 1920×1080 的 HTML 页面。动画写成确定性函数 render(t)，给定时间 t 就能算出画面状态；
+  不要用 CSS animation 或 requestAnimationFrame。用 Playwright（chromium）逐帧调用 render(i/30) 并截图，再通过管道交给 ffmpeg 合成。
+- 不要依赖 CDN（环境可能连不上外网）。自己写补间和缓动函数：
+  - power3.out：1-(1-t)^3
+  - power3.inOut
+  - back.out(1.8)：1+2.8(t-1)^3+1.8(t-1)^2
+- 人脸画面：口播视频按顺序拼接后，按 30fps 抽成 jpg 序列。HTML 里用 <img> 按帧切换（第 floor(t*30)+1 帧），
+  切换后先 await img.decode() 再截图。人脸元素 overflow:hidden，里面的 img 按下面的平移量放置。
+- 字体：先用 fc-list 确认本机有哪些字体。
+  - 标题用 "Inter Display" 或 "Inter" 的 Black（900）字重，字距 -0.035em，行高 1。
+  - 等宽字体用 "JetBrains Mono"，没有的话用 "DejaVu Sans Mono" Bold。
+- 对时间：指示词里的秒数是拼接后的时间。如果写的是“说到某个词时触发”，先用语音识别或 silencedetect 测出这个词的实际秒数。
+  口播里没说出来的句子，对应元素删掉，并告诉我。
+
+【配色】
+- 舞台主色（135° 渐变）：
+  - 橙 #F5B266 → #EE8A50 → #E8734A
+  - 蓝 #2A43BC → #4136A6
+  - 紫 #5B47E0 → #4136A6
+  - 绿 #25B07A → #168458
+  - 粉 #F48FB4 → #E5598A
+  - 黄 #F9CF7A → #F7AD46
+  - 海军蓝 #1C2233 → #2A3350
+- 外框底色：竖向渐变 #2354B2 → #317686（分屏和画中画时从卡片外露出来）。
+- 其他常用色：强调黄 #FFD84D、奶油 #F4F0E7、深字 #1B1B1B、蓝 #3B5BDB、粉 #F06595、绿 #20A86B、红 #E5484D。
+- 每个舞台上叠一团柔光：直径 900px，blur 140px，透明度 0.25–0.38。
+  位置随时间缓慢漂移：x 方向 sin(t*.5)*160，y 方向 cos(t*.4)*110。舞台永远不能完全静止。
+
+【组件】
+- Kicker 标签：黑色胶囊 #111，白色等宽大写字 21px，字距 0.16em，内边距 11px 22px，放在左上角。
+- 大标题：2–4 行，左对齐。关键词用 #FFD84D，次要的半句用白色 55% 不透明。
+- 奶油卡片：#F4F0E7，圆角 22px，投影 0 22px 44px rgba(0,0,0,.18)。
+- 暗卡：#1E1E1E，圆角 20px，左上角三个直径 14px 的圆点（#FF5F57、#FEBC2E、#28C840），内容用等宽字。
+- 贴纸：彩色圆角矩形（圆角 18px，内边距 16px 30px），54px Black 字，带投影，最终停在 ±2–3°。
+- 小胶囊：等宽 19–20px，内边距 8px 16px。
+- 字母方块：230×230，圆角 40，白字 170px，底色用蓝 / 粉 / 绿。
+- 高亮框：4px #FFD84D 圆角描边。
+- logo：使用我附上的图片。没附的用彩色圆角方块加首字母占位，并在交付时告诉我哪些是占位。
+
+【版式】（人脸平移量已按这段视频算好）
+- A2 左脸分屏：
+  - 底层铺外框底色。
+  - 人脸栏在 (0,0)，518×1080；img 1920×1080，left -781，top 0。
+  - 舞台卡：left 556、top 64、宽 1326、高 952，圆角 30，6px 白边，overflow hidden。
+- A4 画中画：
+  - 底层铺外框底色。
+  - 舞台卡：left 38、top 38、宽 1844、高 1004，5px 白边，圆角 26。
+  - 人脸小窗：left 20、top 792、宽 368、高 268，5px 白边，圆角 20，投影 0 16px 34px rgba(0,0,0,.3)。
+    小窗里的 img 为 960×540，left -336，top -10。小窗以左下角为原点 pop 出现。
+  - 标题区在左上（x 110–1060），配图区在右侧或中部，不要压到左下角的小窗。
+- A3 右脸分屏：
+  - 左侧 0–1150 是暗色舞台。
+  - x=1150 处一条 2px 强调色竖线。
+  - 右侧 1152–1920 是人脸，img 1920×1080，left 496。
+- A1 全脸：原画全屏。全脸画面上不放任何文字卡。
+
+【动效词典】
+- kick：clip-path inset 右侧从 100% 收到 0，0.28s；opacity 在 0.08s 内淡入。
+- word：0.24s 内 y 从 +22 到 0、opacity 从 0 到 1、blur 从 7px 到 0，缓动 power3.out。
+- key：0.42s 内 scale 从 0.86 到 1、y 从 +24 到 0，缓动 back.out；opacity 和 blur 在 0.16s 内完成。
+- pop：0.40s 内 scale 从 0 到 1，rotate 从起始角度回到最终角度，缓动 back.out；opacity 在 0.12s 内淡入。
+- 字母方块落下：0.42s 内从 y-70、scale 0.8 带旋转落下，缓动 back.out，每个间隔 0.1s。
+- 错峰：列表、卡片依次出现，间隔 0.06–0.12s；滑入 = 0.3s 内 x 从 +40 到 0 并淡入。
+- out：0.15s 内 opacity 从 1 到 0、scale 从 1 到 0.96。
+- 环境运动：柔光漂移；终端光标每秒闪约 2.2 次。
+- 元素不单独退场，换镜头时先 out，再由转场把整个画面换掉。
+
+【镜头之间的转场】
+- A2 → A2：人脸栏不动。卡片内容 out 后，卡片底色在 0.3s 内淡变到新的主色，再放新内容。
+- A2 ↔ A4、A2/A4 ↔ A3：T1 斜切擦除。
+  - 新画面从右往左盖进来，0.42s，power3.inOut。
+  - 斜边倾斜 15°（上端比下端偏右 289px），边缘带一条 18px 宽的白色斜条。
+  - 擦除的中点落在镜头切点上。
+- 进出 A1：T2 推移。画面水平推走，前沿带一条 30px 宽的橙色 #E8734A 竖条，0.2s。
+- A4 的人脸小窗在擦除快结束时 pop。
+
+【交付前自查】
+每个片段抽 8 帧拼成联系表，自己看一遍：
+- 字有没有溢出卡片或被裁掉
+- 人脸是否居中、头顶有没有被裁
+- 人物画面的帧号是否连续：抽出的每一帧，帧号都要等于 floor(t*30)+1
+- 同一版式内任意两帧，人物的位置和大小是否完全一致（没有推拉、没有平移）
+- 画面里有没有电脑、手、桌面的特写，有没有出现剪切或换角度
+- 人脸有没有被遮住
+- 元素是否卡准口播时间
+发现问题先修好再交付。每个镜头单独输出一个片段，再输出一个拼好的完整版。
+```
+
 ---
-# AROLL motion prompts
 
-Turn course copy and/or talking-head clips into Claude-ready MODS-style motion XML. Deliver A-roll (talking head) or faceless B-roll prompts that rotate layout, motion, icons, and end treatments so consecutive plates do not look the same.
+## A01 · 左脸分屏 · "So what about API?"
 
-Also read [Tristen B-roll motion prompts](sand-workflow:tristen-b-roll-motion-prompts) for the locked palette, icon library, and end-treatment codes.
+```
+【镜头】A01 · A2 左脸分屏 · 橙色 · 拼接时间 0–2.20s（c292ee8e-38.mp4 的 0–2.20s）
+【人物画面】拼接后的连续镜头第 0–2.20s 原样播放；固定机位（left -781，top 0，1:1），不剪切、不推拉、不放大，不出现电脑或手的特写
+【口播】"So what about API?"，说话时间 0.51–1.65s
+【入场】第一帧就是这个版式，没有入场转场
+【元素与时间轴】（坐标相对于舞台卡左上角）
+- 0.12  kick："SO WHAT ABOUT"，位置 (64,64)
+- 0.52  word："So what about"，位置 (64,150)，84px，#1B1B1B
+- 0.98 / 1.08 / 1.18  字母方块 A、P、I 依次落下：
+  - x 分别为 150、405、660，y=350
+  - 底色依次为 #3B5BDB、#F06595、#20A86B
+  - 起始角度 -14° / -5° / 4°，最终角度 -4° / 3° / -2°
+- 1.38  pop "?"：330px，#1B1B1B，位置 (925,300)，从 18° 转到 8°
+- 1.95  全部 out
+- 1.99  开始 T1 斜切擦除（中点在 2.20s），切到 A02
+【输出】A01_SoWhatAboutAPI_A2.mp4
+```
 
-## When this applies
+## A02 · 画中画 · 平台钩子 = API
 
-- Owner pastes English (or other) VO and says AROLL / BROLL, or attaches talking-head clips with matching copy.
-- Owner asks for Claude motion prompts, plate XML, or a re-time of an existing plate to a new take.
-- Not for editing the final video file, inventing VO, or building illustrated scenes inside A-roll.
+```
+【镜头】A02 · A4 画中画 · 海军蓝 · 拼接时间 2.20–7.10s（c292ee8e-38.mp4 的 2.20–7.10s）
+【人物画面】拼接后的连续镜头第 2.20–7.10s 原样播放；固定机位（960×540，left -336，top -10），不剪切、不推拉、不放大，不出现电脑或手的特写
+【口播】
+- "Early on, a lot of platform hooks"：2.46–4.40s
+- "were just called APIs."：4.57–5.98s
+- "Simpler."：6.52–6.96s
+- ⚠ "More direct." 在音频里找不到
+【入场】T1 擦除进入；2.41s 人脸小窗以左下角为原点 pop
+【元素与时间轴】（全屏坐标）
+- 2.46  kick："EARLY ON"，位置 (110,110)
+- 2.62  word："A lot of"，位置 (110,190)，92px，白色
+- 2.90  pop 暗卡 "Your app"，位置 (1000,430)，尺寸 330×220，从 -4° 转到 0°
+  - 卡内 (28,80) 写 "Your app"，50px 白色
+  - 卡内 (30,158) 写 "> running_"，等宽 20px，#8f8f8f
+- 3.15  word："platform hooks"，位置 (110,290)，92px，白色
+- 3.25 / 3.53 / 3.81  依次 pop 三张奶油节点卡，从 6° 转到 0°：
+  - 每张 330×130，x=1500，y 分别为 250、465、680
+  - 卡片左侧 (26,30) 放 70×70 的彩色方块，圆角 18：#3B5BDB、#20A86B、#F06595
+  - 文字放在 (114,46)，40px，#161616：Payments / Maps / Login
+  - 每张卡出现 0.1s 后，从卡片左边缘画一条虚线到 Your app 卡的右边缘（x=1330，y 分别为 510、530、550），用 0.35s 画完：
+    5px，#1B1B1B 50% 不透明，虚线 12 12，圆头
+  - 每张卡出现 0.3s 后，在虚线中点 pop 一个黑色 #111 小胶囊 "hook"（位置约 (1370, 395/510/625)），从 -8° 转到 0°
+- 4.58  word："were just called"，位置 (110,390)，92px，白色 55% 不透明
+- 5.25  key："APIs."，位置 (110,490)，132px，#FFD84D
+- 5.40 / 5.48 / 5.56  三个 "hook" 胶囊依次淡出（0.12s），同位置 pop 蓝色 #2A43BC 胶囊 "API"
+- 6.50  pop 绿色贴纸 "Simpler."（#1E9E6A，白字），位置 (110,640)，从 -12° 转到 -3°
+- 6.74  pop 蓝色贴纸 "More direct."（#3B5BDB，白字），位置 (420,650)，从 10° 转到 2°
+  ⚠ 口播里没有这句，这张贴纸就删掉
+- 6.85  全部 out
+- 6.89  开始 T1 擦除（中点在 7.10s），切到 A03
+【输出】A02_PlatformHooks_A4.mp4
+```
 
-## Inputs
+## A03 · 左脸分屏 · 你在乎的 API 是模型
 
-| Input | What to do |
-|-------|------------|
-| Copy only | Faceless B-roll unless they said AROLL; estimate timing (~2.6 words/s); mark ESTIMATED — re-time when a clip arrives. |
-| Video + copy | A-roll (or B-roll if tagged). Whisper-lock word timestamps; SHA1-check for duplicate/retake vs prior sources. |
-| Multi clips + multi paragraphs | Order by Whisper text, not upload filename. PART n/N stitch with soft handoffs; only the last part is the strong close. |
-| Same copy, new files | Compare SHA1 to existing plate sources. Identical → keep. Different retake → re-time only (keep design/codes). |
+```
+【镜头】A03 · A2 左脸分屏 · 蓝色 · 拼接时间 7.10–12.60s
+（c292ee8e-38.mp4 的 7.10–7.375s + ca7ac4f4-39.mp4 的 0–5.225s）
+【人物画面】拼接后的连续镜头第 7.10–12.60s 原样播放；固定机位（left -781，top 0，1:1），不剪切、不推拉、不放大，不出现电脑或手的特写
+【口播】
+- "Today the API you actually care about"：8.23–10.28s
+- "is mostly"：10.48–10.83s
+- "models."：11.35–12.39s
+【入场】T1 擦除进入，画面从画中画换成左脸分屏
+【元素与时间轴】（坐标相对于舞台卡左上角）
+- 7.60  kick："TODAY"，位置 (64,64)
+- 8.22  word："The API you"，位置 (64,150)，100px，白色
+- 8.60  pop 暗色代码卡，位置 (64,680)，尺寸 820×150，从 -4° 转到 0°
+  - 卡片顶部 (22,20) 放三个圆点；(100,16) 写 "api request"，等宽 20px，#9a9a9a
+  - (40,70) 写 "model": "▋"，等宽 34px
+    - "model" 用 #8FB7FF，值用 #FFD84D
+    - 光标 ▋ 每秒闪约 2.2 次
+- 8.95  word："actually care about"，位置 (64,260)，100px，白色 55% 不透明
+- 10.45  word："is mostly"，位置 (64,370)，100px，白色
+- 11.33  key："models."，位置 (64,470)，140px，#FFD84D
+- 11.38  在代码卡的 "model" 那一行外面画一个 4px #FFD84D 圆角高亮框（相对代码卡位置 (28,58)，尺寸 420×62），scale 1.15→1，back.out
+- 11.50  pop 黄色贴纸 "The part that matters"（#FFD84D 底，#1B1B1B 字 40px，内边距 12px 24px），位置 (640,640)，从 -10° 转到 -2°
+- 12.35  全部 out
+- 12.39  开始 T1 擦除（中点在 12.60s），切到 A04
+【输出】A03_APIisModels_A2.mp4
+```
 
-## A-roll vs B-roll
+## A04 · 画中画 · 四个模型
 
-**A-roll (talking head)**
-- Face is the hero. Overlays are **type and UI cards only**.
-- Never build or insert illustrated B-roll scenes, props, or illustrated people inside the talking-head plate.
-- Every A-roll file includes a guard line: *This is A-roll: do not build or insert B-roll scenes; overlays are type/UI cards on the talking-head layout.*
-- Rotate layout families: Lesson+PiP, sparse full-face, Stage+corner PiP (vary corner), Split. Do **not** default every plate to half-screen Split.
+```
+【镜头】A04 · A4 画中画 · 粉色 · 拼接时间 12.60–17.30s（ca7ac4f4-39.mp4 的 5.225–9.925s）
+【人物画面】拼接后的连续镜头第 12.60–17.30s 原样播放；固定机位（960×540，left -336，top -10），不剪切、不推拉、不放大，不出现电脑或手的特写
+【口播】
+- Claude Code：12.95s
+- Codex：14.33s
+- GPT：15.32s
+- Opus：16.31s
+【入场】T1 擦除进入；12.81s 人脸小窗 pop
+【元素与时间轴】（全屏坐标）
+- 12.66  kick："THE API TODAY"，位置 (110,110)
+- 12.80  word："Mostly models."，位置 (110,180)，110px；"Mostly" 用 #1B1B1B，"models." 用白色
+- 四张奶油卡，每张 380×300，y=380，x 分别为 140、560、980、1400：
+  - 12.92  pop 第 1 张，从 -8° 转到 -2°
+  - 14.30  pop 第 2 张，从 -8° 转到 1.5°
+  - 15.29  pop 第 3 张，从 -8° 转到 -1.5°
+  - 16.28  pop 第 4 张，从 -8° 转到 2°
+  - 卡片内容：
+    - (34,34) 放 110×110 的 logo，圆角 26
+    - (34,178) 写名称，50px，#161616
+    - (36,246) 写小标签，等宽 18px，字距 0.14em，#8a8070
+  - 四张卡依次为：
+    - Claude Code，标签 AGENT
+    - Codex，标签 AGENT
+    - GPT，标签 MODEL
+    - Opus，标签 MODEL
+  - logo 用我附上的 Claude Code / Codex / GPT / Opus 图片；没附的用彩色方块加首字母占位：
+    CC 用 #D97757，Cx 用 #161616，G 用 #10A37F，O 用 #B8603F
+- 17.05  全部 out
+- 17.09  开始 T1 擦除（中点在 17.30s），切到 A05
+【输出】A04_ModelCards_A4.mp4
+```
 
-**B-roll (faceless)**
-- Full-stage MODS empty frames. No face required.
-- Still type/UI language; blank fields instead of invented names, prices, or IDs.
+## A05 · 左脸分屏 · 迭代你的员工
 
-## Style lock
+```
+【镜头】A05 · A2 左脸分屏 · 紫色 · 拼接时间 17.30–21.70s
+（ca7ac4f4-39.mp4 的 9.925–9.963s + bb51c900-42.mp4 的 0–4.362s）
+【人物画面】拼接后的连续镜头第 17.30–21.70s 原样播放；固定机位（left -781，top 0，1:1），不剪切、不推拉、不放大，不出现电脑或手的特写
+【口播】
+- "Here is the real focus though:"：18.44–19.53s
+- "iterating your employees."：19.94–21.16s
+【入场】T1 擦除进入，画面换成左脸分屏
+【元素与时间轴】（坐标相对于舞台卡左上角）
+- 17.62  kick："THE REAL FOCUS"，位置 (64,64)
+- 19.92  key："Iterating"，位置 (64,160)，120px，#FFD84D
+- 20.42  word："your employees."，位置 (64,290)，120px，白色
+- 20.50  "YOUR AI EMPLOYEE" 在 0.2s 内淡入，位置 (66,520)，等宽 20px，字距 0.16em，白色 70% 不透明
+- 依次 pop 三张奶油小卡和箭头：
+  - 小卡：210×116，圆角 22，y=566
+    - 卡内左侧 (24,30) 放 56px 的彩色圆点
+    - 卡内 (98,30) 写版本号，52px，#161616
+  - 箭头："→"，64px 白色，y=584
+  - 时间、位置和角度：
+    - 20.58  小卡 v1，x=64，圆点 #F5B731，从 -8° 转到 -2°
+    - 20.70  箭头，x=296
+    - 20.76  小卡 v2，x=376，圆点 #F06595，从 8° 转到 1.5°
+    - 20.88  箭头，x=608
+    - 20.94  小卡 v3，x=688，圆点 #20A86B，从 -8° 转到 -1.5°
+    - 21.06  "↻"，x=920，从 -90° 转到 0°
+- 21.45  全部 out
+- 21.49  开始 T1 擦除（中点在 21.70s），切到 A06
+【输出】A05_IteratingEmployees_A2.mp4
+```
 
-- Reference feel: Tristen O'Brien MODS / Claude Code Just Dropped.
-- Stage hues (exact, not softened): terracotta, emerald, cobalt, violet, hot pink, cream, navy, peach, mustard-gold.
-- Cream cards + near-black windows; sticker accents blue/pink/gold/green/purple/orange.
-- Black capsules/pills sparingly — rotate thick cream cards, mac windows, numbered discs, chat bubbles, stamps.
-- Tool and product names as **text only**, never logos (e.g. Grok Bot, Notion, Feishu, Ad Library).
+## A06 · 画中画 · AI moves fast
 
-## Non-repetition
+```
+【镜头】A06 · A4 画中画 · 绿色 · 拼接时间 21.70–25.375s（bb51c900-42.mp4 的 4.362s 到结尾）
+【人物画面】拼接后的连续镜头第 21.70–25.375s 原样播放；固定机位（960×540，left -336，top -10），不剪切、不推拉、不放大，不出现电脑或手的特写
+【口播】
+- "AI moves fast."：21.97–23.15s
+- "Your work and product will too."：23.59–24.96s
+【入场】T1 擦除进入；21.91s 人脸小窗 pop
+【元素与时间轴】（全屏坐标）
+- 21.95  word："AI moves"，位置 (110,200)，170px，白色
+- 22.45  key："fast."，位置 (110,380)，170px，#FFD84D
+- 22.45 起  7 条白色速度线：
+  - 高 12px，圆角 6，宽 220–480px，透明度 0.3
+  - y 从 300 开始，每条间隔 60px
+  - 各自以 1500–2800px/s 的速度从右往左循环划过，一直持续到片尾
+- 22.55  pop 奶油色 #F4F0E7 快进图标（两个并排的三角形，整体 460×360），位置 (1290,220)，从 -10° 转到 0°
+- 贴纸：奶油色贴纸用 #1B1B1B 字
+  - 23.56  pop "Your work"（奶油底），位置 (110,620)，从 -10° 转到 -2°
+  - 24.06  pop "& product"（奶油底），位置 (440,632)，从 10° 转到 1.5°
+  - 24.62  pop "will too. →"（#111 底，#FFD84D 字），位置 (790,616)，从 -12° 转到 -3°
+- 画面保持到片尾（25.375s）
+【输出】A06_AIMovesFast_A4.mp4
+```
 
-- Every new plate: unused **M** (motion axis) + **I** (icon/mark, with full `<icons>` spec) + **E** (end treatment).
-- Dual lower pills at most once per lesson body.
-- Consecutive plates: different primary motion axis and end treatment; prefer a different layout family when the idea changes.
-- Keep a lesson log of used M/I/E codes; never reuse on back-to-back prompts.
+---
 
-## Content rules
+## 最后一步（全部镜头做完后粘贴）
 
-- Keep VO verbatim. Never invent numbers, prices, names, headers, or ad copy.
-- Use blank cards, chips, and placeholders when the VO does not name a value.
-- VO words that are already labels (e.g. "eight a.m.", "Type A", "Client A") may appear on screen as written.
-- Flag unscripted tails and ASR doubles; suggest a cut point; freeze or hold clean text over the bad span when needed.
-- Make every design choice yourself — no pick-one options left for the renderer.
-
-## Workflow
-
-1. Confirm A-roll vs B-roll (tag, video presence, or prior series).
-2. Ingest clips: Whisper + duration + SHA1; map to copy parts in speech order.
-3. Read the motion rules and used-code log; pick next free M/I/E and a layout/hue that rotates away from the previous plate.
-4. Design beats that match VO meaning with type/UI only (A-roll) or faceless stage (B-roll).
-5. Write one XML file per plate under the plate prompts folder; include `<stitch>` for multi-part series.
-6. Self-check: face clear (A-roll)? new M/I/E? palette exact? no invented facts? guard line present on A-roll?
-7. Update the used-code log. Deliver the XML file(s) plus a short summary in the owner's chat language (duration, layout, hue, beat sequence, codes, ASR/cut flags).
-
-## Deliverable shape
-
-Claude-ready XML per plate, typically including: role (with M/I/E), source, script_timed, style_lock, icons, end, edit/stitch, banned, self_check, deliver. A-roll always carries the face-hero guard line.
-
-## Out of scope
-
-Inventing VO, editing final mp4s, illustrated A-roll inserts, defaulting every cut to Split or black pills, reusing M/I/E on consecutive plates, packing secrets or personal plate logs into shared templates.
+```
+按 A01 → A02 → A03 → A04 → A05 → A06 的顺序拼成一条，
+音频使用三段口播原声按顺序拼接（c292ee8e-38 → ca7ac4f4-39 → bb51c900-42，共 25.375s），
+人物画面在整条成片里必须是同一条连续镜头：片段之间的衔接处不能丢帧，也不能重复帧，
+拼完后检查片段交界处前后两帧的人物帧号是连续的。
+输出 00_Full_API_Aroll.mp4。只拼本批次的片段。
+```

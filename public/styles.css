@@ -1621,6 +1621,14 @@ body { background: var(--bg); color: var(--text); }
   font-size: 9.5px;
   line-height: 1.5;
 }
+.flow-note.is-warn {
+  color: #a95025;
+  background: #fff6ee;
+  border: 1px solid #ead4c0;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 10px;
+}
 .flow-prompt-text {
   margin: 6px 0 0;
   padding: 7px 8px;
@@ -1943,8 +1951,8 @@ body { background: var(--bg); color: var(--text); }
 }
 .sidebar-toggle:hover { color: #fff; border-color: rgba(218,123,74,.6); background: rgba(218,123,74,.12); }
 .brand { padding-right: 24px; }
-.sidebar.collapsed { width: 64px; flex-basis: 64px; padding: 14px 8px 12px; }
-.sidebar.collapsed .brand { justify-content: center; padding: 2px 0 16px; }
+.sidebar.collapsed { width: 76px; flex-basis: 76px; padding: 14px 8px 12px; }
+.sidebar.collapsed .brand { justify-content: flex-start; padding: 2px 0 16px; }
 .sidebar.collapsed .brand-text,
 .sidebar.collapsed .side-label,
 .sidebar.collapsed .job-item .ji-body,
@@ -1958,7 +1966,7 @@ body { background: var(--bg); color: var(--text); }
 .sidebar.collapsed .ghost-btn { justify-content: center; font-size: 0; padding: 9px 0; }
 .sidebar.collapsed .ghost-btn svg { width: 18px; height: 18px; }
 .sidebar.collapsed .health { justify-content: center; padding: 6px 0; }
-.sidebar.collapsed .sidebar-toggle { right: 20px; top: 58px; }
+.sidebar.collapsed .sidebar-toggle { right: 4px; top: 18px; }
 
 
 .flow-beats-toggle {
@@ -2003,8 +2011,10 @@ body { background: var(--bg); color: var(--text); }
 .base-progress { border: 1px solid var(--line-soft); background: #fffaf5; border-radius: 8px; padding: 9px 10px; }
 .base-progress-label { color: var(--text-2); font-size: 10px; margin-bottom: 6px; }
 .base-progress-track { height: 4px; border-radius: 99px; background: var(--line-soft); overflow: hidden; }
-.base-progress-track i { display: block; width: 38%; height: 100%; border-radius: inherit; background: var(--accent); animation: baseProgress 1.3s ease-in-out infinite; }
-@keyframes baseProgress { 0% { transform: translateX(-110%); } 100% { transform: translateX(300%); } }
+.base-progress-track i { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--accent); transition: width .8s linear; }
+.base-progress-label { display: flex; gap: 8px; align-items: baseline; justify-content: space-between; }
+.base-progress-label .bp-msg { color: var(--text-2); }
+.base-progress-label .bp-pct { color: var(--accent-deep); font-variant-numeric: tabular-nums; font-size: 10px; }
 
 .flow-ref img { height: 150px; object-fit: contain; background: #f4f0ea; }
 .flow-ref-replace {

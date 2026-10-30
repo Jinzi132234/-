@@ -751,6 +751,11 @@ app.post('/api/jobs/:id/production/ref-url', asyncRoute(async (req, res) => {
   entry.refUrls = entry.refUrls || {};
   if (url) entry.refUrls[kind] = url;
   else delete entry.refUrls[kind];
+  // 補上公開 URL 之後，之前「缺公開 URL」的錯誤就不該再掛在卡片上
+  if (/公開圖片 URL/.test(String(entry.error || ''))) {
+    entry.error = '';
+    if (entry.status === 'error') entry.status = entry.prompt || entry.videoPrompt ? 'prompt' : 'todo';
+  }
   entry.updatedAt = new Date().toISOString();
   saveProduction(meta.id, production);
   res.json({ ok: true, production: productionPublic(meta, english), entry });

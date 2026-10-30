@@ -15,7 +15,7 @@ import ffmpegPath from 'ffmpeg-static';
 import { spawnSync } from 'node:child_process';
 
 import { jobDir } from './jobs.mjs';
-import { readBriefs } from './briefs.mjs';
+import { markBriefStale, readBriefs } from './briefs.mjs';
 import { chat, chatJson } from './llm.mjs';
 import {
   normalizeSpec,
@@ -28,6 +28,23 @@ import {
 } from './video.mjs';
 import { generateOmni, generateVeo } from './veo.mjs';
 import { renderHtmlToMp4 } from './renderer.mjs';
+
+/** 這台機器實際可用的字體檔。Pillow 的 load_default() 會靜默退回不可縮放的小點陣字，整支片子看起來就像沒做。 */
+const FONT_CANDIDATES = [
+  ['標題黑體', '/System/Library/Fonts/Supplemental/Arial Black.ttf'],
+  ['粗體', '/System/Library/Fonts/Supplemental/Arial Bold.ttf'],
+  ['等寬', '/System/Library/Fonts/Menlo.ttc'],
+  ['等寬備用', '/System/Library/Fonts/Supplemental/Courier New Bold.ttf'],
+];
+function fontBlock() {
+  const fonts = FONT_CANDIDATES.filter(([, file]) => fs.existsSync(file));
+  return [
+    'ENVIRONMENT（這台機器的事實，不要自行猜測字體名稱）:',
+    ...fonts.map(([label, file]) => `- ${label}：${file}`),
+    '- 用 ImageFont.truetype(絕對路徑, 字級) 讀上面的檔案；.ttc 用 index=0。',
+    '- 嚴禁 ImageFont.load_default()：它不可縮放，會讓所有標題變成看不見的小點陣字。字體載入失敗就直接 raise。',
+  ].join('\n');
+}
 import { extractPython, renderPythonToMp4, makeContactSheet } from './python-renderer.mjs';
 
 const running = new Map();
@@ -68,6 +85,13 @@ export function routeForType(type) {
   return 'card';
 }
 
+const PERSON_VIDEO_NEGATIVE = [
+  'cuts', 'jump cuts', 'multiple shots', 'cutaway', 'b-roll', 'insert shot',
+  'close-up of laptop', 'close-up of hands', 'close-up of desk', 'computer screen insert',
+  'camera movement', 'zoom', 'pan', 'dolly', 'handheld shake', 'different angle',
+  'changing framing', 'person leaving frame', 'cropped face', 'text', 'subtitles', 'watermark',
+].join(', ');
+
 const FLOW_TEMPLATE = `根據我提供的場景圖、三視圖和文案生成影片。
 
 硬性要求：
@@ -77,6 +101,9 @@ const FLOW_TEMPLATE = `根據我提供的場景圖、三視圖和文案生成影
 4. 三視圖用來確認結構、比例和細節，可作為輕微參考疊圖，但不能改變主畫面視角，也不能替換場景圖。
 5. 除人物嘴型外，可加入非常輕微的表情變化、眨眼、呼吸、頭部小幅度自然點頭，以及細微光影變化。
 6. 禁止任何相機運動，禁止新增鏡頭，禁止切換角度，禁止特寫切換，禁止環繞拍攝。
+7. 全程單一連續鏡頭（single continuous shot）：不剪切、不跳切、不插入任何 B-roll、空鏡或多機位畫面。
+8. 不給電腦特寫：不要推近、放大或單獨框出桌上的筆記本、螢幕、手、桌面或任何道具；不要生成電腦螢幕畫面。
+9. 人物必須一直留在畫面中央：頭頂到胸口完整可見，臉不被裁切，不側身走出畫面，不改換景別。
 
 文案：
 {{VO}}
@@ -91,6 +118,16 @@ export function flowPromptFor(beat = {}) {
 export function ensureProduction(meta, english) {
   const production = getProduction(meta.id);
   production.beats = production.beats || {};
+  // 服務在生成途中重啟時，entry 會永遠卡在 generating；這裡把它標成中斷，讓卡片可以重按。
+  if (!running.has(meta.id)) {
+    for (const entry of Object.values(production.beats)) {
+      if (entry?.status === 'generating') {
+        entry.status = entry.asset ? 'ready' : entry.baseAsset ? 'base' : 'error';
+        if (entry.status === 'error') entry.error = '生成被中斷（服務重啟），請重新生成。';
+        entry.updatedAt = new Date().toISOString();
+      }
+    }
+  }
   const valid = new Set();
   for (const beat of english.beats || []) {
     valid.add(beat.id);
@@ -116,13 +153,21 @@ export function ensureProduction(meta, english) {
       };
     } else {
       if (existing.voHash && existing.voHash !== voHash) {
+        // 口播改了：畫面素材、Base、Opus 腳本、指示詞全部作廢，否則會拿舊口的影片配新文案。
         existing.status = 'todo';
         existing.spec = null;
         existing.error = '';
         existing.asset = null;
         existing.segment = null;
+        existing.baseAsset = null;
+        existing.baseAssetDuration = null;
+        existing.opusPy = null;
+        existing.opusOutput = '';
+        existing.approved = false;
         existing.voHash = voHash;
+        existing.invalidatedAt = new Date().toISOString();
         if (beat.type === '人物口播') existing.videoPrompt = flowPromptFor(beat);
+        markBriefStale(meta.id, beat.id, '分鏡重生成後口播已改變');
       }
       if (
         beat.type === '人物口播' &&
@@ -168,6 +213,25 @@ export function referenceDir(id) {
   return dir;
 }
 
+/** 同一套課程通常共用同一組參考圖；上傳新圖時沿用最近一次填過的公開 URL，省得每一拍都重填。 */
+export function reuseKnownRefUrl(production, beatId, kind) {
+  const target = production.beats?.[beatId];
+  if (!target) return '';
+  if (String(target.refUrls?.[kind] || '').trim()) return target.refUrls[kind];
+  const candidates = Object.values(production.beats || {})
+    .filter((entry) => entry && entry.id !== beatId)
+    .map((entry) => ({
+      url: String(entry.refUrls?.[kind] || '').trim(),
+      at: Date.parse(entry.updatedAt || 0) || 0,
+    }))
+    .filter((item) => item.url)
+    .sort((a, b) => b.at - a.at);
+  if (!candidates.length) return '';
+  target.refUrls = target.refUrls || {};
+  target.refUrls[kind] = candidates[0].url;
+  return candidates[0].url;
+}
+
 export function saveReference(meta, production, beatId, kind, tempPath, originalName = '') {
   if (!['character', 'scene', 'face'].includes(kind)) {
     throw Object.assign(new Error('参考图类型无效。'), { status: 400 });
@@ -189,6 +253,7 @@ export function saveReference(meta, production, beatId, kind, tempPath, original
   }
   entry.refs = entry.refs || {};
   entry.refs[kind] = path.relative(productionDir(meta.id), target);
+  reuseKnownRefUrl(production, beatId, kind);
   entry.updatedAt = new Date().toISOString();
   saveProduction(meta.id, production);
   return entry;
@@ -447,6 +512,7 @@ export async function generateProduction({
     if (entry.approved) throw new Error(`第 ${beat.id} 拍已通過，先取消通過才能重新生成。`);
     entry.status = 'generating';
     entry.error = '';
+    entry.startedAt = new Date().toISOString();
     entry.updatedAt = new Date().toISOString();
     saveProduction(meta.id, production);
     onProgress?.(done, beats.length, `正在制作第 ${done + 1}/${beats.length} 拍…`);
@@ -516,7 +582,7 @@ export async function generateProduction({
                 model: videoModel,
                 baseUrl: settings.video.baseUrl,
                 prompt: videoPrompt,
-                negativePrompt: spec.negativePrompt,
+                negativePrompt: [spec.negativePrompt, PERSON_VIDEO_NEGATIVE].filter(Boolean).join(', '),
                 aspectRatio: settings.video.aspectRatio || '16:9',
                 resolution: settings.video.resolution || '1080p',
                 durationSeconds: baseDuration,
@@ -532,7 +598,7 @@ export async function generateProduction({
                 model: videoModel,
                 baseUrl: settings.video.baseUrl,
                 prompt: videoPrompt,
-                negativePrompt: spec.negativePrompt,
+                negativePrompt: [spec.negativePrompt, PERSON_VIDEO_NEGATIVE].filter(Boolean).join(', '),
                 aspectRatio: settings.video.aspectRatio || '16:9',
                 resolution: settings.video.resolution || '1080p',
                 durationSeconds: baseDuration,
@@ -970,7 +1036,7 @@ export async function startOpusPersonVideo(meta, english, beatId, provider, mode
     const entry = production.beats[beatId];
     if (entry.approved) throw new Error('这一拍已通過，先取消通過才能重新生成。');
     const brief = readBriefs(meta.id).find((item) => item.beatId === beatId);
-    if (!brief?.raw) throw new Error('这一拍还没有 AROLL XML。');
+    if (!brief?.raw) throw new Error('这一拍还没有 A-roll 指示詞。');
     if (!entry.baseAsset) throw new Error('这一拍还没有 Base 視頻，先完成 Base。');
     const dir = productionDir(meta.id);
     const baseFile = path.join(dir, entry.baseAsset);
@@ -995,7 +1061,7 @@ export async function startOpusPersonVideo(meta, english, beatId, provider, mode
     saveProduction(meta.id, production);
 
     const prompt = `You are Opus 5.5, a senior A-roll motion designer.
-Finish this talking-head A-roll using the provided BASE VIDEO FRAMES and the AROLL XML.
+Finish this talking-head A-roll using the provided BASE VIDEO FRAMES and the A-roll 指示詞 (Markdown).
 
 BASE FRAMES:
 - Local folder: base_frames/
@@ -1004,19 +1070,22 @@ BASE FRAMES:
 - These frames are the real person footage. NEVER replace, crop out, or regenerate the face/body/environment.
 - Only add overlays, type, UI cards, lower thirds, stage/PiP treatments, and motion graphics on top.
 
+${fontBlock()}
+
 TASK:
 Write a complete Python 3 / Pillow script that:
 1. Loads each base frame from base_frames/frame_%05d.png.
-2. Draws the AROLL overlays exactly as specified by the XML.
+2. Draws the overlays exactly as specified by the 指示詞: 版式（A1–A4）、舞台主色、卡片樣式、字體大小、動效節奏、轉場都照它執行。
 3. Saves every composited frame to frames/frame_%05d.png (start 00000, ${totalFrames} frames).
-4. Keeps the face visible and unobstructed; follow the AROLL sparse rules.
+4. Keeps the face visible and unobstructed; overlay only, never move or replace the person.
+4b. 指示詞裡若提到 HTML、Playwright、ffmpeg 或逐幀截圖，那是外部剪輯流程的做法；這裡你只能用 Pillow 逐幀繪製，請把同樣的視覺效果換算成 Pillow 繪圖指令。
 5. Uses only PIL, numpy, math, os, sys, json, colorsys, typing, dataclasses.
 6. No subprocess, no network, no external image files, no randomness.
 7. All on-screen text must be verbatim from the XML; do not invent copy.
 8. Return ONLY the Python script, no Markdown fence, no explanation.
 9. Keep it compact and syntactically complete; target under 6000 characters. The last lines must write all ${totalFrames} frames.
 
-AROLL XML:
+A-ROLL 指示詞:
 ${brief.raw}`;
 
     progress.set(meta.id, { pct: 12, message: 'Opus 5.5 正在設計 A-roll 疊加層…' });
@@ -1041,11 +1110,43 @@ ${brief.raw}`;
 
     progress.set(meta.id, { pct: 35, message: '把 AROLL 疊加到 Base 畫面上…' });
     const asset = assetPathFor(meta.id, beat.id, 'mp4');
+    let audioFile = '';
+    let hasBaseAudio = false;
+    try {
+      hasBaseAudio = Boolean((await probeMedia(baseFile)).hasAudio);
+    } catch {
+      hasBaseAudio = false;
+    }
+    if (hasBaseAudio) {
+      audioFile = baseFile;
+    } else {
+      const ttsPath = ttsCachePath(dir, beat);
+      try {
+        const ttsDuration = await synthesizeTts(beat.vo, ttsPath, { voice: 'Samantha', rate: 165 });
+        audioFile = ttsPath;
+        entry.voice = 'TTS · Samantha';
+        if (ffmpegPath && ttsDuration > 0.25 && ttsDuration < duration - 0.15) {
+          const fitted = path.join(dir, 'tts', `${beatId}-fit.wav`);
+          const tempo = Math.max(0.5, Math.min(2, ttsDuration / duration));
+          const fit = spawnSync(ffmpegPath, [
+            '-y', '-loglevel', 'error', '-i', ttsPath,
+            '-filter:a', `atempo=${tempo.toFixed(4)}`, '-t', duration.toFixed(3), fitted,
+          ], { encoding: 'utf8' });
+          if (fit.status === 0 && fs.existsSync(fitted)) {
+            audioFile = fitted;
+            entry.voice = `TTS · Samantha · 對齊 ${duration.toFixed(1)}s`;
+          }
+        }
+      } catch {
+        entry.voice = '';
+      }
+    }
     await renderPythonToMp4({
       script: python,
       outFile: asset,
       duration,
       inputDir: framesDir,
+      audioFile,
       onProgress: (pct, message) => {
         progress.set(meta.id, { pct: Math.min(96, 35 + Math.round(pct * 0.6)), message });
       },

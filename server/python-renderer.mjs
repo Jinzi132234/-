@@ -112,20 +112,26 @@ export async function renderPythonToMp4({
       '-framerate', String(fps),
       '-start_number', String(startNumber),
       '-i', pattern,
+    ];
+    if (audioFile && fs.existsSync(audioFile)) args.push('-i', audioFile);
+    args.push(
       '-t', String(seconds),
       '-vf', `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:black`,
       '-r', String(fps),
+      '-map', '0:v:0',
+    );
+    if (audioFile && fs.existsSync(audioFile)) {
+      args.push('-map', '1:a:0', '-af', 'apad', '-c:a', 'aac', '-b:a', '160k');
+    } else {
+      args.push('-an');
+    }
+    args.push(
       '-c:v', 'libx264',
       '-preset', 'veryfast',
       '-crf', '20',
       '-pix_fmt', 'yuv420p',
       '-movflags', '+faststart',
-    ];
-    if (audioFile && fs.existsSync(audioFile)) {
-      args.push('-i', audioFile, '-map', '0:v:0', '-map', '1:a:0', '-c:a', 'aac', '-b:a', '160k', '-shortest');
-    } else {
-      args.push('-an');
-    }
+    );
     args.push(outFile);
     const encoded = spawnSync(ffmpegPath, args, { encoding: 'utf8' });
     if (encoded.status !== 0 || !fs.existsSync(outFile)) {

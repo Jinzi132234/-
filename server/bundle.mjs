@@ -167,7 +167,7 @@ function buildReviewHtml(meta, timeline, clips) {
   .head { max-width:1500px; margin:0 auto; padding:24px 24px 10px; }
   h1 { font-size:22px; margin:0 0 5px; }
   .meta { color:var(--muted); font-size:11.5px; }
-  .app { max-width:1500px; margin:0 auto; padding:10px 24px 40px; display:grid; grid-template-columns:330px minmax(0,1fr); gap:16px; align-items:start; }
+  .app { max-width:1600px; margin:0 auto; padding:10px 24px 40px; display:grid; grid-template-columns:320px minmax(0,1fr); gap:16px; align-items:start; }
   .playlist { background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; max-height:calc(100vh - 150px); overflow-y:auto; }
   .pl-head { position:sticky; top:0; z-index:1; background:#fff; border-bottom:1px solid var(--line); padding:10px 12px; font-size:11px; color:var(--muted); display:flex; justify-content:space-between; }
   .pl-item { width:100%; text-align:left; border:0; border-bottom:1px solid #f0ede7; background:#fff; padding:9px 11px; cursor:pointer; }
@@ -177,24 +177,26 @@ function buildReviewHtml(meta, timeline, clips) {
   .pl-num { font:9px var(--mono); color:var(--muted); }
   .pl-type { font-size:9px; padding:1px 5px; border-radius:4px; background:#f1f2f4; color:#555b64; }
   .pl-time { margin-left:auto; font:8.5px var(--mono); color:var(--accent-deep); }
-  .pl-zh { font-size:10.5px; color:#4c535c; line-height:1.45; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
-  .pl-en { margin-top:2px; font-size:8.5px; color:#999; overflow:hidden; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; }
-  .stage { min-width:0; }
+  .pl-zh { font-size:12px; color:#4c535c; line-height:1.5; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .pl-en { margin-top:3px; font-size:10px; color:#8a919b; line-height:1.4; overflow:hidden; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; }
+  .stage { min-width:0; display:grid; grid-template-columns:minmax(0,1fr) 370px; gap:12px; align-items:start; }
   .player-wrap { background:#000; border-radius:12px; overflow:hidden; border:1px solid #222; }
   #player { display:block; width:100%; max-height:62vh; aspect-ratio:16/9; background:#000; }
-  .now { margin-top:10px; background:#fff; border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+  .now { margin-top:0; background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
   .now-head { display:flex; align-items:center; gap:7px; margin-bottom:7px; }
   .now-num { font:9px var(--mono); color:var(--muted); }
   .now-type { font-size:9px; padding:1px 6px; border-radius:4px; background:#f1f2f4; }
   .now-time { margin-left:auto; font:9px var(--mono); color:var(--accent-deep); }
-  .now-zh { font-size:13px; line-height:1.7; margin:3px 0; }
-  .now-en { color:var(--muted); font-size:11px; line-height:1.55; }
-  .now-visual { margin-top:7px; color:#8a919b; font-size:10px; }
+  .copy-label { color:#b0a79b; font-size:9px; letter-spacing:.8px; margin-top:2px; }
+  .now-zh { font-size:18px; line-height:1.75; margin:8px 0 10px; font-weight:500; }
+  .now-en { color:#4f5864; font-size:13px; line-height:1.6; }
+  .now-visual { margin-top:10px; padding-top:8px; border-top:1px solid #f0ede7; color:#8a919b; font-size:11px; line-height:1.5; }
   .nav { display:flex; gap:7px; margin-top:9px; }
   .nav button, .download { border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:7px; padding:6px 11px; font-size:10px; cursor:pointer; text-decoration:none; }
   .nav button:hover, .download:hover { border-color:var(--accent); color:var(--accent-deep); }
   .nav .download { margin-left:auto; }
   .hint { margin-top:8px; color:#999; font-size:9px; }
+  @media (max-width:1250px) { .stage { grid-template-columns:1fr; } #player { max-height:52vh; } }
   @media (max-width:900px) { .app { grid-template-columns:1fr; padding:8px 12px 30px; } .playlist { max-height:230px; } .head { padding:16px 14px 6px; } }
 </style>
 </head>
@@ -212,7 +214,9 @@ function buildReviewHtml(meta, timeline, clips) {
     <div class="player-wrap"><video id="player" controls preload="metadata" playsinline></video></div>
     <div class="now">
       <div class="now-head"><span class="now-num" id="nowNum">#01</span><span class="now-type" id="nowType"></span><span class="now-time" id="nowTime"></span></div>
+      <div class="copy-label">中文文案</div>
       <div class="now-zh" id="nowZh"></div>
+      <div class="copy-label">英文文案</div>
       <div class="now-en" id="nowEn"></div>
       <div class="now-visual" id="nowVisual"></div>
       <div class="nav">

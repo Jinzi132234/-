@@ -157,6 +157,121 @@ function ensureCardTextInSource(raw, cardSpec) {
     : `${raw}\n<source>\n${block}\n</source>`;
 }
 
+function stripDocFence(text = '') {
+  let clean = String(text || '').trim();
+  clean = clean.replace(/^```(?:markdown|md)?\s*\n/i, '').replace(/\n```\s*$/i, '');
+  return clean.trim();
+}
+
+/** A-roll: follow skills/aroll-motion-prompts/SKILL.md and return a Markdown 指示词 document. */
+async function generateArollInstructions({ meta, beat, provider, model, clip = {}, signal }) {
+  const skill = read(SKILL_PATH);
+  if (!skill) throw new Error('找不到 A-roll 提示詞 SKILL.md。');
+  const briefs = readBriefs(meta.id);
+  const usedState = readUsedState('aroll', briefs);
+  const plate = usedState.next.plate;
+  const seconds = Math.max(3, Number(beat.estSeconds) || Math.round((beat.words || 0) / 2.5) || 8);
+  const clipNote = clip.hasVideoClip
+    ? `已上傳這一拍的無動效 Base 人物視頻，時長 ${Number(clip.duration || 0).toFixed(2)} 秒；鏡頭時間軸以這個長度為準。`
+    : `這一拍還沒有 Base 人物視頻；鏡頭時間軸按 ${seconds} 秒估算。`;
+
+  const system = `你是 A-roll 指示詞生成器，嚴格按照下面的 SKILL 寫作。
+
+<SKILL>
+${skill}
+</SKILL>
+
+<WORKBENCH_CONTRACT>
+你現在在工作台裡生成，沒有 shell、ffprobe、ffmpeg、whisper，也讀不到視頻檔。
+
+這份 SKILL 是一份「API 段」的成品範例：它的鏡頭內容（API、Claude Code、Codex…）只是格式示範，
+不要照抄內容，要按本次輸入的 vo 重新設計鏡頭。
+
+必須遵守：
+- 【人物画面硬性约束】那 5 條（single continuous shot / no cuts / no laptop close-up / 固定機位 / 只用原片）
+  是最高優先級，要原樣寫進你這份文件的第 0 部分，一條都不能省。
+- 人臉平移量沿用範例已量好的值：A2 left -781 top 0、A4 960×540 left -336 top -10、A3 left 496。
+  只有當輸入明確說這一拍的臉不在 x≈1040 時，才改成佔位符並在文件末尾列「需要實測後填寫」。
+- 時間軸：鏡頭從 0 秒開始連續排，總長等於給定秒數，切點放在句子開始前約 0.3 秒。
+  版式輪換：A2 和 A4 交替，不要連續兩個鏡頭同一版式；每換一個鏡頭換一個舞台主色。
+- 只做 A-roll，每個鏡頭都有人臉，不寫任何 B-roll 鏡頭。
+- 直接輸出 Markdown 文件本體：不要用代碼圍欄把整份文件包起來，不要開場白、不要解釋。
+  文件內部該用代碼塊的地方（模板 0、鏡頭模塊）照範例用代碼塊。
+- 文件順序：使用方法與硬性約束 → 素材表 → 鏡頭總表 → 第 0 部分（模板 0）→ 每個鏡頭一個代碼塊 → 最後拼接步驟。
+- 屏幕上的字用口播的語言（通常是英文），其餘用中文。
+</WORKBENCH_CONTRACT>`;
+
+  const user = JSON.stringify(
+    {
+      mode: 'aroll',
+      plate,
+      beatId: beat.id,
+      vo: beat.vo,
+      visual: beat.visual,
+      seconds,
+      words: beat.words,
+      clip: clipNote,
+      previous: previousPlates(briefs).map((item) => ({ title: item.role || '', plate: item.plate })),
+    },
+    null,
+    1,
+  );
+
+  const call = (messages) => chat(provider, {
+    model,
+    messages,
+    temperature: 0.6,
+    maxTokens: 12000,
+    jsonMode: false,
+    signal,
+    retries: 2,
+  });
+
+  let result = await call([
+    { role: 'system', content: system },
+    { role: 'user', content: user },
+  ]);
+  let doc = stripDocFence(result.text);
+  if (!doc || doc.length < 300) {
+    result = await chat(provider, {
+      model,
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: user },
+        { role: 'assistant', content: doc || '（空）' },
+        { role: 'user', content: '這份不完整。請重新輸出完整指示詞文件，直接從標題開始，不要任何解釋。' },
+      ],
+      temperature: 0.4,
+      maxTokens: 12000,
+      jsonMode: false,
+      signal,
+      retries: 2,
+    });
+    doc = stripDocFence(result.text);
+  }
+  if (!doc || doc.length < 300) {
+    throw new Error('模型沒有產出可用的 A-roll 指示詞（內容太短）。請再按一次生成。');
+  }
+  if (!/【镜头】|【鏡頭】|镜头总表|鏡頭總表/.test(doc)) {
+    throw new Error('模型輸出缺少鏡頭段落（沒找到【镜头】或鏡頭總表）。請再按一次生成。');
+  }
+
+  const saved = addBrief(meta.id, {
+    xml: doc,
+    filename: `aroll-${plate}.md`,
+    beatId: beat.id,
+    format: 'md',
+  });
+  rememberUsed('aroll', plate, [], beat.id, meta.id);
+  saved.brief.codes = [];
+  return {
+    brief: saved.brief,
+    briefs: saved.briefs,
+    usage: result.usage || null,
+    model: result.model,
+  };
+}
+
 export async function generateMotionBrief({
   meta,
   beat,
@@ -169,6 +284,9 @@ export async function generateMotionBrief({
   cardPrompt = '',
   signal,
 }) {
+  if (mode === 'aroll') {
+    return generateArollInstructions({ meta, beat, provider, model, clip, signal });
+  }
   const skill = read(SKILL_PATH);
   if (!skill) throw new Error('找不到 AROLL motion prompts SKILL.md。');
   const tristen = read(TRISTEN_PATH);

@@ -179,7 +179,7 @@
             <div class="vo-wrap" id="voWrap">
               <table class="vo-table">
                 <thead>
-                  <tr><th>#</th><th>畫面類型</th><th>English VO</th><th>畫面／字卡</th><th></th></tr>
+                  <tr><th>#</th><th>畫面類型</th><th>English VO</th><th>畫面</th><th></th></tr>
                 </thead>
                 <tbody id="voBody"></tbody>
               </table>
@@ -193,10 +193,9 @@
               <div>
                 <div class="eyebrow">STAGE 3 · PROMPTS</div>
                 <h3>提示詞</h3>
-                <p>人物口播：FLOW 提示詞＋場景圖＋三視圖 → Veo／Omni 生成無動效 Base → AROLL；Broll：直接從英文 VO 出 BROLL；實操不需要提示詞。</p>
+                <p>人物口播：FLOW 提示詞＋場景圖＋三視圖 → Veo／Omni 生成無動效 Base → A-roll 指示詞；實操不需要提示詞，直接上傳錄屏。</p>
               </div>
               <div class="prompt-actions">
-                <button class="btn small ghost" id="promptGenerateAll">生成缺少的 Broll 提示詞</button>
                 <button class="btn small primary" id="promptExport">導出全部提示詞</button>
                 <span class="prompt-progress" id="promptProgress"></span>
               </div>
@@ -212,7 +211,7 @@
               <div><span>轉寫</span><b>Whisper · 本機</b><em>已接入</em></div>
               <div><span>文案／英文分鏡</span><b>DeepSeek Flash</b><em>已接入</em></div>
               <div><span>Base 人物視頻</span><b id="modelBaseName">Veo／Omni</b><em id="modelBaseStatus">待配置</em></div>
-              <div><span>AROLL／BROLL</span><b>SKILL + DeepSeek</b><em>已接入</em></div>
+              <div><span>A-roll 指示詞</span><b>SKILL + DeepSeek</b><em>已接入</em></div>
               <div><span>最終製作</span><b id="modelOpusName">Opus 5.5</b><em id="modelOpusStatus">待配置</em></div>
               <div><span>剪輯</span><b>FFmpeg · 本機</b><em>已接入</em></div>
             </div>
@@ -221,7 +220,6 @@
               <button class="active" data-filter="all">全部</button>
               <button data-filter="pending">待處理</button>
               <button data-filter="person">人物口播</button>
-              <button data-filter="broll">Broll</button>
               <button data-filter="screen">實操</button>
             </div>
             <div class="prompt-list" id="promptList"></div>
@@ -236,7 +234,7 @@
               <button class="btn small ghost" id="prodGenerateBtn">生成提示詞</button>
               <button class="btn small primary" id="goEditBtn">下一步：剪輯 →</button>
             </div>
-            <div class="prod-hint-line">這一頁只生成提示詞，不直接做視頻。人物 Flow 影片、B-roll／B字卡 MP4、實操錄屏做好後，用卡片上的上傳按鈕放進來。</div>
+            <div class="prod-hint-line">這一頁只生成提示詞，不直接做視頻。人物 Flow 影片、實操錄屏做好後，用卡片上的上傳按鈕放進來。</div>
             <div class="prod-list" id="prodList"></div>
           </div>
 
@@ -246,7 +244,7 @@
                 <div>
                   <div class="eyebrow">STAGE 3 · ASSEMBLY</div>
                   <h3>剪輯成片</h3>
-                  <p>把製作台完成的素材按分鏡順序拼接，加入英文旁白與可選字幕。缺素材的拍會自動用字卡佔位。</p>
+                  <p>把製作台完成的素材按分鏡順序拼接，加入英文旁白與可選字幕。缺素材的拍會自動生成佔位卡。</p>
                 </div>
                 <div class="edit-actions">
                   <button class="btn ghost" id="editBackBtn">回製作台</button>

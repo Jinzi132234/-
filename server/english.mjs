@@ -30,11 +30,11 @@ function readSkill() {
 }
 
 export const SKILL_TEXT = readSkill();
-export const VO_LABELS = ['人物口播', 'B字卡', '實操'];
+export const VO_LABELS = ['人物口播', '實操'];
 const MAX_WORDS = 25;
 const WORDS_PER_SECOND = 2.5;
-const MAX_WORDS_BY_TYPE = { 人物口播: 30, B字卡: 35, 實操: 80 };
-const MAX_SECONDS_BY_TYPE = { 人物口播: 12, B字卡: 14, 實操: 36 };
+const MAX_WORDS_BY_TYPE = { 人物口播: 30, 實操: 80 };
+const MAX_SECONDS_BY_TYPE = { 人物口播: 12, 實操: 36 };
 function maxWordsFor(type) { return MAX_WORDS_BY_TYPE[type] || MAX_WORDS; }
 function maxSecondsFor(type) { return MAX_SECONDS_BY_TYPE[type] || 12; }
 
@@ -44,16 +44,15 @@ const OUTPUT_CONTRACT = `
 
 1. 你只输出一个 JSON 对象，不要输出 Markdown 表格、标题或解释。
 2. JSON 结构固定为：
-   {"beats":[{"type":"人物口播","vo":"English voiceover line","visual":"画面/字卡说明","sourceBlock":"b1"}]}
-3. type 必须是以下三个值之一，使用繁体中文：人物口播 / B字卡 / 實操。
-3a. 實操優先：如果這一段正在演示軟件、界面、點擊、輸入或螢幕操作，口播即使是在解釋概念，也必須標為 實操，畫面用當前的操作畫面承載；不要拆成 B字卡。
-3b. B字卡只在沒有可用操作畫面、或需要獨立概念圖時使用；不要為了配比把可被操作畫面覆蓋的概念硬拆成字卡。
-3c. 操作型章節的目標：實操 70–80%，人物口播主要 opening／轉場／結尾，B字卡只留給無法用操作畫面承載的概念。概念型章節（幾乎沒有可用 UI）則以 B字卡／人物為主，不要硬湊 70% 實操。
+   {"beats":[{"type":"人物口播","vo":"English voiceover line","visual":"画面说明","sourceBlock":"b1"}]}
+3. type 必须是以下两个值之一，使用繁体中文：人物口播 / 實操。禁止输出 B字卡，也不要生成任何字卡类、纯文字海报类镜头。
+3a. 實操優先：如果這一段正在演示軟件、界面、點擊、輸入或螢幕操作，口播即使是在解釋概念，也必須標為 實操，畫面用當前的操作畫面承載。
+3b. 沒有可用操作畫面的概念、原理、對比、清單、總結，一律寫成 人物口播，由主持人正面講；不要用字卡替代。
+3c. 操作型章節的目標：實操 70–80%，其餘用 人物口播（opening／轉場／結尾／概念）。概念型章節以 人物口播 為主，不要硬湊操作畫面。
 4. 每个 beat 对应一个镜头或一个连续操作段。vo 必须是英文。
-   - 人物口播：目標 8–12 秒（約 10 秒），最多 30 words；不要每句拆一拍，同一段連續說話合併到一個人物段落。
-   - B字卡：最多 35 words，朗读不超过 14 秒。
+   - 人物口播：每一拍必須 8–12 秒（約 10 秒）、25–30 words。寧可少幾拍，也不要一句一拍：把相鄰的 2–3 句合併成一個人物段落，口播文字用空格連起來。少於 8 秒的段落一定要和下一句併。
    - 實操：可以合并连续点击/输入/讲解为一个 15–36 秒的操作段，最多 80 words；不要每点一下鼠标就拆一拍。
-5. visual 用简体中文写，简洁说明观众看到什么：字卡文字、UI 操作步骤、主持人构图。不要把画面说明写进 vo。
+5. visual 用简体中文写，简洁说明观众看到什么：UI 操作步骤、主持人构图。不要把画面说明写进 vo。
 6. sourceBlock 必须是输入中真实存在的段落 id（例如 b1）。每个 beat 必须能追溯到某一段。
 7. 不要使用连字符或破折号（- — –）作为口播停顿；用逗号、句号或短句。
 8. 不要新增输入里没有的话题、模块、数据、承诺或 CTA。
@@ -61,12 +60,12 @@ const OUTPUT_CONTRACT = `
 
 function modeInstruction(mode) {
   if (mode === 'faceless') {
-    return `镜头模式：无露脸优先。操作型章節目標 實操 70–80%，其餘用 B字卡；人物口播最多 10%。概念型章節可以 B字卡 為主，不要硬湊實操。`;
+    return `镜头模式：无露脸。全片只用 實操（錄屏操作畫面）承接，不要人物口播，也不要字卡。`;
   }
   if (mode === 'auto') {
-    return `镜头模式：操作優先，按內容自動判斷。操作型章節目標 實操 70–80%；人物口播主要 opening／轉場／結尾；B字卡只用在沒有可用操作畫面的概念。概念型章節可以 B字卡／人物 為主，不要硬湊 70% 實操。`;
+    return `镜头模式：操作優先，按內容自動判斷。操作型章節目標 實操 70–80%；其餘用 人物口播（opening／轉場／結尾／概念）。不要字卡。`;
   }
-  return `镜头模式：操作優先的真人課程。操作型章節目標 實操 70–80%；人物口播主要 opening、章節轉場、結尾；實操段口播講概念時，只要操作畫面能承載，就留在實操，不要拆成 B字卡。B字卡只用在沒有可用操作畫面的概念。概念型章節可提高 B字卡／人物比例，按內容判斷，不要為了配比注水。`;
+  return `镜头模式：操作優先的真人課程。操作型章節目標 實操 70–80%；人物口播主要 opening、章節轉場、結尾，以及沒有可用操作畫面的概念。實操段口播講概念時，只要操作畫面能承載，就留在實操，不要拆成別的鏡頭。不要字卡。`;
 }
 
 export function computeWords(text) {
@@ -78,7 +77,7 @@ export function computeWords(text) {
 }
 
 export function computeStats(beats) {
-  const labels = { 人物口播: 0, B字卡: 0, 實操: 0 };
+  const labels = { 人物口播: 0, 實操: 0 };
   let words = 0;
   let maxWords = 0;
   const seconds = beats.reduce((sum, beat) => {
@@ -97,7 +96,6 @@ export function computeStats(beats) {
     labels,
     mix: {
       人物口播: Math.round((labels.人物口播 / count) * 100),
-      B字卡: Math.round((labels.B字卡 / count) * 100),
       實操: Math.round((labels.實操 / count) * 100),
     },
   };
@@ -114,9 +112,8 @@ function cleanText(value) {
 
 function normalizeType(value) {
   const text = String(value || '');
-  if (text.includes('人物') || /talking|host|face/i.test(text)) return '人物口播';
   if (text.includes('實操') || text.includes('实操') || /demo|screen|ui/i.test(text)) return '實操';
-  return 'B字卡';
+  return '人物口播';
 }
 
 function splitSentences(text) {
@@ -222,21 +219,29 @@ export function normalizeBeats(payload, allowedBlockIds = [], { splitLong = true
   return { beats, issues };
 }
 
-/** In a block that already has screen recording, prefer the live UI for concepts too. */
-export function promoteConceptBrollToScreen(beats = []) {
+/** B字卡 no longer exists. A stray card beat becomes 實操 when the same block already has live UI, otherwise a talking-head beat. */
+export function convertStrayCardBeats(beats = []) {
   const screenBlocks = new Set(
     beats.filter((beat) => beat.type === '實操' && beat.sourceBlock).map((beat) => beat.sourceBlock),
   );
   const uiVisual = /(界面|窗口|按鈕|按钮|點擊|点击|輸入|输入|屏幕|螢幕|软件|軟件|列表|聊天|设置|設置|操作|表单|表單|气泡|氣泡|截图|截圖|页面|頁面)/;
-  return beats.map((beat) => {
-    if (beat.type !== 'B字卡' || !beat.sourceBlock || !screenBlocks.has(beat.sourceBlock)) return beat;
-    if (!uiVisual.test(beat.visual || '')) return beat;
-    return {
-      ...beat,
-      type: '實操',
-      visual: `用當前操作畫面承載；${beat.visual || ''}`.trim(),
-      promotedFromBroll: true,
-    };
+  return beats.map((beat, index) => {
+    if (beat.type !== 'B字卡') return beat;
+    // 優先併進相鄰的錄屏段落，少開一條人物口播（人物口播每一拍都要生成一支影片）
+    const neighborScreen =
+      beats[index - 1]?.type === '實操' || beats[index + 1]?.type === '實操';
+    if (
+      neighborScreen ||
+      (beat.sourceBlock && screenBlocks.has(beat.sourceBlock) && uiVisual.test(beat.visual || ''))
+    ) {
+      return {
+        ...beat,
+        type: '實操',
+        visual: `用當前操作畫面承載；${beat.visual || ''}`.trim(),
+        promotedFromBroll: true,
+      };
+    }
+    return { ...beat, type: '人物口播', convertedFromBroll: true };
   });
 }
 
@@ -249,17 +254,19 @@ export function mergePersonBeats(beats = []) {
       last &&
       last.type === '人物口播' &&
       beat.type === '人物口播' &&
-      last.sourceBlock === beat.sourceBlock &&
       !last.warnings?.length &&
       !beat.warnings?.length &&
-      computeWords(`${last.vo} ${beat.vo}`) <= 25 &&
-      (Number(last.estSeconds) || 0) + (Number(beat.estSeconds) || 0) <= 10;
+      computeWords(`${last.vo} ${beat.vo}`) <= maxWordsFor('人物口播') &&
+      (Number(last.estSeconds) || 0) + (Number(beat.estSeconds) || 0) <= maxSecondsFor('人物口播');
     if (!canMerge) {
       out.push({ ...beat });
       continue;
     }
     last.vo = `${last.vo} ${beat.vo}`.replace(/\s{2,}/g, ' ').trim();
     last.visual = [last.visual, beat.visual].filter(Boolean).join('；');
+    if (beat.sourceBlock && beat.sourceBlock !== last.sourceBlock) {
+      last.sourceBlocks = [...new Set([...(last.sourceBlocks || [last.sourceBlock]).filter(Boolean), beat.sourceBlock])];
+    }
     last.words = computeWords(last.vo);
     last.estSeconds = Math.round((last.words / WORDS_PER_SECOND) * 10) / 10;
     last.merged = (last.merged || 1) + 1;
@@ -511,7 +518,7 @@ export async function generateEnglishBeats({
   }
 
   const personMerged = mergePersonBeats(all);
-  const promoted = promoteConceptBrollToScreen(personMerged);
+  const promoted = convertStrayCardBeats(personMerged);
   const merged = mergeScreenBeats(promoted);
   merged.forEach((beat, index) => {
     beat.id = `e${index + 1}`;

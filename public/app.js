@@ -1189,7 +1189,7 @@ function buildVoRow(beat, index) {
   const select = document.createElement('select');
   select.className = 'vo-type';
   select.dataset.beatId = beat.id;
-  for (const [value, label] of [['人物口播', '人物口播'], ['B字卡', 'Broll'], ['實操', '實操']]) {
+  for (const [value, label] of [['人物口播', '人物口播'], ['實操', '實操']]) {
     const option = document.createElement('option');
     option.value = value;
     option.textContent = label;
@@ -1218,7 +1218,7 @@ function buildVoRow(beat, index) {
   visual.className = 'vo-visual';
   visual.rows = 1;
   visual.value = beat.visual || '';
-  visual.placeholder = '字卡文字 / UI 步骤 / 主持人构图';
+  visual.placeholder = 'UI 步骤 / 主持人构图';
   visual.spellcheck = false;
   visualCell.appendChild(visual);
 
@@ -1238,7 +1238,7 @@ function buildVoRow(beat, index) {
 
   const refreshMeta = () => {
     metaText.textContent = `${beat.words} words · ≈${beat.estSeconds}s`;
-    metaText.className = beat.words > 25 ? 'over' : '';
+    metaText.className = beat.words > (beat.type === '實操' ? 80 : 30) ? 'over' : '';
     source.className = beat.warnings?.includes('chinese_in_vo') ? 'over' : '';
     row.classList.toggle('over', Boolean(beat.warnings?.length));
   };
@@ -1291,7 +1291,7 @@ function renderVoStats() {
     el.innerHTML = '';
     return;
   }
-  const counts = { 人物口播: 0, B字卡: 0, 實操: 0 };
+  const counts = { 人物口播: 0, 實操: 0 };
   let words = 0;
   let seconds = 0;
   let over = 0;
@@ -1300,8 +1300,9 @@ function renderVoStats() {
     const currentWords = beat.words || countEnglishWords(beat.vo);
     words += currentWords;
     seconds += beat.estSeconds || 0;
+    const wordLimit = beat.type === '實操' ? 80 : 30;
     if (
-      currentWords > 25 ||
+      currentWords > wordLimit ||
       /[\u4e00-\u9fff]/.test(beat.vo) ||
       /(?:^|\s)[—–]|\s-\s/.test(beat.vo)
     ) {
@@ -1313,7 +1314,6 @@ function renderVoStats() {
   el.innerHTML = `
     <span class="stat">${total} 拍</span>
     <span class="stat"><i class="dot d1"></i>人物 ${counts.人物口播} · ${pct(counts.人物口播)}%</span>
-    <span class="stat"><i class="dot d2"></i>Broll ${counts.B字卡} · ${pct(counts.B字卡)}%</span>
     <span class="stat"><i class="dot d3"></i>實操 ${counts.實操} · ${pct(counts.實操)}%</span>
     <span class="stat">${words} words · ≈${Math.round(seconds)}s</span>
     ${over ? `<span class="stat warn">${over} 拍待修正</span>` : ''}`;
@@ -1347,7 +1347,7 @@ async function saveEnglishEdits() {
 function voTableMarkdown() {
   const escape = (value) => String(value ?? '').replace(/\|/g, '\\|').replace(/\r?\n/g, '<br>');
   const lines = [
-    '| # | 畫面類型 | English VO | 畫面/字卡 |',
+    '| # | 畫面類型 | English VO | 畫面 |',
     '|---|----------|------------|-----------|',
   ];
   (state.english.beats || []).forEach((beat, index) => {
@@ -1491,7 +1491,7 @@ function promptTextFor(beat, entry = {}) {
 
 function downloadBriefXml(beat, brief, mode) {
   if (!brief?.raw) {
-    toast('這一拍還沒有 BROLL／AROLL XML', 'error');
+    toast(`這一拍還沒有 ${briefLabel(mode)}`, 'error');
     return;
   }
   const spec = state.production?.beats?.[beat.id]?.spec || {};
@@ -1502,7 +1502,9 @@ function downloadBriefXml(beat, brief, mode) {
     .split('-')
     .slice(0, 6)
     .join('-') || 'plate';
-  const filename = `plate-${brief.plate || 'x'}-${slug}-${mode}.xml`;
+  const filename = mode === 'aroll'
+    ? `aroll-${brief.plate || 'x'}-${slug}.md`
+    : `plate-${brief.plate || 'x'}-${slug}-${mode}.xml`;
   const blob = new Blob([brief.raw], { type: 'application/xml;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1516,6 +1518,10 @@ function downloadBriefXml(beat, brief, mode) {
 
 function typeLabel(type) {
   return type === 'B字卡' ? 'Broll' : type;
+}
+
+function briefLabel(mode) {
+  return mode === 'aroll' ? 'A-roll 指示詞' : 'BROLL XML';
 }
 
 function providerHasKey(providerId) {
@@ -1646,13 +1652,12 @@ function renderPrompts() {
   const entries = production.beats || {};
   const briefs = state.briefs || [];
   const filter = state.promptFilter || 'all';
-  const briefFor = (beat) => briefs.find((item) => item.beatId === beat.id);
+  const briefFor = (beat) => briefs.find((item) => item.beatId === beat.id && !item.stale);
   const pendingBeats = beats.filter((beat) => promptNeedsAction(beat, entries[beat.id] || {}, briefFor(beat)));
-  const order = { 人物口播: 0, B字卡: 1, 實操: 2 };
+  const order = { 人物口播: 0, 實操: 1 };
   const filtered = beats.filter((beat) => {
     if (filter === 'pending') return pendingBeats.some((item) => item.id === beat.id);
     if (filter === 'person') return beat.type === '人物口播';
-    if (filter === 'broll') return beat.type === 'B字卡';
     if (filter === 'screen') return beat.type === '實操';
     return true;
   }).sort((a, b) => (order[a.type] ?? 9) - (order[b.type] ?? 9));
@@ -1661,23 +1666,18 @@ function renderPrompts() {
     all: beats.length,
     pending: pendingBeats.length,
     person: beats.filter((beat) => beat.type === '人物口播').length,
-    broll: beats.filter((beat) => beat.type === 'B字卡').length,
     screen: beats.filter((beat) => beat.type === '實操').length,
   };
   const personBeats = beats.filter((beat) => beat.type === '人物口播');
-  const brollBeats = beats.filter((beat) => beat.type === 'B字卡');
   const screenBeats = beats.filter((beat) => beat.type === '實操');
   const basePending = personBeats.filter((beat) => !(entries[beat.id]?.baseAsset || entries[beat.id]?.asset)).length;
   const arollPending = personBeats.filter((beat) => !briefFor(beat)).length;
   const personFinalPending = personBeats.filter((beat) => !entries[beat.id]?.asset).length;
-  const brollPromptPending = brollBeats.filter((beat) => !briefFor(beat)).length;
-  const brollFinalPending = brollBeats.filter((beat) => !entries[beat.id]?.asset).length;
   const screenPending = screenBeats.filter((beat) => !entries[beat.id]?.asset).length;
   const summary = $('#promptSummary');
   if (summary) {
     summary.innerHTML = `
-      <div><b>人物口播 ${personBeats.length}</b><span>待 Base ${basePending} · 待 AROLL ${arollPending} · 待成片 ${personFinalPending}</span></div>
-      <div><b>Broll ${brollBeats.length}</b><span>待 BROLL ${brollPromptPending} · 待成片 ${brollFinalPending}</span></div>
+      <div><b>人物口播 ${personBeats.length}</b><span>待 Base ${basePending} · 待指示詞 ${arollPending} · 待成片 ${personFinalPending}</span></div>
       <div><b>實操 ${screenBeats.length}</b><span>待錄屏 ${screenPending} · 不需要提示詞</span></div>`;
   }
   const filterBox = $('#promptFilters');
@@ -1685,24 +1685,18 @@ function renderPrompts() {
     for (const button of filterBox.querySelectorAll('button')) {
       const key = button.dataset.filter;
       button.classList.toggle('active', key === filter);
-      const base = { all: '全部', pending: '待處理', person: '人物口播', broll: 'Broll', screen: '實操' }[key];
+      const base = { all: '全部', pending: '待處理', person: '人物口播', screen: '實操' }[key];
+      if (!base) continue;
       button.textContent = `${base} ${counts[key] || 0}`;
     }
   }
-  const topGenerate = $('#promptGenerateAll');
-  if (topGenerate) {
-    topGenerate.disabled = Boolean(production.running || state.motionBatch);
-    topGenerate.textContent = state.motionBatch ? '生成 Broll 中…' : '生成缺少的 Broll 提示詞';
-  }
   const progressLabel = $('#promptProgress');
   if (progressLabel) {
-    progressLabel.textContent = state.motionBatch
-      ? (state.motionBatchMessage || '生成 Broll 提示詞中…')
-      : state.motionGenerating.size
-        ? (state.motionMessage || '正在生成提示詞，最長 3 分鐘…')
-        : production.running
-          ? (production.progress?.message || '生成提示詞中…')
-          : '';
+    progressLabel.textContent = state.motionGenerating.size
+      ? (state.motionMessage || '正在生成提示詞，最長 3 分鐘…')
+      : production.running
+        ? (production.progress?.message || '生成提示詞中…')
+        : '';
   }
 
   list.innerHTML = '';
@@ -1720,7 +1714,8 @@ function renderPrompts() {
   filtered.forEach((beat) => {
     const index = beats.findIndex((item) => item.id === beat.id);
     const entry = entries[beat.id] || {};
-    const brief = briefs.find((item) => item.beatId === beat.id);
+    const brief = briefs.find((item) => item.beatId === beat.id && !item.stale);
+    const staleBrief = briefs.find((item) => item.beatId === beat.id && item.stale);
     const isPerson = beat.type === '人物口播';
     const isBroll = beat.type === 'B字卡';
 
@@ -1735,7 +1730,7 @@ function renderPrompts() {
         ? '不需要提示詞，直接上傳錄屏'
         : beat.type === 'B字卡'
           ? 'BROLL XML → Opus 製作'
-          : 'FLOW 提示詞 → Base → AROLL → Opus';
+          : 'FLOW 提示詞 → Base → 指示詞 → Opus';
       group.append(title, hint);
       fragment.appendChild(group);
     }
@@ -1804,8 +1799,11 @@ function renderPrompts() {
     vo.textContent = beat.vo;
     const stateBadge = document.createElement('span');
     stateBadge.className = 'prompt-state';
-    if (isPerson && !base) stateBadge.textContent = '待 Base 視頻';
-    else if (isPerson && brief) stateBadge.textContent = 'AROLL 已出';
+    if (isPerson && staleBrief && !brief) stateBadge.textContent = '指示詞已過期';
+    else if (isPerson && !base) stateBadge.textContent = '待 Base 視頻';
+    else if (isPerson && entry.asset) stateBadge.textContent = '成片已完成';
+    else if (isPerson && brief) stateBadge.textContent = '指示詞已出';
+    else if (isPerson) stateBadge.textContent = 'Base 就緒 · 待指示詞';
     else if (isBroll && brief) stateBadge.textContent = 'BROLL 已出';
     else if (isBroll) stateBadge.textContent = '待 BROLL';
     else stateBadge.textContent = entry.asset ? '錄屏已上傳' : '待錄屏';
@@ -1884,7 +1882,7 @@ function renderPrompts() {
       const details = document.createElement('details');
       details.className = 'flow-xml';
       const summary = document.createElement('summary');
-      summary.textContent = `查看 ${mode === 'aroll' ? 'AROLL' : 'BROLL'} XML · PLATE ${brief.plate || '—'}`;
+      summary.textContent = `查看 ${briefLabel(mode)} · PLATE ${brief.plate || '—'}`;
       const pre = document.createElement('pre');
       pre.textContent = brief.raw;
       details.append(summary, pre);
@@ -1893,10 +1891,10 @@ function renderPrompts() {
 
     const copyXml = (mode) => {
       if (!brief?.raw) return null;
-      return button('複製 XML', 'ghost', async () => {
+      return button(mode === 'aroll' ? '複製指示詞' : '複製 XML', 'ghost', async () => {
         try {
           await navigator.clipboard.writeText(brief.raw);
-          toast(`已複製 ${mode === 'aroll' ? 'AROLL' : 'BROLL'} XML`);
+          toast(`已複製 ${briefLabel(mode)}`);
         } catch {
           toast('浏览器不允许访问剪贴板', 'error');
         }
@@ -1905,13 +1903,13 @@ function renderPrompts() {
 
     const downloadXml = (mode) => {
       if (!brief?.raw) return null;
-      return button('下載 XML', 'ghost', () => downloadBriefXml(beat, brief, mode));
+      return button(mode === 'aroll' ? '下載指示詞' : '下載 XML', 'ghost', () => downloadBriefXml(beat, brief, mode));
     };
 
     const regenMotion = (mode, label) => {
       const busy = state.motionGenerating.has(beat.id);
       return button(
-        busy ? `${mode === 'broll' ? 'BROLL' : 'AROLL'} 生成中…` : label,
+        busy ? `${mode === 'broll' ? 'BROLL' : 'A-roll'} 生成中…` : label,
         'ghost',
         busy ? null : () => generateMotionForBeat(beat.id, mode),
         busy,
@@ -2011,9 +2009,14 @@ function renderPrompts() {
       };
       addUrlField('scene', '場景圖', 'https://.../scene.jpg');
       addUrlField('character', '人物三視圖', 'https://.../character.jpg');
+      const apiModels = /apimodels\.app/i.test(state.settings?.video?.baseUrl || '');
+      const missingUrlKinds = ['scene', 'character'].filter((kind) => !String(entry.refUrls?.[kind] || '').trim());
+      const urlMissing = apiModels && Boolean(entry.refs?.scene || entry.refs?.character) && missingUrlKinds.length > 0;
       const urlHint = document.createElement('div');
-      urlHint.className = 'flow-note';
-      urlHint.textContent = '用 APIMODELS 時必填公開圖片 URL；本機上傳只作預覽。URL 需可直接被外部讀取。';
+      urlHint.className = urlMissing ? 'flow-note is-warn' : 'flow-note';
+      urlHint.textContent = urlMissing
+        ? `⚠ 目前用 APIMODELS 生成，它只接受 https 公開圖片 URL，本機上傳的圖會被拒絕。還缺：${missingUrlKinds.map((kind) => (kind === 'scene' ? '場景圖' : '人物三視圖')).join('、')} 的公開 URL。`
+        : '用 APIMODELS 時必填公開圖片 URL；本機上傳只作預覽。URL 需可直接被外部讀取。';
       refGrid.after(urlGrid, urlHint);
 
       const baseActions = document.createElement('div');
@@ -2023,7 +2026,7 @@ function renderPrompts() {
       const videoLabel = /omni/i.test(videoModel)
         ? 'Omni 1.1 Flash'
         : videoModel || 'Veo／Omni';
-      const canGenerateBase = refsReady && Boolean(flowPrompt) && hasVideoKey && !entry.approved;
+      const canGenerateBase = refsReady && Boolean(flowPrompt) && hasVideoKey && !entry.approved && !urlMissing;
       const generateBase = button(
         `生成人物口播視頻${hasVideoKey ? `（${videoLabel}）` : ''}`,
         'primary',
@@ -2031,7 +2034,9 @@ function renderPrompts() {
         !canGenerateBase,
         !refsReady
           ? '先上傳場景圖＋人物三視圖，按鈕才會啟用'
-          : !flowPrompt
+          : urlMissing
+            ? 'APIMODELS 不接受本機圖片：請先填兩個 https 公開圖片 URL'
+            : !flowPrompt
             ? '先產生 FLOW 提示詞，按鈕才會啟用'
             : !hasVideoKey
               ? '到設定配置 Veo／Omni API Key 後才能直接生成；也可以先上傳 Base'
@@ -2044,7 +2049,9 @@ function renderPrompts() {
       baseStatus.className = 'flow-note';
       baseStatus.textContent = !refsReady
         ? '按鈕已保留：先上傳場景圖＋人物三視圖，才會從「不可按」變成可用。'
-        : !flowPrompt
+        : urlMissing
+          ? '參考圖與提示詞已就緒，但 APIMODELS 只吃公開 URL：把兩個 https 圖片 URL 填好就會解鎖。'
+          : !flowPrompt
           ? '參考圖已就緒；先產生 FLOW 提示詞，生成按鈕才會啟用。'
           : !hasVideoKey
             ? '參考圖與提示詞已就緒；配置 Veo／Omni Key 後即可按「生成人物口播視頻」，或先上傳 Base。'
@@ -2063,12 +2070,21 @@ function renderPrompts() {
       if (entry.status === 'generating') {
         const progress = document.createElement('div');
         progress.className = 'base-progress';
+        const started = Date.parse(entry.startedAt || entry.updatedAt || '') || Date.now();
+        progress.dataset.start = String(started);
         const label = document.createElement('div');
         label.className = 'base-progress-label';
-        label.textContent = entry.realtimeMessage || 'Omni 正在生成人物口播，請稍候…';
+        const msg = document.createElement('span');
+        msg.className = 'bp-msg';
+        msg.textContent = entry.realtimeMessage || 'Omni 正在生成人物口播，請稍候…';
+        const pctText = document.createElement('b');
+        pctText.className = 'bp-pct';
+        pctText.textContent = '0%';
+        label.append(msg, pctText);
         const track = document.createElement('div');
         track.className = 'base-progress-track';
         const bar = document.createElement('i');
+        bar.style.width = '0%';
         track.appendChild(bar);
         progress.append(label, track);
         basePlayer.appendChild(progress);
@@ -2102,20 +2118,20 @@ function renderPrompts() {
       const arollActions = document.createElement('div');
       arollActions.className = 'flow-actions';
       if (brief) {
-        arollActions.append(regenMotion('aroll', '重新生成 AROLL'), copyXml('aroll'), downloadXml('aroll'));
+        arollActions.append(regenMotion('aroll', '重新生成指示詞'), copyXml('aroll'), downloadXml('aroll'));
       } else if (base) {
-        arollActions.appendChild(regenMotion('aroll', '生成 AROLL 提示詞'));
+        arollActions.appendChild(regenMotion('aroll', '生成 A-roll 指示詞'));
       }
-      const arollStatus = brief ? `AROLL SKILL + DeepSeek · PLATE ${brief.plate || '—'}` : base ? 'AROLL SKILL + DeepSeek · 可生成' : '上傳 Base 後解鎖';
+      const arollStatus = brief ? `A-roll 指示詞 SKILL + DeepSeek · PLATE ${brief.plate || '—'}` : staleBrief ? '指示詞已過期，請重新生成' : base ? 'A-roll 指示詞 SKILL · 可生成' : '上傳 Base 後解鎖';
       const arollNodes = [arollActions];
       if (!base && !brief) {
         const locked = document.createElement('div');
         locked.className = 'flow-note';
-        locked.textContent = '先上傳無動效 Base 人物視頻，AROLL 才會解鎖。';
+        locked.textContent = '先上傳無動效 Base 人物視頻，A-roll 指示詞才會解鎖。';
         arollNodes.unshift(locked);
       }
       arollNodes.push(xmlBlock('aroll'));
-      body.appendChild(makeStep('3 · AROLL 提示詞', arollStatus, arollNodes));
+      body.appendChild(makeStep('3 · A-roll 指示詞', arollStatus, arollNodes));
 
       // 4. Opus 5.5 handoff / direct API render / final upload
       const opusActions = document.createElement('div');
@@ -2124,17 +2140,17 @@ function renderPrompts() {
       const opusBusy = entry.status === 'generating' || entry.approved;
       if (brief && base) {
         opusActions.appendChild(button(
-          opusBusy ? 'Opus 5.5 生成中…' : `用 Opus 5.5 生成最終視頻${opusReady ? '' : '（未配置 Key）'}`,
+          entry.approved ? '已通過並鎖定' : entry.status === 'generating' ? 'Opus 5.5 生成中…' : `用 Opus 5.5 生成最終視頻${opusReady ? '' : '（未配置 Key）'}`,
           'primary',
           opusReady && !opusBusy ? () => generateOpusVideo(beat.id) : null,
           !opusReady || opusBusy,
-          opusReady ? 'Base＋AROLL 直接送 Opus 5.5，完成後在下面播放' : '先到設定配置 Opus 5.5',
+          opusReady ? 'Base＋指示詞直接送 Opus 5.5，完成後在下面播放' : '先到設定配置 Opus 5.5',
         ));
       }
       if (brief) {
         opusActions.appendChild(button('複製給 Opus 5.5 的交接', 'ghost', async () => {
-          const text = `Base video: ${beat.id} (uploaded)\n\nAROLL XML:\n${brief.raw}\n\n把 Base 視頻和 AROLL XML 交給 Opus 5.5 製作最終人物視頻。`;
-          try { await navigator.clipboard.writeText(text); toast('已複製 AROLL 交接'); }
+          const text = `Base video: ${beat.id} (uploaded)\n\nA-roll 指示詞:\n${brief.raw}\n\n把 Base 視頻和這份指示詞交給 Opus 5.5 製作最終人物視頻。`;
+          try { await navigator.clipboard.writeText(text); toast('已複製 A-roll 交接'); }
           catch { toast('浏览器不允许访问剪贴板', 'error'); }
         }));
         opusActions.appendChild(uploadButton('asset', entry.asset ? '重新上傳最終視頻' : '上傳 Opus 最終視頻'));
@@ -2150,14 +2166,14 @@ function renderPrompts() {
           fill.style.width = `${Math.max(3, Math.min(100, pct))}%`;
           bar.appendChild(fill);
           const label = document.createElement('span');
-          label.textContent = production.progress?.message || 'Opus 5.5 正在把 AROLL 疊加到 Base…';
+          label.textContent = production.progress?.message || 'Opus 5.5 正在把指示詞疊加到 Base…';
           progress.append(bar, label);
           opusActions.appendChild(progress);
         }
       } else {
         const note = document.createElement('div');
         note.className = 'flow-note';
-        note.textContent = '先出 AROLL，才能把 Base＋AROLL 交給 Opus 5.5。';
+        note.textContent = '先出 A-roll 指示詞，才能把 Base＋指示詞交給 Opus 5.5。';
         opusActions.appendChild(note);
       }
       const opusNodes = [opusActions];
@@ -2182,7 +2198,7 @@ function renderPrompts() {
         finalVideo.src = `/api/jobs/${state.currentId}/production/asset/${beat.id}?v=${encodeURIComponent(entry.updatedAt || '')}`;
         opusNodes.push(finalLabel, finalVideo);
       }
-      body.appendChild(makeStep('4 · Opus 5.5 製作', `Opus 5.5 · ${entry.asset ? '最終視頻已完成' : brief ? (opusReady ? '已配置 · 待生成' : '未配置 Key') : '等待 AROLL'}`, opusNodes));
+      body.appendChild(makeStep('4 · Opus 5.5 製作', `Opus 5.5 · ${entry.asset ? '最終視頻已完成' : brief ? (opusReady ? '已配置 · 待生成' : '未配置 Key') : '等待指示詞'}`, opusNodes));
     } else if (isBroll) {
       // 1. BROLL from English VO
       const brollActions = document.createElement('div');
@@ -2206,7 +2222,7 @@ function renderPrompts() {
         const opusReady = taskConfigured('opus');
         const opusBusy = entry.status === 'generating' || entry.approved;
         opusActions.appendChild(button(
-          opusBusy ? 'Opus 5.5 製作中…' : `用 Opus 5.5 製作${opusReady ? '' : '（未配置 Key）'}`,
+          entry.approved ? '已通過並鎖定' : entry.status === 'generating' ? 'Opus 5.5 製作中…' : `用 Opus 5.5 製作${opusReady ? '' : '（未配置 Key）'}`,
           'primary',
           opusReady && !opusBusy ? () => generateOpusVideo(beat.id) : null,
           !opusReady || opusBusy,
@@ -2258,27 +2274,6 @@ function renderPrompts() {
   list.appendChild(fragment);
 }
 
-async function generateMissingBroll() {
-  const beats = state.english.beats || [];
-  const briefs = state.briefs || [];
-  const missing = beats.filter((beat) => beat.type === 'B字卡' && !briefs.some((brief) => brief.beatId === beat.id));
-  if (!missing.length) {
-    toast('所有 Broll 都已有 BROLL 提示詞');
-    return;
-  }
-  state.motionBatch = true;
-  for (let i = 0; i < missing.length; i += 1) {
-    const beat = missing[i];
-    state.motionBatchMessage = `生成 Broll ${i + 1}/${missing.length}…`;
-    renderPrompts();
-    await generateMotionForBeat(beat.id, 'broll');
-  }
-  state.motionBatch = false;
-  state.motionBatchMessage = '';
-  renderPrompts();
-  toast(`Broll 提示詞完成：${missing.length} 拍`);
-}
-
 function exportPromptsMarkdown() {
   const beats = state.english.beats || [];
   if (!beats.length) {
@@ -2290,9 +2285,10 @@ function exportPromptsMarkdown() {
   const lines = [`# ${state.job?.title || '课程视频'} · 提示詞`, '', `導出時間：${new Date().toLocaleString('zh-CN')}`, ''];
   beats.forEach((beat, index) => {
     const entry = entries[beat.id] || {};
-    const brief = briefs.find((item) => item.beatId === beat.id);
+    const brief = briefs.find((item) => item.beatId === beat.id && !item.stale);
+    const staleBrief = briefs.find((item) => item.beatId === beat.id && item.stale);
     const prompt = promptTextFor(beat, entry);
-    const motionLabel = beat.type === '人物口播' ? 'AROLL' : 'BROLL';
+    const motionLabel = beat.type === '人物口播' ? 'A-roll 指示詞' : 'BROLL';
     lines.push(`## #${String(index + 1).padStart(2, '0')} ${typeLabel(beat.type)}`);
     lines.push('');
     lines.push(`- English VO：${beat.vo}`);
@@ -2454,9 +2450,11 @@ function renderEdit() {
 function renderBriefs() {
   const list = $('#briefList');
   if (!list) return;
-  const briefs = state.briefs || [];
+  const allBriefs = state.briefs || [];
+  const briefs = allBriefs.filter((brief) => !brief.stale);
+  const staleCount = allBriefs.length - briefs.length;
   const count = $('#briefCount');
-  if (count) count.textContent = briefs.length ? `${briefs.length} 份` : '0';
+  if (count) count.textContent = briefs.length ? `${briefs.length} 份${staleCount ? `（${staleCount} 份已過期）` : ''}` : '0';
   const box = $('#editBriefsBox');
   const firstRender = !state.briefsRenderedKey;
   if (box && briefs.length && firstRender) box.open = true;
@@ -2468,7 +2466,9 @@ function renderBriefs() {
   list.innerHTML = '';
 
   if (!briefs.length) {
-    list.innerHTML = '<div class="brief-empty">還沒有剪輯指令。把 Grok Bot 產生的 plate XML 匯入，就會在這裡顯示 timed beats、風格鎖與 banned 清單。</div>';
+    list.innerHTML = staleCount
+      ? `<div class="brief-empty">${staleCount} 份指示詞因為分鏡重生成、口播已改變而失效，已隱藏。重新生成 A-roll 指示詞後會出現在這裡。</div>`
+      : '<div class="brief-empty">還沒有剪輯指令。把 Grok Bot 產生的 plate XML 匯入，就會在這裡顯示 timed beats、風格鎖與 banned 清單。</div>';
     return;
   }
 
@@ -2706,32 +2706,23 @@ function buildProdCard(beat, index, entry) {
   }
 
   let personBriefBox = null;
-  if (beat.type === 'B字卡' || beat.type === '人物口播') {
-    const isAroll = beat.type === '人物口播';
-    const motionLabel = isAroll ? 'A-roll' : 'B-roll';
+  if (beat.type === '人物口播') {
+    const isAroll = true;
+    const motionLabel = 'A-roll';
     const brief = attachedBrief;
     const briefBox = document.createElement('div');
     briefBox.className = 'prod-brief';
     const generating = (state.motionGenerating || new Set()).has(beat.id);
 
     const makeMotionButton = (label) => {
-      const needsVideo = isAroll && !entry.asset;
-      const needsCardPrompt = !isAroll && !entry.prompt && !entry.spec;
+      const needsVideo = !entry.asset;
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'btn small ghost';
-      button.textContent = needsVideo
-        ? '上傳人物視頻後生成 AROLL'
-        : needsCardPrompt
-          ? '先生成 B字卡提示詞'
-          : generating ? '生成中…' : label;
-      button.disabled = generating || state.production.running || needsVideo || needsCardPrompt;
-      button.title = needsVideo
-        ? '先上傳這一拍的 Flow 人物視頻'
-        : needsCardPrompt
-          ? '先按生成提示詞，BROLL 會以 B字卡 prompt 為設計來源'
-          : '';
-      button.addEventListener('click', () => generateMotionForBeat(beat.id, isAroll ? 'aroll' : 'broll'));
+      button.textContent = needsVideo ? '上傳人物視頻後生成指示詞' : generating ? '生成中…' : label;
+      button.disabled = generating || state.production.running || needsVideo;
+      button.title = needsVideo ? '先上傳這一拍的 Flow 人物視頻' : '';
+      button.addEventListener('click', () => generateMotionForBeat(beat.id, 'aroll'));
       return button;
     };
 
@@ -2768,9 +2759,7 @@ function buildProdCard(beat, index, entry) {
       body.textContent = brief.vo || brief.title || '';
       const note = document.createElement('div');
       note.className = 'prod-brief-note';
-      note.textContent = isAroll
-        ? 'A-roll brief 只描述疊字／版式，不會生成人物影片；人物影片用上面的 VIDEO PROMPT。'
-        : 'B-roll brief 已掛上；工作台只出 XML，不直接渲染視頻，成品請上傳 B-roll MP4。';
+      note.textContent = 'A-roll brief 只描述疊字／版式，不會生成人物影片；人物影片用上面的 VIDEO PROMPT。';
       briefBox.append(head, body, note);
     } else {
       const actions = document.createElement('div');
@@ -2784,13 +2773,10 @@ function buildProdCard(beat, index, entry) {
       actions.appendChild(upload);
       const hint = document.createElement('div');
       hint.className = 'prod-brief-add-hint';
-      hint.textContent = isAroll
-        ? '動效指令（可選）：base 人物視頻生成後，再用 AROLL SKILL 產生疊字／版式 XML，交給 Claude 做動效。'
-        : '用 AROLL motion prompts SKILL，從這一拍 VO 產生 faceless B-roll XML；也可上傳 Grok Bot 的 plate XML。';
+      hint.textContent = '動效指示詞（可選）：base 人物視頻生成後，再用 A-roll 指示詞 SKILL 產生彩色 SaaS 卡片風的版式與動效指示，交給 Opus 5.5 製作。';
       briefBox.append(actions, hint);
     }
-    if (isAroll) personBriefBox = briefBox;
-    else main.appendChild(briefBox);
+    personBriefBox = briefBox;
   }
 
   const spec = entry.spec;
@@ -2885,7 +2871,7 @@ function buildProdCard(beat, index, entry) {
     const hint = document.createElement('div');
     hint.className = 'prod-hint';
     hint.textContent = refsReady
-      ? '這一頁只生成 VIDEO PROMPT 和 AROLL 指令；人物影片請在 Flow 做好後用「上傳 FLOW 視頻」放進來。'
+      ? '這一頁只生成 VIDEO PROMPT 和 A-roll 指示詞；人物影片請在 Flow 做好後用「上傳 FLOW 視頻」放進來。'
       : '這一頁只生成提示詞。人物參考圖可留著做 Flow 對照；人物影片做好後上傳 FLOW 視頻。';
     main.appendChild(hint);
   }
@@ -3011,6 +2997,14 @@ async function generateProduction(beatIds, mode = 'auto') {
 
 async function renderProductionVideo() {
   if (!state.currentId) return;
+  const readyBeats = (state.english.beats || []).filter((beat) => {
+    const entry = state.production?.beats?.[beat.id] || {};
+    return Boolean(entry.asset || entry.baseAsset);
+  });
+  if (!readyBeats.length) {
+    toast('目前 0 拍有素材：直接剪輯只會得到整支佔位卡。先上傳 Base 人物影片或錄屏。', 'error');
+    return;
+  }
   try {
     await api(`/api/jobs/${state.currentId}/production/render`, {
       method: 'POST',
@@ -3049,7 +3043,7 @@ async function generateOpusVideo(beatId) {
       entry.error = '';
     }
     state.production.running = true;
-    state.production.progress = { pct: 3, message: '正在把 Base＋AROLL 送給 Opus 5.5…' };
+    state.production.progress = { pct: 3, message: '正在把 Base＋A-roll 指示詞送給 Opus 5.5…' };
     renderPrompts();
     await api(`/api/jobs/${state.currentId}/production/opus/${beatId}`, { method: 'POST' });
     toast('Opus 5.5 正在製作影片…');
@@ -3081,7 +3075,7 @@ async function generateMotionForBeat(beatId, mode) {
   const timer = setTimeout(() => controller.abort(), 180000);
   state.motionGenerating.add(beatId);
   state.motionStartedAt.set(beatId, Date.now());
-  state.motionMessage = mode === 'broll' ? '正在生成 BROLL 提示詞（最長 3 分鐘）…' : '正在生成 AROLL 提示詞（最長 3 分鐘）…';
+  state.motionMessage = mode === 'broll' ? '正在生成 BROLL 提示詞（最長 3 分鐘）…' : '正在生成 A-roll 指示詞（最長 3 分鐘）…';
   renderProduction();
   renderPrompts();
   try {
@@ -3214,7 +3208,7 @@ async function uploadProductionAsset(file) {
     applyData(data);
     const beat = (state.english.beats || []).find((item) => item.id === beatId);
     if (beat?.type === '人物口播' && kind === 'base') {
-      toast('Base 人物視頻已上傳，正在用 SKILL 生成 AROLL…');
+      toast('Base 人物視頻已上傳，正在用 SKILL 生成 A-roll 指示詞…');
       await generateMotionForBeat(beatId, 'aroll');
     } else {
       toast(kind === 'base' ? 'Base 視頻已上傳' : '成片已上傳');
@@ -3232,7 +3226,7 @@ const EXPORT_TYPES = [
   { type: 'srt-en', title: '英文 SRT 字幕', desc: '原始英文时间轴，给剪辑师对轨', ext: '.en.srt', need: 'transcript' },
   { type: 'copy', title: '分段文案 Markdown', desc: '标题、时间码、口播正文、屏幕字', ext: '.md', need: 'copy' },
   { type: 'voice', title: '配音稿 TXT', desc: '按段落编号，带时长与字数估算', ext: '.txt', need: 'copy' },
-  { type: 'vo', title: '英文分鏡表 Markdown', desc: '# / 畫面類型 / English VO / 畫面字卡', ext: '.md', need: 'english' },
+  { type: 'vo', title: '英文分鏡表 Markdown', desc: '# / 畫面類型 / English VO / 畫面', ext: '.md', need: 'english' },
   { type: 'vo-json', title: '英文分鏡 JSON', desc: '分镜拍点、字数、预估时长与镜头类型', ext: '.json', need: 'english' },
   { type: 'json', title: '完整数据 JSON', desc: '字幕 + 分段 + 项目信息，便于二次加工', ext: '.json', need: 'transcript' },
 ];
@@ -3270,7 +3264,29 @@ function renderExportGrid() {
 async function previewExport(item) {
   if (item.type === 'bundle') {
     toast('正在打包交付包，完成後會自動下載…');
-    window.location.href = `/api/jobs/${state.currentId}/export/bundle`;
+    try {
+      const res = await fetch(`/api/jobs/${state.currentId}/export/bundle`);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        toast(data.error || `打包失敗（HTTP ${res.status}）`, 'error');
+        return;
+      }
+      const blob = await res.blob();
+      const disposition = res.headers.get('Content-Disposition') || '';
+      const match = disposition.match(/filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i);
+      const name = decodeURIComponent(match?.[1] || match?.[2] || 'delivery.zip');
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast('交付包已下載');
+    } catch (error) {
+      toast(error.message || '打包失敗', 'error');
+    }
     return;
   }
   $$('.export-card').forEach((card) => card.classList.remove('active'));
@@ -3509,14 +3525,14 @@ function renderSimpleSettings(body) {
       <div><span>文案分段</span><b>DeepSeek Flash</b></div>
       <div><span>英文分鏡</span><b>內建 SKILL + DeepSeek Flash</b></div>
       <div><span>FLOW 提示詞</span><b>DeepSeek Flash</b></div>
-      <div><span>AROLL 提示詞</span><b>AROLL SKILL + DeepSeek</b></div>
+      <div><span>A-roll 指示詞</span><b>A-roll SKILL + DeepSeek</b></div>
       <div><span>BROLL 提示詞</span><b>BROLL SKILL + DeepSeek</b></div>
       <div><span>Base 人物視頻</span><b>Flow／模型（未接入先上傳）</b></div>
       <div><span>Opus 5.5</span><b>外部交接</b></div>
       <div><span>Broll / 剪輯</span><b>本機 FFmpeg</b></div>
       <div><span>旁白</span><b>macOS Samantha</b></div>
     </div>
-    <div class="settings-note">其他步驟（轉寫／文案／英文／AROLL／BROLL）維持固定，不開放切換。</div>`;
+    <div class="settings-note">其他步驟（轉寫／文案／英文／A-roll 指示詞）維持固定，不開放切換。</div>`;
   body.appendChild(section);
 
   draft.tasks = draft.tasks || {};
@@ -3641,7 +3657,7 @@ function renderSettings() {
     ['revise', 'AI 改写'],
     ['english', '英文分鏡'],
     ['production', '製作方案'],
-    ['motion', 'AROLL / BROLL 指令'],
+    ['motion', 'AROLL 指令'],
   ];
   for (const [key, label] of tasks) {
     const row = document.createElement('div');
@@ -3725,7 +3741,7 @@ function renderSettings() {
     <div class="field-grid">
       <div class="field"><label>镜头模式</label><select data-eng="mode">
         <option value="oncamera" ${draft.english?.mode === 'oncamera' ? 'selected' : ''}>真人出镜（默认配比）</option>
-        <option value="faceless" ${draft.english?.mode === 'faceless' ? 'selected' : ''}>无露脸（B字卡 + 實操为主）</option>
+        <option value="faceless" ${draft.english?.mode === 'faceless' ? 'selected' : ''}>无露脸（只用實操錄屏）</option>
         <option value="auto" ${draft.english?.mode === 'auto' ? 'selected' : ''}>按内容自动</option>
       </select></div>
     </div>
@@ -4288,7 +4304,6 @@ function bindStaticEvents() {
   });
   $('#voCopyBtn').addEventListener('click', copyVoTable);
   $('#voDownloadBtn').addEventListener('click', downloadVoTable);
-  $('#promptGenerateAll')?.addEventListener('click', generateMissingBroll);
   $('#promptExport')?.addEventListener('click', exportPromptsMarkdown);
   $('#promptFilters')?.addEventListener('click', (event) => {
     const target = event.target.closest('button[data-filter]');
@@ -4371,3 +4386,25 @@ function bindStaticEvents() {
 }
 
 init();
+
+
+/** 影片生成 API 不给百分比，按已用时间估一条会走的进度：200 秒到 96%，完成时跳 100%。 */
+function estimateBasePct(elapsedSec) {
+  const expected = 200;
+  return Math.min(96, (elapsedSec / expected) * 100);
+}
+
+function tickBaseProgress() {
+  for (const box of document.querySelectorAll('.base-progress')) {
+    const bar = box.querySelector('.base-progress-track i');
+    const pctEl = box.querySelector('.bp-pct');
+    if (!bar || !pctEl) continue;
+    const start = Number(box.dataset.start) || Date.now();
+    const elapsed = Math.max(0, (Date.now() - start) / 1000);
+    const pct = estimateBasePct(elapsed);
+    bar.style.width = `${pct.toFixed(1)}%`;
+    pctEl.textContent = `${Math.round(pct)}% · ${Math.round(elapsed)}s`;
+  }
+}
+
+setInterval(tickBaseProgress, 1000);

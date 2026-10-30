@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Translate Workbench · 交付预览（排版示意）</title>
+<style>
+  :root { --ink:#1f2329; --muted:#69707a; --line:#e5e2dc; --pale:#f7f4ef; --accent:#d97b4a; --accent-deep:#a95025; --mono:"SFMono-Regular","SF Mono",Menlo,Consolas,monospace; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:flex; flex-direction:column; background:#f4f1eb; color:var(--ink); font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .head { max-width:1600px; width:100%; margin:0 auto; padding:22px 24px 4px; }
+  h1 { font-size:23px; margin:0 0 5px; }
+  .meta { color:var(--muted); font-size:11.5px; }
+  .demo-note { display:inline-block; margin-top:9px; border:1px solid #ead4c0; background:#fff8f1; color:#9a6a2f; border-radius:6px; padding:4px 8px; font-size:10px; }
+  .app { max-width:1600px; width:100%; flex:1; margin:0 auto; padding:10px 24px 28px; display:grid; grid-template-columns:300px minmax(0,1fr); gap:16px; align-content:center; align-items:start; }
+  .playlist { background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; max-height:calc(100vh - 190px); overflow-y:auto; }
+  .pl-head { position:sticky; top:0; z-index:1; background:#fff; border-bottom:1px solid var(--line); padding:11px 13px; font-size:11px; color:var(--muted); display:flex; justify-content:space-between; }
+  .pl-item { width:100%; text-align:left; border:0; border-bottom:1px solid #f0ede7; background:#fff; padding:10px 12px; cursor:pointer; }
+  .pl-item:hover { background:#fdf7f1; }
+  .pl-item.active { background:#fdf0e5; box-shadow:inset 3px 0 0 var(--accent); }
+  .pl-top { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+  .pl-num { font:9px var(--mono); color:var(--muted); }
+  .pl-type { font-size:9px; padding:1px 5px; border-radius:4px; background:#f1f2f4; color:#555b64; }
+  .pl-time { margin-left:auto; font:8.5px var(--mono); color:var(--accent-deep); }
+  .pl-zh { font-size:12px; color:#4c535c; line-height:1.5; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .pl-en { margin-top:3px; font-size:10px; color:#8a919b; line-height:1.4; overflow:hidden; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; }
+  .stage { min-width:0; display:grid; grid-template-columns:minmax(0,1fr) 390px; gap:12px; align-items:stretch; }
+  .player-wrap { background:#000; border-radius:12px; overflow:hidden; border:1px solid #222; height:100%; display:flex; align-items:center; justify-content:center; }
+  #player { display:block; width:100%; height:100%; max-height:min(70vh,760px); background:#000; object-fit:contain; }
+  .now { margin-top:0; background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px 18px; display:flex; flex-direction:column; }
+  .now-head { display:flex; align-items:center; gap:7px; margin-bottom:6px; }
+  .now-num { font:9px var(--mono); color:var(--muted); }
+  .now-type { font-size:9px; padding:1px 6px; border-radius:4px; background:#f1f2f4; }
+  .now-time { margin-left:auto; font:9px var(--mono); color:var(--accent-deep); }
+  .copy-label { color:#a99f93; font-size:10px; letter-spacing:1px; margin-top:14px; }
+  .now-zh { font-size:21px; line-height:1.85; margin:9px 0 6px; font-weight:500; letter-spacing:.2px; }
+  .now-en { color:#4f5864; font-size:13.5px; line-height:1.7; }
+  .now-visual { margin-top:14px; padding-top:10px; border-top:1px solid #f0ede7; color:#8a919b; font-size:11.5px; line-height:1.6; }
+  .nav { display:flex; gap:7px; margin-top:auto; padding-top:18px; }
+  .nav button, .download { border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:7px; padding:6px 11px; font-size:10px; cursor:pointer; text-decoration:none; }
+  .nav button:hover, .download:hover { border-color:var(--accent); color:var(--accent-deep); }
+  .nav .download { margin-left:auto; }
+  .hint { margin-top:8px; color:#999; font-size:9px; }
+  @media (max-width:1250px) { .stage { grid-template-columns:1fr; } .player-wrap { height:auto; } #player { height:auto; aspect-ratio:16/9; max-height:52vh; } }
+  @media (max-width:900px) { .app { grid-template-columns:1fr; padding:8px 12px 30px; } .playlist { max-height:230px; } .head { padding:16px 14px 6px; } }
+</style>
+</head>
+<body>
+<header class="head">
+  <h1>5 2｜建立主管員工和群聊</h1>
+  <div class="meta">影片交付预览 · 示例 6 拍（全片 35 拍）· 點左邊任何一拍播放 · 10:00</div>
+  <div class="demo-note">排版示意版：所有列暫時共用 #01 的影片；正式匯出會是每一拍自己的 clips/ 檔案。</div>
+</header>
+<div class="app">
+  <aside class="playlist">
+    <div class="pl-head"><span>分鏡列表</span><span id="plCount">6 / 35 拍</span></div>
+    <div id="list"></div>
+  </aside>
+  <main class="stage">
+    <div class="player-wrap"><video id="player" controls preload="metadata" playsinline src="e1-final.mp4"></video></div>
+    <div class="now">
+      <div class="now-head"><span class="now-num" id="nowNum">#01</span><span class="now-type" id="nowType"></span><span class="now-time" id="nowTime"></span></div>
+      <div class="copy-label">中文文案</div>
+      <div class="now-zh" id="nowZh"></div>
+      <div class="copy-label">英文文案</div>
+      <div class="now-en" id="nowEn"></div>
+      <div class="now-visual" id="nowVisual"></div>
+      <div class="nav">
+        <button type="button" id="prev">← 上一拍</button>
+        <button type="button" id="next">下一拍 →</button>
+        <a class="download" href="e1-final.mp4" download>下載目前影片</a>
+      </div>
+      <div class="hint">正式交付包：review.html + clips/ + video/final.mp4；這份只是排版示意。</div>
+    </div>
+  </main>
+</div>
+<script>
+const SHOTS = [
+  {index:1,type:'人物口播',time:'00:00–00:10',zh:'這一節課我們先建立主管，然後再建立你的行銷團隊。',en:'In this lesson we build a supervisor first, and then your marketing team.',visual:'主持人正面口播，固定鏡頭'},
+  {index:2,type:'實操',time:'00:10–00:34',zh:'這是我已經建好的主管，下面有研究、數據、審核幾個員工。',en:'Here is the supervisor I already built, with research, data, and review workers under it.',visual:'MUSE 畫面：主管與員工列表'},
+  {index:3,type:'實操',time:'00:34–00:49',zh:'所以我只跟主管說話，它會把工作分給下面的人。',en:'So the supervisor manages everyone below it, and you only ever talk to one agent.',visual:'操作畫面：輸入任務、分配'},
+  {index:4,type:'Broll',time:'00:49–01:03',zh:'這裡用一張圖說明：一個主管，下面兩個團隊。',en:'One manager keeps the work from colliding, and saves you from chatting with everyone.',visual:'字卡：Supervisor → Team A / Team B'},
+  {index:5,type:'人物口播',time:'01:03–01:13',zh:'但如果所有事情都在同一個聊天框，很快就會亂。',en:'When we start with agents, everything happens in one chat box, and it gets messy fast.',visual:'主持人正面口播，輕微手勢'},
+  {index:6,type:'實操',time:'01:13–01:40',zh:'我先打開 Grokbot，建立一個新的員工，名字叫 General Manager。',en:"I have a prompt ready, so let's open Grokbot and create a new employee called General Manager.",visual:'畫面：新增 Bot、輸入名稱'}
+];
+const player=document.getElementById('player');
+let current=0;
+function select(i){
+  current=Math.max(0,Math.min(SHOTS.length-1,i));
+  const s=SHOTS[current];
+  document.getElementById('nowNum').textContent='#'+String(s.index).padStart(2,'0');
+  document.getElementById('nowType').textContent=s.type;
+  document.getElementById('nowTime').textContent=s.time;
+  document.getElementById('nowZh').textContent=s.zh;
+  document.getElementById('nowEn').textContent=s.en;
+  document.getElementById('nowVisual').textContent='畫面：'+s.visual;
+  document.querySelectorAll('.pl-item').forEach((el)=>el.classList.toggle('active',Number(el.dataset.index)===current));
+  player.currentTime=0;
+  player.play().catch(()=>{});
+}
+document.getElementById('prev').onclick=()=>select(current-1);
+document.getElementById('next').onclick=()=>select(current+1);
+document.addEventListener('keydown',(e)=>{if(e.key==='ArrowLeft')select(current-1);if(e.key==='ArrowRight')select(current+1);});
+SHOTS.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.type='button';b.className='pl-item';b.dataset.index=String(i);
+  b.innerHTML='<div class="pl-top"><span class="pl-num">#'+String(s.index).padStart(2,'0')+'</span><span class="pl-type"></span><span class="pl-time">'+s.time.split('–')[0]+'</span></div><div class="pl-zh"></div><div class="pl-en"></div>';
+  b.querySelector('.pl-type').textContent=s.type;
+  b.querySelector('.pl-zh').textContent=s.zh;
+  b.querySelector('.pl-en').textContent=s.en;
+  b.onclick=()=>select(i);
+  document.getElementById('list').appendChild(b);
+});
+select(0);
+</script>
+</body>
+</html>

@@ -121,6 +121,45 @@ function writeBriefs(jobId, briefs) {
   fs.writeFileSync(filePath(jobId), JSON.stringify({ briefs }, null, 2));
 }
 
+function firstHeading(md = '') {
+  const lines = String(md).split('\n');
+  const heading = lines.find((line) => /^#{1,3}\s+\S/.test(line.trim()));
+  if (heading) return heading.replace(/^#+\s*/, '').trim();
+  const shot = String(md).match(/【镜头】\s*([^\n]+)/);
+  if (shot) return shot[1].trim();
+  return lines.map((line) => line.trim()).find(Boolean) || 'A-roll 指示词';
+}
+
+/** A-roll 指示词 is plain Markdown (see skills/aroll-motion-prompts/SKILL.md), not XML. */
+export function parseMarkdownBrief(md, filename = '') {
+  const raw = text(md);
+  if (!raw) throw Object.assign(new Error('A-roll 指示词是空的。'), { status: 400 });
+  if (raw.length > MAX_XML) throw Object.assign(new Error('A-roll 指示词太大。'), { status: 413 });
+  const plateMatch = String(filename || '').match(/(?:plate|aroll)[-_ ]?(\d+)/i);
+  return {
+    format: 'md',
+    plate: plateMatch ? Number(plateMatch[1]) : null,
+    part: '',
+    title: firstHeading(raw).slice(0, 240),
+    filename: text(filename).slice(0, 200),
+    vo: '',
+    onScreen: '',
+    timed: [],
+    edit: [],
+    role: '',
+    source: '',
+    script: '',
+    stitch: '',
+    style: '',
+    icons: '',
+    ending: '',
+    banned: '',
+    selfCheck: '',
+    deliver: '',
+    raw,
+  };
+}
+
 
 function words(value = '') {
   return String(value)
@@ -152,8 +191,8 @@ export function matchBeatForBrief(vo, beats = [], usedBeatIds = new Set()) {
   return best && best.score >= 0.22 ? best : null;
 }
 
-export function addBrief(jobId, { xml, filename = '', beatId = null, beats = [] } = {}) {
-  const parsed = parseBriefXml(xml, filename);
+export function addBrief(jobId, { xml, filename = '', beatId = null, beats = [], format = 'xml' } = {}) {
+  const parsed = format === 'md' ? parseMarkdownBrief(xml, filename) : parseBriefXml(xml, filename);
   const briefs = readBriefs(jobId);
   const samePlate = briefs.find((brief) => brief.plate === parsed.plate && brief.beatId);
   let resolvedBeatId = beatId || samePlate?.beatId || null;
@@ -182,6 +221,19 @@ export function addBrief(jobId, { xml, filename = '', beatId = null, beats = [] 
   next.unshift(brief);
   writeBriefs(jobId, next);
   return { brief, briefs: next, autoMatched };
+}
+
+/** 分鏡重生成後，掛在該拍上的指示詞就不再有對應關係了；標記而不是刪除。 */
+export function markBriefStale(jobId, beatId, reason = '') {
+  const briefs = readBriefs(jobId);
+  let changed = 0;
+  const next = briefs.map((brief) => {
+    if (brief.beatId !== beatId || brief.stale) return brief;
+    changed += 1;
+    return { ...brief, stale: true, staleReason: reason, staleAt: new Date().toISOString() };
+  });
+  if (changed) writeBriefs(jobId, next);
+  return changed;
 }
 
 export function updateBrief(jobId, briefId, patch = {}) {

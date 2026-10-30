@@ -707,7 +707,7 @@ async function runEnglish({ meta, state, save, overrides }) {
   setStep(meta, step, {
     state: 'done',
     pct: 100,
-    message: `完成：${stats.beats} 拍 · 人物 ${stats.labels.人物口播} / B字卡 ${stats.labels.B字卡} / 實操 ${stats.labels.實操}`,
+    message: `完成：${stats.beats} 拍 · 人物 ${stats.labels.人物口播} / 實操 ${stats.labels.實操}`,
     finishedAt: new Date().toISOString(),
   });
   addLog(

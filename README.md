@@ -77,7 +77,7 @@ macOS 也可以直接双击 **`start.command`**，会自动启动服务并打开
 | AI 改寫 | DeepSeek Flash |
 | 英文分鏡 | 內建 SKILL + DeepSeek Flash |
 | 製作方案 VideoSpec | DeepSeek Flash |
-| AROLL / BROLL 指令 | DeepSeek Flash |
+| A-roll 指示詞 | DeepSeek Flash |
 | 人物視頻 | Flow 手動生成 → 上傳 MP4 |
 | Broll / 剪輯 / 旁白 | 本機 FFmpeg + macOS Samantha |
 
@@ -96,30 +96,26 @@ export HTTPS_PROXY=http://127.0.0.1:7892
 
 ---
 
-## AROLL / BROLL 指令生成器
+## A-roll 指示詞生成器
 
-工作台已內建 `skills/aroll-motion-prompts/SKILL.md`，可以直接由一拍的 VO 產生 A-roll / B-roll 的 plate XML，不用先回 Grok Bot。
+工作台已內建 `skills/aroll-motion-prompts/SKILL.md`（彩色 SaaS 卡片風），由一拍的 English VO 直接產出 **Markdown 指示詞**，貼給 Opus 5.5 就能製作影片。
 
-- **人物口播卡**：`AI 生成 A-roll 指令`
-- **Broll卡**：`AI 生成 B-roll 指令`
-- 也可以 `上傳 XML`，手動掛 Grok Bot / 其他來源的 plate
+- **人物口播卡**：`生成 A-roll 指示詞` / `重新生成指示詞` / `複製指示詞` / `下載指示詞`（`.md`）
+- 生成器會讀這一拍的 VO、visual、秒數（有 Base 影片就用實際時長），產出：
+  - 使用方法、素材表、鏡頭總表
+  - 第 0 部分：模板 0 共用風格說明（配色、組件、A1–A4 版式、動效詞典、轉場）
+  - 每個鏡頭一個代碼塊（座標、字號、顏色、秒數全部寫死）
+  - 最後的拼接步驟
+  - 「需要實測後填寫」清單
 
-生成器會：
+工作台裡沒有 ffprobe / whisper / 瀏覽器截圖這些工具，所以：
 
-- 讀這一拍的 English VO、visual、預估秒數
-- 套用 SKILL 的 A-roll / B-roll 規則
-- 掃描這個項目已用的 M/I/E code，要求下一個 plate 不要重複
-- 產出 `role / source / script_timed / style_lock / icons / end / edit / banned / self_check / deliver`
-- A-roll 自動檢查並補上 face-hero guard line
-- 把 XML 掛到該拍，剪輯頁可查看 timed beats、style lock、banned
+- 人臉平移量先寫成佔位符 `{A2_LEFT}` / `{A4_LEFT}` / `{A4_TOP}` / `{A3_LEFT}`，連同量法一起列在文件末尾
+- 時間軸按 VO 與實際 Base 時長自行排布，不是 Whisper 逐詞對齊；文件會標出秒數與實際檔長不一致的地方
 
-目前限制：
+Opus 5.5 那一步仍然輸出 Pillow 腳本在本機合成；指示詞裡描述的 HTML/Playwright 做法會要求 Opus 換算成 Pillow 繪圖。
 
-- 沒有逐拍影片時，timing 是 **ESTIMATED**，不是 Whisper-lock
-- SKILL 提到的 `Tristen B-roll motion prompts`（palette/icon/end code library）未提供；生成器用 SKILL + plate-131 範例推斷，code 會新增並描述，但不等於原本的完整 M/I/E 庫
-- 產生的是**指令 XML**，不是 MP4；B-roll 仍要 renderer 或上傳成品
-
-![AROLL / BROLL 按鈕](docs/motion-buttons.png)
+舊的 **B-roll / plate XML 路徑已不再從介面產生**（分鏡只剩 人物口播 + 實操）。`上傳 XML` 仍保留，用來手掛舊 plate。
 
 ---
 
@@ -131,23 +127,16 @@ export HTTPS_PROXY=http://127.0.0.1:7892
 
 ---
 
-## AROLL / BROLL 規則包
-
-已安裝兩份規則包：
+## 規則包（保留，不再參與 A-roll 生成）
 
 ```text
-skills/aroll-rules/          ← A-roll 規則、examples、USED-MIE
-skills/broll-rules/          ← B-roll 規則、examples、USED-MIE
-skills/aroll-motion-prompts/SKILL.md
-skills/tristen-b-roll-motion-prompts/SKILL.md
+skills/aroll-motion-prompts/SKILL.md      ← A-roll 指示詞（現行，彩色 SaaS 卡片風）
+skills/aroll-rules/                       ← 舊 MODS XML 規則、examples、USED-MIE
+skills/broll-rules/                       ← 舊 B-roll 規則、examples、USED-MIE
+skills/tristen-b-roll-motion-prompts/     ← 舊 B-roll 調色 / icon / end code
 ```
 
-生成時會同時載入：
-
-- AROLL SKILL
-- Tristen B-roll motion prompts
-- 對應模式（A/B）的 quick rules、完整運動規則、calibration
-- 對應模式的近期 XML 範例
+A-roll 生成現在只載入 `aroll-motion-prompts/SKILL.md`；`aroll-rules` 與 `broll-rules` 不再參與生成，留著是為了舊 plate XML 的脈絡與回溯。
 - `logs/USED-MIE.txt` 的已用碼
 
 M/I/E 與 plate 會從全域 log 接續，不再從 plate-131 重來。  
