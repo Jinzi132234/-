@@ -1,0 +1,91 @@
+{
+  "core": {
+    "CREAM": "#FFF9EE",
+    "INK": "#141418",
+    "CORAL_punch": "#E83828",
+    "CHAR_near_black": "#1C1E24",
+    "LINE_divider": "#DED2C0",
+    "GREYT_secondary_text": "#70665C",
+    "WHITE": "#FFFFFF",
+    "STUB_placeholder": "#CEC4B6",
+    "STUB_LIGHT": "#D6CCBE",
+    "SHADOW_tint": "#0C1228"
+  },
+  "accents": {
+    "TERRA": "#CC5430",
+    "EMER": "#009662",
+    "COBALT": "#2658E2",
+    "BLUE": "#3478F6",
+    "PINK": "#FF5C96",
+    "GOLD": "#FAB81A",
+    "PURPLE": "#8A52EC",
+    "ORANGE": "#FC801E",
+    "GREEN": "#16A054"
+  },
+  "ui_misc": {
+    "traffic_red": "#E85846",
+    "traffic_yellow": "#F0B432",
+    "traffic_green": "#3CBE64",
+    "status_green": "#3CBE64",
+    "status_amber": "#F0B432",
+    "dark_inner_panel": "#383A42",
+    "dark_progress_track": "#464850",
+    "lane_pink_track": "#FFC8DC",
+    "ring_blue_181": "#A0BEFF",
+    "tray_cell": "#F0E6D6",
+    "image_block": "#E2D6C4",
+    "disc_shadow": "#00000040 (alpha 60)"
+  },
+  "stages_radial_gradient": {
+    "cream": {
+      "centre": "#FFFAF0",
+      "edge": "#EEE2CE"
+    },
+    "peach": {
+      "centre": "#FFB280",
+      "edge": "#F07A4A"
+    },
+    "terra": {
+      "centre": "#D8643C",
+      "edge": "#9C381E"
+    },
+    "terra2": {
+      "centre": "#B84C2A",
+      "edge": "#782612"
+    },
+    "emer": {
+      "centre": "#009E68",
+      "edge": "#00563A"
+    },
+    "cobalt": {
+      "centre": "#2E68F0",
+      "edge": "#122EA0"
+    },
+    "violet": {
+      "centre": "#8C4AEC",
+      "edge": "#4E1EA4"
+    },
+    "mustard": {
+      "centre": "#F8C02C",
+      "edge": "#C48004"
+    },
+    "navy": {
+      "centre": "#283C92",
+      "edge": "#0C1446"
+    },
+    "hotpink": {
+      "centre": "#FF5A9C",
+      "edge": "#CC1668"
+    }
+  },
+  "stage_gradient_formula": "g = clip(hypot((x-0.45W)/W, (y-0.40H)/H) * 1.25, 0, 1); colour = centre*(1-g) + edge*g",
+  "stage_per_plate": {
+    "179": "terra",
+    "180": "emer",
+    "181": "cobalt",
+    "182": "violet",
+    "183": "hotpink",
+    "184": "navy"
+  },
+  "rule": "ONE coral keyword per beat; coral only on cream (never coral text directly on a coloured stage)."
+}

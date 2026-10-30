@@ -136,6 +136,27 @@ function ensureArollGuard(raw) {
   return `<role>\n${guard}\n</role>\n${raw}`;
 }
 
+function ensureCardTextInSource(raw, cardSpec) {
+  if (!cardSpec) return raw;
+  const title = String(cardSpec.title || '').trim();
+  const subtitle = String(cardSpec.subtitle || '').trim();
+  const bullets = (cardSpec.bullets || []).map((item) => String(item || '').trim()).filter(Boolean);
+  const values = [title, subtitle, ...bullets].filter(Boolean);
+  if (!values.length) return raw;
+  const missing = values.filter((value) => !String(raw).includes(value));
+  if (!missing.length) return raw;
+  const block = [
+    'Fixed B字卡 text (verbatim — render every line as actual text):',
+    title ? `Title: ${title}` : '',
+    subtitle ? `Subtitle: ${subtitle}` : '',
+    bullets.length ? 'Bullets:' : '',
+    ...bullets.map((item) => `- ${item}`),
+  ].filter(Boolean).join('\n');
+  return /<\/source>/i.test(raw)
+    ? raw.replace(/<\/source>/i, `\n${block}\n</source>`)
+    : `${raw}\n<source>\n${block}\n</source>`;
+}
+
 export async function generateMotionBrief({
   meta,
   beat,
@@ -200,6 +221,8 @@ Rules for this generation:
 - Keep VO verbatim; timing is ESTIMATED from the given seconds unless a clip/timestamp is provided.
 - Make every design choice yourself; do not leave pick-one options.
 - For B-roll that has an existing B字卡 card: the card's title/subtitle/bullets/layout/theme/accent are FIXED. Animate THAT card; do not invent a different scene, stage hue, or text. BROLL may add motion, icons, and end treatment only, while preserving the card design. If the card prompt is dark/blue, the motion plate must stay dark/blue.
+- If bCard is present: copy its exact title, subtitle, and every bullet into <source> verbatim. Never write "four bullets verbatim" or similar without listing the actual text. Missing text makes the renderer draw blank bars.
+- Full-stage composition: the main card should occupy roughly 55–70% of frame width. Avoid a tiny corner card with a large empty area; use 4–8 meaningful visual elements.
 - Plate ${plate} must rotate away from the previous plates in layout, primary motion axis, and end treatment.`;
 
   const user = JSON.stringify(
@@ -288,6 +311,7 @@ Rules for this generation:
   }
   // Keep plate numbering deterministic even if the model forgets it.
   raw = raw.replace(/Plate\s+\d+/i, `Plate ${plate}`);
+  if (mode === 'broll') raw = ensureCardTextInSource(raw, cardSpec);
 
   const brief = addBrief(meta.id, {
     xml: raw,

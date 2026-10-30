@@ -65,6 +65,7 @@ function buildShotTableHtml(meta, timeline, clips) {
     return `<tr id="beat-${escapeHtml(row.beatId)}">
       <td class="num">${String(row.index).padStart(2, '0')}</td>
       <td><span class="type">${escapeHtml(shotType(row.type))}</span></td>
+      <td class="zh">${escapeHtml(row.chinese || '—')}</td>
       <td class="vo">${escapeHtml(row.vo)}</td>
       <td class="visual">${escapeHtml(row.visual)}<div class="time">${clock(row.start)}–${clock(row.end)}</div></td>
       <td class="video">${video}</td>
@@ -90,13 +91,15 @@ function buildShotTableHtml(meta, timeline, clips) {
   th { position:sticky; top:0; z-index:1; background:#fff; border-bottom:1px solid var(--line); color:var(--muted); font-size:11px; font-weight:600; text-align:left; padding:9px 8px; }
   td { border-bottom:1px solid var(--line); padding:10px 8px; vertical-align:top; }
   tbody tr:nth-child(even) { background:#fbfbfc; }
-  th:nth-child(1), td:nth-child(1) { width:52px; }
-  th:nth-child(2), td:nth-child(2) { width:72px; }
-  th:nth-child(3), td:nth-child(3) { width:32%; }
-  th:nth-child(4), td:nth-child(4) { width:30%; }
-  th:nth-child(5), td:nth-child(5) { width:250px; }
+  th:nth-child(1), td:nth-child(1) { width:48px; }
+  th:nth-child(2), td:nth-child(2) { width:66px; }
+  th:nth-child(3), td:nth-child(3) { width:24%; }
+  th:nth-child(4), td:nth-child(4) { width:24%; }
+  th:nth-child(5), td:nth-child(5) { width:22%; }
+  th:nth-child(6), td:nth-child(6) { width:230px; }
   .num { color:var(--muted); font-variant-numeric:tabular-nums; }
   .type { display:inline-block; padding:2px 7px; border-radius:5px; background:#f2f3f5; font-size:11px; white-space:nowrap; }
+  .zh { color:#4b5563; font-size:12px; line-height:1.65; }
   .vo { font-weight:500; }
   .visual { color:var(--muted); font-size:12px; }
   .time { margin-top:5px; color:#8f959e; font-size:10px; font-variant-numeric:tabular-nums; }
@@ -107,8 +110,8 @@ function buildShotTableHtml(meta, timeline, clips) {
   @media (max-width:820px) {
     .page { padding:18px 12px 32px; }
     table { table-layout:auto; }
-    th:nth-child(4), td:nth-child(4) { display:none; }
-    th:nth-child(5), td:nth-child(5) { width:180px; }
+    th:nth-child(5), td:nth-child(5) { display:none; }
+    th:nth-child(6), td:nth-child(6) { width:175px; }
   }
 </style>
 </head>
@@ -121,16 +124,163 @@ function buildShotTableHtml(meta, timeline, clips) {
     <video controls preload="metadata" src="video/final.mp4"></video>
   </div>
   <table>
-    <thead><tr><th>序號</th><th>畫面類型</th><th>英文文案</th><th>畫面提示</th><th>對應視頻</th></tr></thead>
+    <thead><tr><th>序號</th><th>畫面類型</th><th>中文文案</th><th>英文文案</th><th>畫面提示</th><th>對應視頻</th></tr></thead>
     <tbody>
 ${rows}
     </tbody>
   </table>
   <div class="note">
+    每一拍同一列可直接對照「中文文案／英文文案／畫面提示／對應視頻」。<br />
     每一拍的「對應視頻」若是獨立素材，可直接播放；沒有獨立素材的拍，點擊時間碼會跳到 final.mp4 的對應區間。<br />
     這個 HTML 可以直接用瀏覽器打開，也可以把表格複製到飛書文檔；飛書要直接播放影片時，請把 clips/ 內的影片上傳到飛書，再把連結貼進表格。
   </div>
 </div>
+</body>
+</html>`;
+}
+
+function buildReviewHtml(meta, timeline, clips) {
+  const shots = timeline.map((row) => ({
+    index: row.index,
+    id: row.beatId,
+    type: shotType(row.type),
+    chinese: row.chinese || '',
+    english: row.vo || '',
+    visual: row.visual || '',
+    start: Number(row.start) || 0,
+    end: Number(row.end) || 0,
+    duration: Number(row.duration) || 0,
+    clip: clips.get(row.beatId) || '',
+    src: clips.get(row.beatId) || 'video/final.mp4',
+  }));
+  const json = JSON.stringify(shots).replace(/</g, '\\u003c');
+  return `<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>${escapeHtml(meta.title)} · 影片交付预览</title>
+<style>
+  :root { --ink:#1f2329; --muted:#69707a; --line:#e5e2dc; --pale:#f7f4ef; --accent:#d97b4a; --accent-deep:#a95025; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#f4f1eb; color:var(--ink); font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .head { max-width:1500px; margin:0 auto; padding:24px 24px 10px; }
+  h1 { font-size:22px; margin:0 0 5px; }
+  .meta { color:var(--muted); font-size:11.5px; }
+  .app { max-width:1500px; margin:0 auto; padding:10px 24px 40px; display:grid; grid-template-columns:330px minmax(0,1fr); gap:16px; align-items:start; }
+  .playlist { background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; max-height:calc(100vh - 150px); overflow-y:auto; }
+  .pl-head { position:sticky; top:0; z-index:1; background:#fff; border-bottom:1px solid var(--line); padding:10px 12px; font-size:11px; color:var(--muted); display:flex; justify-content:space-between; }
+  .pl-item { width:100%; text-align:left; border:0; border-bottom:1px solid #f0ede7; background:#fff; padding:9px 11px; cursor:pointer; }
+  .pl-item:hover { background:#fdf7f1; }
+  .pl-item.active { background:#fdf0e5; box-shadow:inset 3px 0 0 var(--accent); }
+  .pl-top { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+  .pl-num { font:9px var(--mono); color:var(--muted); }
+  .pl-type { font-size:9px; padding:1px 5px; border-radius:4px; background:#f1f2f4; color:#555b64; }
+  .pl-time { margin-left:auto; font:8.5px var(--mono); color:var(--accent-deep); }
+  .pl-zh { font-size:10.5px; color:#4c535c; line-height:1.45; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .pl-en { margin-top:2px; font-size:8.5px; color:#999; overflow:hidden; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; }
+  .stage { min-width:0; }
+  .player-wrap { background:#000; border-radius:12px; overflow:hidden; border:1px solid #222; }
+  #player { display:block; width:100%; max-height:62vh; aspect-ratio:16/9; background:#000; }
+  .now { margin-top:10px; background:#fff; border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+  .now-head { display:flex; align-items:center; gap:7px; margin-bottom:7px; }
+  .now-num { font:9px var(--mono); color:var(--muted); }
+  .now-type { font-size:9px; padding:1px 6px; border-radius:4px; background:#f1f2f4; }
+  .now-time { margin-left:auto; font:9px var(--mono); color:var(--accent-deep); }
+  .now-zh { font-size:13px; line-height:1.7; margin:3px 0; }
+  .now-en { color:var(--muted); font-size:11px; line-height:1.55; }
+  .now-visual { margin-top:7px; color:#8a919b; font-size:10px; }
+  .nav { display:flex; gap:7px; margin-top:9px; }
+  .nav button, .download { border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:7px; padding:6px 11px; font-size:10px; cursor:pointer; text-decoration:none; }
+  .nav button:hover, .download:hover { border-color:var(--accent); color:var(--accent-deep); }
+  .nav .download { margin-left:auto; }
+  .hint { margin-top:8px; color:#999; font-size:9px; }
+  @media (max-width:900px) { .app { grid-template-columns:1fr; padding:8px 12px 30px; } .playlist { max-height:230px; } .head { padding:16px 14px 6px; } }
+</style>
+</head>
+<body>
+<header class="head">
+  <h1>${escapeHtml(meta.title)}</h1>
+  <div class="meta">影片交付预览 · ${timeline.length} 拍 · 點左邊任何一拍播放 · ${clock(timeline.at(-1)?.end || 0)}</div>
+</header>
+<div class="app">
+  <aside class="playlist">
+    <div class="pl-head"><span>分鏡列表</span><span>${timeline.length} 拍</span></div>
+    <div id="list"></div>
+  </aside>
+  <main class="stage">
+    <div class="player-wrap"><video id="player" controls preload="metadata" playsinline></video></div>
+    <div class="now">
+      <div class="now-head"><span class="now-num" id="nowNum">#01</span><span class="now-type" id="nowType"></span><span class="now-time" id="nowTime"></span></div>
+      <div class="now-zh" id="nowZh"></div>
+      <div class="now-en" id="nowEn"></div>
+      <div class="now-visual" id="nowVisual"></div>
+      <div class="nav">
+        <button type="button" id="prev">← 上一拍</button>
+        <button type="button" id="next">下一拍 →</button>
+        <a class="download" id="download" href="video/final.mp4" download>下載目前影片</a>
+      </div>
+      <div class="hint">點左邊列表切換；播放器可用右鍵另存；這份 HTML 要跟 clips/、video/ 放在同一個資料夾。</div>
+    </div>
+  </main>
+</div>
+<script>
+const SHOTS = ${json};
+const player = document.getElementById('player');
+const list = document.getElementById('list');
+let current = -1;
+let stopAt = 0;
+const fmt = (s) => {
+  s = Math.max(0, Number(s) || 0);
+  const m = Math.floor(s / 60);
+  const r = (s % 60).toFixed(2).padStart(5, '0');
+  return String(m).padStart(2, '0') + ':' + r;
+};
+function select(i, autoplay = true) {
+  if (!SHOTS.length) return;
+  current = Math.max(0, Math.min(SHOTS.length - 1, i));
+  const s = SHOTS[current];
+  stopAt = s.clip ? 0 : s.end;
+  player.src = s.src;
+  player.load();
+  document.getElementById('nowNum').textContent = '#' + String(s.index).padStart(2, '0');
+  document.getElementById('nowType').textContent = s.type;
+  document.getElementById('nowTime').textContent = fmt(s.start) + '–' + fmt(s.end);
+  document.getElementById('nowZh').textContent = s.chinese || '—';
+  document.getElementById('nowEn').textContent = s.english || '';
+  document.getElementById('nowVisual').textContent = '畫面：' + (s.visual || '—');
+  document.getElementById('download').href = s.src;
+  document.querySelectorAll('.pl-item').forEach((el) => el.classList.toggle('active', Number(el.dataset.index) === current));
+  const onMeta = () => {
+    try { player.currentTime = s.clip ? 0 : s.start; } catch {}
+    if (autoplay) player.play().catch(() => {});
+    player.removeEventListener('loadedmetadata', onMeta);
+  };
+  player.addEventListener('loadedmetadata', onMeta);
+}
+player.addEventListener('timeupdate', () => {
+  if (stopAt > 0 && player.currentTime >= stopAt) player.pause();
+});
+document.getElementById('prev').addEventListener('click', () => select(current - 1));
+document.getElementById('next').addEventListener('click', () => select(current + 1));
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowLeft') select(current - 1);
+  if (event.key === 'ArrowRight') select(current + 1);
+});
+SHOTS.forEach((s, index) => {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'pl-item';
+  button.dataset.index = String(index);
+  button.innerHTML = '<div class="pl-top"><span class="pl-num">#' + String(s.index).padStart(2, '0') + '</span><span class="pl-type"></span><span class="pl-time">' + fmt(s.start) + '</span></div><div class="pl-zh"></div><div class="pl-en"></div>';
+  button.querySelector('.pl-type').textContent = s.type;
+  button.querySelector('.pl-zh').textContent = s.chinese || '—';
+  button.querySelector('.pl-en').textContent = s.english || '';
+  button.addEventListener('click', () => select(index));
+  list.appendChild(button);
+});
+if (SHOTS.length) select(0, false);
+</script>
 </body>
 </html>`;
 }
@@ -187,11 +337,12 @@ function buildShotDocx(meta, timeline, clips, thumbs, outFile) {
     }
     const videoText = clip ? path.basename(clip) : `final ${clock(row.start)}–${clock(row.end)}`;
     rows.push(`<w:tr>
-      ${docxCell(String(row.index).padStart(2, '0'), 640, { color: '646A73' })}
-      ${docxCell(shotType(row.type), 920)}
-      ${docxCell(row.vo, 5600)}
-      ${docxCell(row.visual, 4700, { color: '646A73', size: 17 })}
-      <w:tc><w:tcPr><w:tcW w:w="3100" w:type="dxa"/><w:vAlign w:val="top"/></w:tcPr>${imageRel ? `<w:p>${docxImageRun(imageRel, imageIndex)}</w:p>` : ''}${docxParagraph(videoText, { size: 15, color: '646A73' })}</w:tc>
+      ${docxCell(String(row.index).padStart(2, '0'), 620, { color: '646A73' })}
+      ${docxCell(shotType(row.type), 860)}
+      ${docxCell(row.chinese || '—', 3900, { size: 17 })}
+      ${docxCell(row.vo, 3900)}
+      ${docxCell(row.visual, 3400, { color: '646A73', size: 17 })}
+      <w:tc><w:tcPr><w:tcW w:w="2600" w:type="dxa"/><w:vAlign w:val="top"/></w:tcPr>${imageRel ? `<w:p>${docxImageRun(imageRel, imageIndex)}</w:p>` : ''}${docxParagraph(videoText, { size: 15, color: '646A73' })}</w:tc>
     </w:tr>`);
   }
 
@@ -204,13 +355,14 @@ function buildShotDocx(meta, timeline, clips, thumbs, outFile) {
       <w:insideH w:val="single" w:sz="4" w:space="0" w:color="E5E6EB"/>
       <w:insideV w:val="single" w:sz="4" w:space="0" w:color="E5E6EB"/>
     </w:tblBorders></w:tblPr>
-    <w:tblGrid><w:gridCol w:w="640"/><w:gridCol w:w="920"/><w:gridCol w:w="5600"/><w:gridCol w:w="4700"/><w:gridCol w:w="3100"/></w:tblGrid>
+    <w:tblGrid><w:gridCol w:w="620"/><w:gridCol w:w="860"/><w:gridCol w:w="3900"/><w:gridCol w:w="3900"/><w:gridCol w:w="3400"/><w:gridCol w:w="2600"/></w:tblGrid>
     <w:tr><w:trPr><w:tblHeader/></w:trPr>
-      ${docxCell('序號', 640, { bold: true, fill: 'F2F3F5' })}
-      ${docxCell('畫面類型', 920, { bold: true, fill: 'F2F3F5' })}
-      ${docxCell('英文文案', 5600, { bold: true, fill: 'F2F3F5' })}
-      ${docxCell('畫面提示', 4700, { bold: true, fill: 'F2F3F5' })}
-      ${docxCell('對應視頻', 3100, { bold: true, fill: 'F2F3F5' })}
+      ${docxCell('序號', 620, { bold: true, fill: 'F2F3F5' })}
+      ${docxCell('畫面類型', 860, { bold: true, fill: 'F2F3F5' })}
+      ${docxCell('中文文案', 3900, { bold: true, fill: 'F2F3F5' })}
+      ${docxCell('英文文案', 3900, { bold: true, fill: 'F2F3F5' })}
+      ${docxCell('畫面提示', 3400, { bold: true, fill: 'F2F3F5' })}
+      ${docxCell('對應視頻', 2600, { bold: true, fill: 'F2F3F5' })}
     </w:tr>
     ${rows.join('')}
   </w:tbl>`;
@@ -418,6 +570,7 @@ export function buildDeliveryBundle(jobId) {
     }
   }
   write(path.join(root, 'shot-table.html'), buildShotTableHtml(meta, timeline, clips));
+  write(path.join(root, 'review.html'), buildReviewHtml(meta, timeline, clips));
   buildShotDocx(meta, timeline, clips, thumbs, path.join(root, 'shot-table.docx'));
   write(path.join(root, 'shot-table.md'), [
     `# ${meta.title} · 分鏡交付表`,
@@ -426,26 +579,30 @@ export function buildDeliveryBundle(jobId) {
     `- 成片：${Math.round(finalDuration)} 秒`,
     `- 對應視頻：有獨立素材的放 \`clips/\`；沒有的連到 \`video/final.mp4\` 的時間碼`,
     '',
-    '| 序號 | 畫面類型 | 英文文案 | 畫面提示 | 對應視頻 |',
-    '|---|---|---|---|---|',
+    '| 序號 | 畫面類型 | 中文文案 | 英文文案 | 畫面提示 | 對應視頻 |',
+    '|---|---|---|---|---|---|',
     ...timeline.map((row) => {
       const clip = clips.get(row.beatId);
       const link = clip ? `[影片](${clip})` : `[final ${clock(row.start)}](${videoFragment(row)})`;
-      return `| ${String(row.index).padStart(2, '0')} | ${shotType(row.type)} | ${String(row.vo || '').replace(/\|/g, '\\|')} | ${String(row.visual || '').replace(/\|/g, '\\|')} | ${link} |`;
+      return `| ${String(row.index).padStart(2, '0')} | ${shotType(row.type)} | ${String(row.chinese || '—').replace(/\|/g, '\\|')} | ${String(row.vo || '').replace(/\|/g, '\\|')} | ${String(row.visual || '').replace(/\|/g, '\\|')} | ${link} |`;
     }),
     '',
     '> HTML 版 `shot-table.html` 可以直接打開、複製到飛書；影片要線上播放時，把 `clips/` 上傳到飛書再換連結。',
   ].join('\n'));
   write(path.join(root, 'shot-table.csv'), csv([
-    ['index', 'type', 'english_vo', 'visual', 'start', 'end', 'clip', 'final_link'],
-    ...timeline.map((row) => [row.index, shotType(row.type), row.vo, row.visual, row.start, row.end, clips.get(row.beatId) || '', videoFragment(row)]),
+    ['index', 'type', 'chinese_copy', 'english_vo', 'visual', 'start', 'end', 'clip', 'final_link'],
+    ...timeline.map((row) => [row.index, shotType(row.type), row.chinese, row.vo, row.visual, row.start, row.end, clips.get(row.beatId) || '', videoFragment(row)]),
   ]));
 
   // edit
   fs.mkdirSync(path.join(root, 'edit'), { recursive: true });
   write(path.join(root, 'edit', 'shot-list.csv'), csv([
-    ['index', 'beat_id', 'type', 'route', 'status', 'start', 'end', 'duration', 'asset', 'english_vo'],
-    ...timeline.map((row) => [row.index, row.beatId, row.type, row.route, row.status, row.start, row.end, row.duration, row.asset, row.vo]),
+    ['index', 'beat_id', 'type', 'route', 'status', 'start', 'end', 'duration', 'clip', 'asset', 'chinese_copy', 'english_vo'],
+    ...timeline.map((row) => [row.index, row.beatId, row.type, row.route, row.status, row.start, row.end, row.duration, clips.get(row.beatId) || '', row.asset, row.chinese, row.vo]),
+  ]));
+  write(path.join(root, 'edit', 'cue-sheet.csv'), csv([
+    ['index', 'beat_id', 'type', 'final_in', 'final_out', 'duration', 'clip_file', 'chinese_copy', 'english_vo', 'visual'],
+    ...timeline.map((row) => [row.index, row.beatId, row.type, clock(row.start), clock(row.end), row.duration, clips.get(row.beatId) || '', row.chinese, row.vo, row.visual]),
   ]));
   write(path.join(root, 'edit', 'timeline.json'), JSON.stringify({
     project: { id: meta.id, title: meta.title },
@@ -502,10 +659,11 @@ export function buildDeliveryBundle(jobId) {
     '- `copy/zh-copy.md`：中文分段文案',
     '- `copy/en-vo.md` / `en-vo.csv`：英文口播分鏡',
     '- `copy/bilingual-timeline.csv`：逐拍中英對照與時間碼',
-    '- `edit/shot-list.csv` / `timeline.json`：剪輯與素材對照',
+    '- `edit/shot-list.csv` / `edit/cue-sheet.csv` / `timeline.json`：剪輯與素材對照；cue-sheet 直接列出中文、英文、final 時間碼、clip 檔名',
     '- `publish/`：章節與 YouTube 描述草稿',
-    '- `shot-table.docx`：可直接 import 到飛書文檔的分鏡表（表格＋影片縮圖＋檔名）',
+    '- `shot-table.docx`：可直接 import 到飛書文檔的分鏡表（中文文案／英文文案／畫面提示／影片縮圖＋檔名）',
     '- `shot-table.html`：像飛書文檔的分鏡表（可直接打開；可把表格複製到飛書）',
+    '- `review.html`：影片交付预览（左邊選拍、右邊播放，中文／英文／畫面同步顯示）',
     '- `shot-table.md` / `shot-table.csv`：同一份表格的 Markdown／CSV',
     '- `clips/`：每一拍對應的獨立影片（沒有獨立素材時連到 final 的時間碼）',
     '- `source/`：轉寫、製作、專案原始資料',
@@ -515,7 +673,7 @@ export function buildDeliveryBundle(jobId) {
     '',
     '1. 把 `video/final.mp4` 拖進剪映 / Premiere / Final Cut。',
     '2. 需要字幕時匯入 `subtitles/` 對應語言的 SRT。',
-    '3. 文案與分鏡對照看 `copy/bilingual-timeline.csv`。',
+    '3. 文案與分鏡對照看 `copy/bilingual-timeline.csv` 或 `edit/cue-sheet.csv`；同一列就是「中文文案 ↔ 英文文案 ↔ 時間碼 ↔ 影片檔」。',
     '4. 要改某一拍，回工作台用 `edit/timeline.json` 的 beat_id 定位。',
     '',
     '',

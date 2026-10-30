@@ -41,6 +41,7 @@ export async function chat(provider, {
   model,
   messages,
   temperature = 0.4,
+  omitTemperature = false,
   maxTokens = 8000,
   jsonMode = false,
   signal,
@@ -64,10 +65,10 @@ export async function chat(provider, {
       const body = {
         model,
         messages,
-        temperature,
         max_tokens: maxTokens,
         stream: false,
       };
+      if (!omitTemperature) body.temperature = temperature;
       if (jsonMode) body.response_format = { type: 'json_object' };
 
       const response = await fetch(url, {

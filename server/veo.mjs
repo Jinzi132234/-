@@ -50,6 +50,23 @@ function normalizeMediaUrl(uri, apiKey) {
   return url.toString();
 }
 
+async function prepareReferenceBuffers(referenceImages = [], signal) {
+  const out = [];
+  for (const ref of referenceImages.slice(0, 3)) {
+    if (ref.buffer) {
+      out.push(ref);
+      continue;
+    }
+    if (!ref.url) continue;
+    const response = await fetch(ref.url, { signal });
+    if (!response.ok) throw new Error(`下載參考圖失敗：HTTP ${response.status}`);
+    const buffer = Buffer.from(await response.arrayBuffer());
+    if (!buffer.length) throw new Error('參考圖是空的。');
+    out.push({ ...ref, buffer, mimeType: response.headers.get('content-type') || 'image/jpeg' });
+  }
+  return out;
+}
+
 export async function generateVeo({
   apiKey,
   model = 'veo-3.1-generate-preview',
@@ -80,7 +97,7 @@ export async function generateVeo({
     },
   };
   if (negativePrompt) body.instances[0].negativePrompt = negativePrompt;
-  const images = referenceImages.slice(0, 3);
+  const images = await prepareReferenceBuffers(referenceImages, signal);
   if (images.length) {
     body.instances[0].referenceImages = images.map((ref) => ({
       image: {
@@ -165,6 +182,89 @@ export function isVeoConfigured(settings) {
  * Gemini Omni Flash video generation through the Interactions API.
  * This is the current default video model (Veo 3.1 previews shut down 2026-10-22).
  */
+function isApiModelsBase(baseUrl = '') {
+  return /(^|\.)apimodels\.app/i.test(String(baseUrl));
+}
+
+function normalizeApiModelsBase(baseUrl = '') {
+  return String(baseUrl || 'https://api.apimodels.app/v1')
+    .replace(/^https?:\/\/apimodels\.app/i, 'https://api.apimodels.app')
+    .replace(/\/+$/, '');
+}
+
+async function generateApiModelsVideo({
+  apiKey,
+  model,
+  baseUrl,
+  prompt,
+  aspectRatio,
+  resolution,
+  durationSeconds = 8,
+  referenceImages = [],
+  signal,
+  onProgress,
+  pollIntervalMs = 6000,
+  timeoutMs = 12 * 60 * 1000,
+}) {
+  const base = normalizeApiModelsBase(baseUrl);
+  const headers = {
+    Authorization: `Bearer ${apiKey}`,
+    'Content-Type': 'application/json',
+  };
+  const body = {
+    model,
+    prompt,
+    aspect_ratio: aspectRatio || '16:9',
+    duration: Math.max(3, Math.min(10, Number(durationSeconds) || 8)),
+  };
+  if (resolution) body.resolution = resolution;
+  const imageUrls = referenceImages.map((ref) => ref.url).filter(Boolean);
+  if (imageUrls.length) body.images = imageUrls;
+  onProgress?.({ phase: 'submit', message: '提交 APIMODELS 影片任務…' });
+  const submit = await fetch(`${base}/video/generations`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+    signal,
+  });
+  const submitText = await submit.text();
+  let submitJson;
+  try { submitJson = JSON.parse(submitText); } catch { submitJson = null; }
+  if (!submit.ok) {
+    const message = submitJson?.error?.message || submitJson?.msg || submitText.slice(0, 500) || `HTTP ${submit.status}`;
+    throw new Error(`Omni 提交失败（APIMODELS）：${message}`);
+  }
+  const taskId = submitJson?.data?.taskId || submitJson?.taskId;
+  if (!taskId) throw new Error(`APIMODELS 沒有返回 taskId：${submitText.slice(0, 300)}`);
+
+  const started = Date.now();
+  while (true) {
+    if (signal?.aborted) throw new Error('CANCELLED');
+    if (Date.now() - started > timeoutMs) throw new Error('Omni 生成超时（12 分钟）。');
+    await sleep(pollIntervalMs);
+    const poll = await fetch(`${base}/video/generations?task_id=${encodeURIComponent(taskId)}`, { headers, signal });
+    const text = await poll.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = null; }
+    if (!poll.ok) throw new Error(`Omni 轮询失败：${data?.error?.message || data?.msg || text.slice(0, 500)}`);
+    const state = data?.data?.state;
+    onProgress?.({ phase: 'poll', message: `Omni 生成中… ${Math.round((Date.now() - started) / 1000)}s` });
+    if (state === 'failed' || state === 'cancelled') {
+      throw new Error(`Omni 生成失败：${data?.data?.failMsg || state}`);
+    }
+    if (state === 'completed') {
+      const url = data?.data?.resultUrls?.[0] || data?.data?.resultUrl;
+      if (!url) throw new Error('Omni 已完成，但沒有 resultUrls。');
+      onProgress?.({ phase: 'download', message: '下載 Omni 影片…' });
+      const download = await fetch(url, { signal });
+      if (!download.ok) throw new Error(`下載 Omni 影片失敗：HTTP ${download.status}`);
+      const buffer = Buffer.from(await download.arrayBuffer());
+      if (!buffer.length) throw new Error('Omni 回傳了空影片。');
+      return { buffer, uri: url, interactionId: taskId };
+    }
+  }
+}
+
 export async function generateOmni({
   apiKey,
   model = 'gemini-omni-1.1-flash',
@@ -173,6 +273,7 @@ export async function generateOmni({
   negativePrompt = '',
   aspectRatio = '16:9',
   resolution = '1080p',
+  durationSeconds = 8,
   referenceImages = [],
   signal,
   onProgress,
@@ -182,8 +283,28 @@ export async function generateOmni({
   if (!apiKey) throw new Error('还没有配置 Google Gemini API Key。');
   if (!prompt) throw new Error('缺少视频提示词。');
   const base = String(baseUrl || DEFAULT_BASE).replace(/\/+$/, '');
+  if (isApiModelsBase(base)) {
+    if (referenceImages.length) {
+      const missing = referenceImages.filter((ref) => !ref.url);
+      if (missing.length) {
+        throw new Error('APIMODELS 需要公開圖片 URL。請在人物口播卡填入場景圖／三視圖的 https 公開 URL，或改用 Flow 上傳 Base。');
+      }
+    }
+    return generateApiModelsVideo({
+      apiKey,
+      model,
+      baseUrl: base,
+      prompt: negativePrompt ? `${prompt}\n\nAvoid: ${negativePrompt}` : prompt,
+      aspectRatio,
+      resolution,
+      durationSeconds,
+      referenceImages,
+      signal,
+      onProgress,
+    });
+  }
   const inputText = negativePrompt ? `${prompt}\n\nAvoid: ${negativePrompt}` : prompt;
-  const images = referenceImages.slice(0, 3);
+  const images = await prepareReferenceBuffers(referenceImages, signal);
   const input = images.length
     ? [
         ...images.map((ref) => ({
@@ -226,7 +347,10 @@ export async function generateOmni({
     interaction = null;
   }
   if (!submit.ok) {
-    const message = interaction?.error?.message || submitText.slice(0, 500) || `HTTP ${submit.status}`;
+    let message = interaction?.error?.message || submitText.slice(0, 500) || `HTTP ${submit.status}`;
+    if (/FUNCTION_PAYLOAD_TOO_LARGE|Entity Too Large/i.test(message)) {
+      message = '參考圖總量過大（Google payload limit）。系統已自動壓縮參考圖，請再按一次「生成人物口播視頻」。';
+    }
     throw new Error(`Omni 提交失败：${message}`);
   }
   if (!interaction?.id) throw new Error('Omni 没有返回 interaction id。');

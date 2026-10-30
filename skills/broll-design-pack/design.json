@@ -1,0 +1,229 @@
+{
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "codec": "H.264 libx264, preset medium, crf 18, yuv420p",
+    "container": "MP4"
+  },
+  "safe_area": {
+    "title_safe_px": {
+      "x": 96,
+      "y": 54,
+      "w": 1728,
+      "h": 972
+    },
+    "action_safe_px": {
+      "x": 48,
+      "y": 27,
+      "w": 1824,
+      "h": 1026
+    },
+    "practice": "headers centred at y≈110–230; bottom captions at y≈960–990; peek tab at (330,1000) intentionally sits in the lower-left corner"
+  },
+  "sprite_margin_M": 90,
+  "placement": "all sprites positioned by CENTRE via place(fr, sprite, cx, cy, scale, alpha)",
+  "card_defaults": {
+    "card()": {
+      "radius": 34,
+      "border": 9,
+      "shadow_opacity": 0.32,
+      "shadow_offset_y": 20,
+      "shadow_blur": 26
+    },
+    "plaque()": {
+      "height": "1.75 × size",
+      "pad_x": 56,
+      "radius": "min(h/2, 60)",
+      "shadow_opacity": 0.5,
+      "shadow_offset_y": 26,
+      "shadow_blur": 30,
+      "border": 0
+    },
+    "stubcard()": {
+      "radius": 26,
+      "shadow_opacity": 0.45,
+      "offset_y": 16,
+      "blur": 20,
+      "stub_line_h": 14,
+      "stub_row_step": 30
+    },
+    "darkpanel()": {
+      "radius": 40,
+      "title_bar_h": 94,
+      "title_bar_radius": 28,
+      "shadow": [
+        0.6,
+        30,
+        36
+      ]
+    },
+    "mac()": {
+      "radius": 34,
+      "traffic_light_d": 18,
+      "traffic_step": 32,
+      "shadow": [
+        0.6,
+        30,
+        36
+      ]
+    },
+    "bot()": {
+      "radius": 30,
+      "visor_radius": 20,
+      "shadow": [
+        0.45,
+        16,
+        20
+      ]
+    },
+    "disc()": {
+      "diameter": 110,
+      "shadow_offset": 6
+    }
+  },
+  "components_by_plate": {
+    "179": {
+      "team_card": [
+        820,
+        360,
+        44
+      ],
+      "bot_card": [
+        240,
+        170,
+        30
+      ],
+      "plan_slot": [
+        280,
+        84,
+        26
+      ],
+      "hire_slot_dashed": [
+        280,
+        84,
+        "dashed 5px"
+      ]
+    },
+    "180": {
+      "chat_panel": [
+        900,
+        660,
+        40
+      ],
+      "one_place_tray": [
+        780,
+        150,
+        26
+      ],
+      "task_chip": [
+        200,
+        70,
+        26
+      ],
+      "progress_card": [
+        560,
+        110,
+        26
+      ]
+    },
+    "181": {
+      "disc": [
+        110,
+        110,
+        55
+      ],
+      "ring": {
+        "centre": [
+          960,
+          540
+        ],
+        "rx": 340,
+        "ry": 279
+      },
+      "progress_bar": [
+        120,
+        14,
+        7
+      ]
+    },
+    "182": {
+      "finding_card": [
+        420,
+        100,
+        26
+      ],
+      "post_card": [
+        420,
+        100,
+        26
+      ]
+    },
+    "183": {
+      "lane_track": [
+        800,
+        12,
+        6
+      ],
+      "token": [
+        150,
+        60,
+        26
+      ],
+      "sync_panel": [
+        640,
+        620,
+        40
+      ],
+      "progress_bar": [
+        540,
+        24,
+        12
+      ]
+    },
+    "184": {
+      "status_board": [
+        560,
+        560,
+        40
+      ],
+      "status_pill": [
+        488,
+        56,
+        28
+      ],
+      "token": [
+        150,
+        64,
+        26
+      ],
+      "you_card": [
+        240,
+        150,
+        32
+      ],
+      "employee_card": [
+        300,
+        120,
+        30
+      ]
+    }
+  },
+  "size_format": "[width, height, radius] in px (content box, excluding the M=90 shadow margin)",
+  "strokes": {
+    "dashed_line": {
+      "width": "4–6",
+      "dash": 18,
+      "gap": 14,
+      "colour": "CREAM (or CORAL for send-back)"
+    },
+    "strike": 14,
+    "arrow_head": 24
+  },
+  "rules": [
+    "faceless, no people illustrations, no logos",
+    "blank stubs only – never invented names/numbers/copy",
+    "black capsules never as hero",
+    "no camera moves; impacts use jolt() 2–4 px for 0.10–0.20 s"
+  ]
+}

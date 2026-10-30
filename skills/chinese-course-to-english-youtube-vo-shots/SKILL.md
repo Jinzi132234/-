@@ -102,3 +102,14 @@ After delivery, briefly report beat count and the three label counts. Offer to r
 - Do not expand into a new lesson outline the source never taught.
 - Do not write motion/B-roll XML here (use the motion-prompt skill if asked).
 - Do not send email or post scripts unless the user explicitly asks for that send path.
+
+
+## 實操優先規則（2026-10 更新）
+
+- 當段落正在演示產品 UI、畫面操作、點擊、輸入或螢幕錄製時，口播即使是在解釋概念，也優先標為 `實操`，用當前操作畫面承載。
+- 不要把「可以被操作畫面覆蓋的概念」硬拆成 `B字卡`；`B字卡` 只用於沒有可用操作畫面、或需要獨立概念圖的情況。
+- 同一段連續操作／同一界面解說合併成一個較長的 `實操` beat（建議 15–36 秒，最多 80 words），不要每個點擊拆一拍。
+- `人物口播` 主要用於 opening、章節轉場、結尾。
+- 如果模型把概念段標成 `B字卡`，但該段其實有可用操作畫面，應改標為 `實操`。
+- 操作型章節的目標配比：`實操` **70–80%**，人物口播主要 opening／轉場／結尾，`B字卡` 只留給無法用操作畫面承載的概念。
+- 概念型章節（幾乎沒有可用 UI）可以 `B字卡`／人物 為主，**不要硬湊 70% 實操**；先判斷這一章是操作型還是概念型。

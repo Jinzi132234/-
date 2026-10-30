@@ -1,0 +1,1523 @@
+{
+  "conventions": {
+    "time_unit": "seconds",
+    "easing_defs": {
+      "eio": "smoothstep x²(3−2x)",
+      "eoc": "ease-out cubic 1−(1−x)³",
+      "eob(k)": "ease-out-back, overshoot k",
+      "spring": "eob(k=1.7) ≈6% overshoot",
+      "linear": "clamp((t−in)/dur)"
+    },
+    "alpha_rule": "unless stated, alpha = clamp(progress × 4..5) – i.e. fully opaque in the first 20–25 % of the tween",
+    "pos": "sprite centre in px",
+    "jolt": "whole-frame shake jolt(t0, amp px, dur)"
+  },
+  "plates": {
+    "179": {
+      "stage": "terra",
+      "duration": 12.0,
+      "beats": [
+        {
+          "beat": "A",
+          "range": [
+            0,
+            3.2
+          ],
+          "codes": "M535+I534",
+          "layers": [
+            {
+              "layer": "MARKETING TEAM BUILT card",
+              "in": 0.3,
+              "duration": 0.25,
+              "easing": "spring(scale) + eoc(y)",
+              "from": {
+                "pos": [
+                  960,
+                  560
+                ],
+                "scale": 0.7,
+                "alpha": 0
+              },
+              "to": {
+                "pos": [
+                  960,
+                  500
+                ],
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "team card → header",
+              "in": 3.1,
+              "duration": 0.4,
+              "easing": "eio",
+              "from": {
+                "pos": [
+                  960,
+                  500
+                ],
+                "scale": 1
+              },
+              "to": {
+                "pos": [
+                  960,
+                  210
+                ],
+                "scale": 0.62
+              },
+              "out": "fade 6.2s +0.4 eio"
+            }
+          ]
+        },
+        {
+          "beat": "B",
+          "range": [
+            3.2,
+            6.4
+          ],
+          "codes": "M536+I535",
+          "layers": [
+            {
+              "layer": "bot card ×4 (stagger 0.25)",
+              "in": 3.5,
+              "duration": 0.25,
+              "easing": "eob(2) scale + eoc y",
+              "from": {
+                "pos": "[430|750|1070|1390, 600]",
+                "scale": 0.5
+              },
+              "to": {
+                "pos": "[x, 560]",
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "bots stack",
+              "in": 5.0,
+              "duration": 0.45,
+              "easing": "eio",
+              "from": {
+                "pos": "[x_i, 560]"
+              },
+              "to": {
+                "pos": "[960+14i, 560−14i]"
+              },
+              "out": "fade 6.2s +0.4"
+            },
+            {
+              "layer": "BEFORE plaque (coral)",
+              "in": 3.4,
+              "duration": 0.22,
+              "easing": "eob(1.6)",
+              "from": {
+                "pos": [
+                  960,
+                  790
+                ],
+                "scale": 1.3
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "fade 6.2s +0.4"
+            },
+            {
+              "layer": "EACH BOT kicker",
+              "in": 4.0,
+              "duration": 0.22,
+              "easing": "linear alpha",
+              "from": {
+                "pos": [
+                  960,
+                  880
+                ],
+                "alpha": 0
+              },
+              "to": {
+                "alpha": 1
+              },
+              "out": "fade 6.2s +0.4"
+            },
+            {
+              "layer": "coral strike line 14px",
+              "in": 5.6,
+              "duration": 0.25,
+              "easing": "eio (draw-on)",
+              "from": {
+                "p0": [
+                  780,
+                  680
+                ]
+              },
+              "to": {
+                "p1": [
+                  1180,
+                  440
+                ]
+              },
+              "out": "fade 6.2s +0.4"
+            }
+          ]
+        },
+        {
+          "beat": "C",
+          "range": [
+            6.4,
+            12.0
+          ],
+          "codes": "M537+I536+E181",
+          "layers": [
+            {
+              "layer": "MANAGER plaque (coral)",
+              "in": 6.6,
+              "duration": 0.25,
+              "easing": "eob(1.6)",
+              "from": {
+                "pos": [
+                  960,
+                  330
+                ],
+                "scale": 1.3
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "PLANS kicker",
+              "in": 6.9,
+              "duration": 0.2,
+              "easing": "linear alpha",
+              "from": {
+                "pos": [
+                  960,
+                  410
+                ],
+                "alpha": 0
+              },
+              "to": {
+                "alpha": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "dashed branches ×2",
+              "in": 7.1,
+              "duration": 0.4,
+              "easing": "eio (draw-on)",
+              "from": {
+                "path": "(960,450)→(960,500)→(600|1320,500)"
+              },
+              "to": {
+                "end": "(600|1320,560)"
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "TEAM YOU NEED label",
+              "in": 7.5,
+              "duration": 0.22,
+              "easing": "linear alpha",
+              "from": {
+                "pos": [
+                  600,
+                  590
+                ]
+              },
+              "to": {},
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "filled slot ×3 (stagger 0.15)",
+              "in": 7.8,
+              "duration": 0.2,
+              "easing": "eob(2)",
+              "from": {
+                "pos": "[600, 690+100k]",
+                "scale": 0.5
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "STILL MUST BE HIRED label (coral HIRED)",
+              "in": 9.3,
+              "duration": 0.22,
+              "easing": "eob(1.6)",
+              "from": {
+                "pos": [
+                  1320,
+                  590
+                ],
+                "scale": 1.25
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "dashed \"+\" slot ×2 (stagger 0.2)",
+              "in": 9.6,
+              "duration": 0.2,
+              "easing": "eob(2)",
+              "from": {
+                "pos": "[1320, 690+100k]",
+                "scale": 0.5
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "peek tab \"GROUP CHAT\" (E-beat soft handoff)",
+              "in": 11.0,
+              "duration": 0.6,
+              "easing": "eoc",
+              "from": {
+                "pos": [
+                  -260,
+                  1000
+                ],
+                "scale": 0.8
+              },
+              "to": {
+                "pos": [
+                  330,
+                  1000
+                ],
+                "scale": 0.8
+              },
+              "out": "cut"
+            }
+          ]
+        }
+      ]
+    },
+    "180": {
+      "stage": "emer",
+      "duration": 7.5,
+      "beats": [
+        {
+          "beat": "A",
+          "range": [
+            0,
+            1.8
+          ],
+          "codes": "M538+I537",
+          "layers": [
+            {
+              "layer": "peek tab \"GROUP CHAT\" (match-cut IN)",
+              "in": 0.05,
+              "duration": 0.3,
+              "easing": "eio",
+              "from": {
+                "pos": [
+                  330,
+                  1000
+                ],
+                "scale": 0.8,
+                "alpha": 1
+              },
+              "to": {
+                "pos": [
+                  720,
+                  560
+                ],
+                "alpha": 0
+              },
+              "out": "gone at 0.35s"
+            },
+            {
+              "layer": "GROUP CHAT dark panel 900×660",
+              "in": 0.05,
+              "duration": 0.3,
+              "easing": "spring(scale) + eoc(y) driven by tab e",
+              "from": {
+                "pos": [
+                  720,
+                  620
+                ],
+                "scale": 0.6,
+                "alpha": 0
+              },
+              "to": {
+                "pos": [
+                  720,
+                  560
+                ],
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            }
+          ]
+        },
+        {
+          "beat": "B",
+          "range": [
+            1.8,
+            3.8
+          ],
+          "codes": "M539+I538",
+          "layers": [
+            {
+              "layer": "ONE PLACE tray",
+              "in": 1.6,
+              "duration": 0.25,
+              "easing": "linear alpha",
+              "from": {
+                "pos": [
+                  720,
+                  430
+                ],
+                "alpha": 0
+              },
+              "to": {
+                "alpha": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "ASSIGN WORK label",
+              "in": 1.8,
+              "duration": 0.22,
+              "easing": "spring",
+              "from": {
+                "pos": [
+                  1500,
+                  330
+                ],
+                "scale": 1.2
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "task chip ×3 (stagger 0.2)",
+              "in": 2.0,
+              "duration": 0.3,
+              "easing": "eoc x + arc −120·sin(πu)",
+              "from": {
+                "pos": [
+                  1800,
+                  444
+                ]
+              },
+              "to": {
+                "pos": "[490+230k, 444]"
+              },
+              "out": "holds to end of plate"
+            }
+          ]
+        },
+        {
+          "beat": "C",
+          "range": [
+            3.8,
+            7.5
+          ],
+          "codes": "M540+I539+E182",
+          "layers": [
+            {
+              "layer": "progress card ×2 (stagger 0.4)",
+              "in": 4.0,
+              "duration": 0.25,
+              "easing": "eob(2.2) y",
+              "from": {
+                "pos": "[720, 600+130k]"
+              },
+              "to": {
+                "pos": "[720, 630+130k]"
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "PROGRESS REPORTS label",
+              "in": 4.1,
+              "duration": 0.25,
+              "easing": "spring",
+              "from": {
+                "pos": [
+                  1500,
+                  560
+                ],
+                "scale": 1.2
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "SAME CHAT label (coral)",
+              "in": 5.0,
+              "duration": 0.22,
+              "easing": "eob(1.6)",
+              "from": {
+                "pos": [
+                  1500,
+                  700
+                ],
+                "scale": 1.3
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "peek tab \"FIVE EMPLOYEES\" (E-beat soft handoff)",
+              "in": 6.4,
+              "duration": 0.6,
+              "easing": "eoc",
+              "from": {
+                "pos": [
+                  -260,
+                  1000
+                ],
+                "scale": 0.8
+              },
+              "to": {
+                "pos": [
+                  330,
+                  1000
+                ],
+                "scale": 0.8
+              },
+              "out": "cut"
+            }
+          ]
+        }
+      ]
+    },
+    "181": {
+      "stage": "cobalt",
+      "duration": 7.5,
+      "beats": [
+        {
+          "beat": "A",
+          "range": [
+            0,
+            2.2
+          ],
+          "codes": "M541+I540",
+          "layers": [
+            {
+              "layer": "peek tab \"FIVE EMPLOYEES\" (match-cut IN)",
+              "in": 0.05,
+              "duration": 0.3,
+              "easing": "eio",
+              "from": {
+                "pos": [
+                  330,
+                  1000
+                ],
+                "scale": 0.8,
+                "alpha": 1
+              },
+              "to": {
+                "pos": [
+                  960,
+                  140
+                ],
+                "alpha": 0
+              },
+              "out": "gone at 0.35s"
+            },
+            {
+              "layer": "BUILD FIVE EMPLOYEES header",
+              "in": 0.05,
+              "duration": 0.3,
+              "easing": "eob(1.4)",
+              "from": {
+                "pos": [
+                  960,
+                  140
+                ],
+                "scale": 0.5
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "disc 01–05 (stagger 0.18)",
+              "in": 0.4,
+              "duration": 0.2,
+              "easing": "eob(2.2)",
+              "from": {
+                "pos": "[560+200k, 540]",
+                "scale": 0.4
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            }
+          ]
+        },
+        {
+          "beat": "B",
+          "range": [
+            2.2,
+            4.8
+          ],
+          "codes": "M542+I541",
+          "layers": [
+            {
+              "layer": "discs row → ring",
+              "in": 2.2,
+              "duration": 0.45,
+              "easing": "eio",
+              "from": {
+                "pos": "row"
+              },
+              "to": {
+                "pos": "ellipse centre (960,540) rx 340 ry 279, angle −90+72k"
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "ring arc + dashed spokes",
+              "in": 2.6,
+              "duration": 0.4,
+              "easing": "eio (draw-on)",
+              "from": {
+                "arc": -90
+              },
+              "to": {
+                "arc": 270
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "SHARED MEMORY hub + GROUP",
+              "in": 2.5,
+              "duration": 0.25,
+              "easing": "spring",
+              "from": {
+                "pos": [
+                  960,
+                  540
+                ],
+                "scale": 0.6
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            }
+          ]
+        },
+        {
+          "beat": "C",
+          "range": [
+            4.8,
+            7.5
+          ],
+          "codes": "M543+I542+E183",
+          "layers": [
+            {
+              "layer": "EVERYONE SEES PROGRESS banner",
+              "in": 4.8,
+              "duration": 0.25,
+              "easing": "eob(1.6)",
+              "from": {
+                "pos": [
+                  960,
+                  975
+                ],
+                "scale": 1.25
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "progress bar under each disc",
+              "in": 5.0,
+              "duration": 0.8,
+              "easing": "eio",
+              "from": {
+                "fill": 0
+              },
+              "to": {
+                "fill": "0.5+0.1k"
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "peek tab \"RESEARCH → CONTENT\" (E-beat soft handoff)",
+              "in": 6.4,
+              "duration": 0.6,
+              "easing": "eoc",
+              "from": {
+                "pos": [
+                  -260,
+                  1000
+                ],
+                "scale": 0.8
+              },
+              "to": {
+                "pos": [
+                  330,
+                  1000
+                ],
+                "scale": 0.8
+              },
+              "out": "cut"
+            }
+          ]
+        }
+      ]
+    },
+    "182": {
+      "stage": "violet",
+      "duration": 8.0,
+      "beats": [
+        {
+          "beat": "A",
+          "range": [
+            0,
+            2.2
+          ],
+          "codes": "M544+I543",
+          "layers": [
+            {
+              "layer": "peek tab \"RESEARCH → CONTENT\" (match-cut IN)",
+              "in": 0.05,
+              "duration": 0.3,
+              "easing": "eio",
+              "from": {
+                "pos": [
+                  330,
+                  1000
+                ],
+                "scale": 0.8,
+                "alpha": 1
+              },
+              "to": {
+                "pos": [
+                  500,
+                  300
+                ],
+                "alpha": 0
+              },
+              "out": "gone at 0.35s"
+            },
+            {
+              "layer": "RESEARCH plaque (coral)",
+              "in": 0.05,
+              "duration": 0.3,
+              "easing": "eob(1.4)",
+              "from": {
+                "pos": [
+                  500,
+                  300
+                ],
+                "scale": 0.5
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "finding card ×3 (stagger 0.15)",
+              "in": 1.4,
+              "duration": 0.25,
+              "easing": "eob(2)",
+              "from": {
+                "pos": "[500, 520|650|780]",
+                "scale": 0.5
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "FINDINGS tag",
+              "in": 1.5,
+              "duration": 0.2,
+              "easing": "linear alpha",
+              "from": {
+                "pos": [
+                  360,
+                  440
+                ]
+              },
+              "to": {},
+              "out": "fades during relabel 3.2s"
+            }
+          ]
+        },
+        {
+          "beat": "B",
+          "range": [
+            2.2,
+            4.4
+          ],
+          "codes": "M545+I544",
+          "layers": [
+            {
+              "layer": "card flip FINDINGS→POSTS (per card +0.1)",
+              "in": 3.2,
+              "duration": 0.35,
+              "easing": "vertical squash |1−2u| swap at 0.5",
+              "from": {
+                "card": "finding"
+              },
+              "to": {
+                "card": "post (image block + stubs)"
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "POSTS tag (coral)",
+              "in": 3.38,
+              "duration": 0.18,
+              "easing": "eob(1.6)",
+              "from": {
+                "pos": [
+                  340,
+                  440
+                ],
+                "scale": 1.3
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            }
+          ]
+        },
+        {
+          "beat": "C",
+          "range": [
+            4.4,
+            8.0
+          ],
+          "codes": "M546+I545+E184",
+          "layers": [
+            {
+              "layer": "dashed hand-off arrow",
+              "in": 4.6,
+              "duration": 0.4,
+              "easing": "eio (draw-on)",
+              "from": {
+                "p0": [
+                  700,
+                  300
+                ]
+              },
+              "to": {
+                "p1": [
+                  1220,
+                  300
+                ],
+                "head": "appears at 95%"
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "HAND OFF kicker",
+              "in": 4.8,
+              "duration": 0.2,
+              "easing": "linear alpha",
+              "from": {
+                "pos": [
+                  960,
+                  244
+                ]
+              },
+              "to": {},
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "CONTENT plaque (coral)",
+              "in": 4.9,
+              "duration": 0.25,
+              "easing": "eob(1.6)",
+              "from": {
+                "pos": [
+                  1420,
+                  300
+                ],
+                "scale": 1.3
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "post cards travel (stagger 0.12)",
+              "in": 5.0,
+              "duration": 0.5,
+              "easing": "eio + arc −60·sin(πu)",
+              "from": {
+                "pos": "[500, 520|650|780]"
+              },
+              "to": {
+                "pos": "[1420, 520|650|780]"
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "peek tab \"MANAGER ASSIGNS\" (E-beat soft handoff)",
+              "in": 6.9,
+              "duration": 0.6,
+              "easing": "eoc",
+              "from": {
+                "pos": [
+                  -260,
+                  1000
+                ],
+                "scale": 0.8
+              },
+              "to": {
+                "pos": [
+                  330,
+                  1000
+                ],
+                "scale": 0.8
+              },
+              "out": "cut"
+            }
+          ]
+        }
+      ]
+    },
+    "183": {
+      "stage": "hotpink",
+      "duration": 7.5,
+      "beats": [
+        {
+          "beat": "A",
+          "range": [
+            0,
+            1.6
+          ],
+          "codes": "M547+I546",
+          "layers": [
+            {
+              "layer": "peek tab \"MANAGER ASSIGNS\" (match-cut IN)",
+              "in": 0.05,
+              "duration": 0.3,
+              "easing": "eio",
+              "from": {
+                "pos": [
+                  330,
+                  1000
+                ],
+                "scale": 0.8,
+                "alpha": 1
+              },
+              "to": {
+                "pos": [
+                  420,
+                  230
+                ],
+                "alpha": 0
+              },
+              "out": "gone at 0.35s"
+            },
+            {
+              "layer": "MANAGER ASSIGNS plaque",
+              "in": 0.05,
+              "duration": 0.3,
+              "easing": "eob(1.4)",
+              "from": {
+                "pos": [
+                  420,
+                  230
+                ],
+                "scale": 0.5
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "lane tracks ×3",
+              "in": 0.5,
+              "duration": 0.4,
+              "easing": "eio (draw-on)",
+              "from": {
+                "x": 260
+              },
+              "to": {
+                "x": 1060,
+                "y": [
+                  430,
+                  530,
+                  630
+                ]
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "token ×3 dealt (stagger 0.12)",
+              "in": 0.8,
+              "duration": 0.3,
+              "easing": "eoc",
+              "from": {
+                "pos": [
+                  420,
+                  230
+                ]
+              },
+              "to": {
+                "pos": "[350, lane_y]"
+              },
+              "out": "holds to end of plate"
+            }
+          ]
+        },
+        {
+          "beat": "B",
+          "range": [
+            1.6,
+            3.2
+          ],
+          "codes": "M548+I547",
+          "layers": [
+            {
+              "layer": "STAFF EXECUTE plaque",
+              "in": 1.6,
+              "duration": 0.22,
+              "easing": "eob(1.6)",
+              "from": {
+                "pos": [
+                  420,
+                  800
+                ],
+                "scale": 1.3
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "tokens run lanes (stagger 0.15)",
+              "in": 1.8,
+              "duration": 1.2,
+              "easing": "eio",
+              "from": {
+                "x": 350
+              },
+              "to": {
+                "x": 970
+              },
+              "out": "holds to end of plate"
+            }
+          ]
+        },
+        {
+          "beat": "C",
+          "range": [
+            3.2,
+            7.5
+          ],
+          "codes": "M549+I548+E185",
+          "layers": [
+            {
+              "layer": "GROUP CHAT panel 640×620",
+              "in": 3.0,
+              "duration": 0.25,
+              "easing": "spring",
+              "from": {
+                "pos": [
+                  1480,
+                  600
+                ],
+                "scale": 0.7
+              },
+              "to": {
+                "pos": [
+                  1480,
+                  540
+                ],
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "dashed sync lines ×3",
+              "in": 3.2,
+              "duration": 0.4,
+              "easing": "eio (draw-on)",
+              "from": {
+                "x": 1060
+              },
+              "to": {
+                "x": 1150
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "SYNCS tag (coral)",
+              "in": 3.3,
+              "duration": 0.2,
+              "easing": "eob(1.6)",
+              "from": {
+                "pos": [
+                  1710,
+                  220
+                ],
+                "scale": 1.3
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "progress bars ×4 (stagger 0.15)",
+              "in": 3.6,
+              "duration": 0.7,
+              "easing": "eio",
+              "from": {
+                "fill": 0
+              },
+              "to": {
+                "fill": [
+                  0.9,
+                  0.7,
+                  0.8,
+                  0.6
+                ]
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "FULL TASK PROGRESS · WHOLE TEAM caption",
+              "in": 4.6,
+              "duration": 0.25,
+              "easing": "spring",
+              "from": {
+                "pos": [
+                  960,
+                  975
+                ],
+                "scale": 1.2
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "peek tab \"LEAD · ACCEPT · FIX\" (E-beat soft handoff)",
+              "in": 6.4,
+              "duration": 0.6,
+              "easing": "eoc",
+              "from": {
+                "pos": [
+                  -260,
+                  1000
+                ],
+                "scale": 0.8
+              },
+              "to": {
+                "pos": [
+                  330,
+                  1000
+                ],
+                "scale": 0.8
+              },
+              "out": "cut"
+            }
+          ]
+        }
+      ]
+    },
+    "184": {
+      "stage": "navy",
+      "duration": 12.5,
+      "beats": [
+        {
+          "beat": "A",
+          "range": [
+            0,
+            3.2
+          ],
+          "codes": "M550+I549",
+          "layers": [
+            {
+              "layer": "peek tab \"LEAD · ACCEPT · FIX\" (match-cut IN)",
+              "in": 0.05,
+              "duration": 0.3,
+              "easing": "eio",
+              "from": {
+                "pos": [
+                  330,
+                  1000
+                ],
+                "scale": 0.8,
+                "alpha": 1
+              },
+              "to": {
+                "pos": [
+                  470,
+                  520
+                ],
+                "alpha": 0
+              },
+              "out": "gone at 0.35s"
+            },
+            {
+              "layer": "EVERY STATUS board 560×560",
+              "in": 0.05,
+              "duration": 0.3,
+              "easing": "spring + eoc",
+              "from": {
+                "pos": [
+                  470,
+                  580
+                ],
+                "scale": 0.6
+              },
+              "to": {
+                "pos": [
+                  470,
+                  520
+                ],
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "LEAD kicker",
+              "in": 0.6,
+              "duration": 0.2,
+              "easing": "linear alpha",
+              "from": {
+                "pos": [
+                  470,
+                  200
+                ]
+              },
+              "to": {},
+              "out": "holds to end of plate"
+            }
+          ]
+        },
+        {
+          "beat": "B",
+          "range": [
+            3.2,
+            7.0
+          ],
+          "codes": "M551+I550",
+          "layers": [
+            {
+              "layer": "dashed board→gate",
+              "in": 3.4,
+              "duration": 0.4,
+              "easing": "eio",
+              "from": {
+                "p0": [
+                  760,
+                  400
+                ]
+              },
+              "to": {
+                "p1": [
+                  960,
+                  400
+                ]
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "MANAGER ACCEPT gate",
+              "in": 3.5,
+              "duration": 0.25,
+              "easing": "eob(1.6)",
+              "from": {
+                "pos": [
+                  1130,
+                  400
+                ],
+                "scale": 1.3
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "dashed gate→YOU",
+              "in": 3.7,
+              "duration": 0.4,
+              "easing": "eio",
+              "from": {
+                "p0": [
+                  1300,
+                  400
+                ]
+              },
+              "to": {
+                "p1": [
+                  1480,
+                  400
+                ]
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "YOU card",
+              "in": 3.8,
+              "duration": 0.25,
+              "easing": "eob(1.8)",
+              "from": {
+                "pos": [
+                  1610,
+                  400
+                ],
+                "scale": 0.7
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "BEFORE IT COMES TO YOU kicker",
+              "in": 4.1,
+              "duration": 0.22,
+              "easing": "linear alpha",
+              "from": {
+                "pos": [
+                  1430,
+                  510
+                ]
+              },
+              "to": {},
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "token 1 → gate",
+              "in": 4.3,
+              "duration": 0.6,
+              "easing": "eio",
+              "from": {
+                "pos": [
+                  750,
+                  320
+                ]
+              },
+              "to": {
+                "pos": [
+                  1130,
+                  320
+                ]
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "green check",
+              "in": 4.95,
+              "duration": 0.2,
+              "easing": "linear alpha",
+              "from": {
+                "pos": [
+                  1330,
+                  320
+                ]
+              },
+              "to": {},
+              "out": "hides as token leaves"
+            },
+            {
+              "layer": "token 1 → YOU",
+              "in": 5.3,
+              "duration": 0.6,
+              "easing": "eio",
+              "from": {
+                "pos": [
+                  1130,
+                  320
+                ],
+                "scale": 1
+              },
+              "to": {
+                "pos": [
+                  1610,
+                  400
+                ],
+                "scale": 0.6
+              },
+              "out": "fades in last 30 %"
+            }
+          ]
+        },
+        {
+          "beat": "C",
+          "range": [
+            7.0,
+            12.5
+          ],
+          "codes": "M552+I551+E186",
+          "layers": [
+            {
+              "layer": "token 2 → gate",
+              "in": 7.2,
+              "duration": 0.6,
+              "easing": "eio",
+              "from": {
+                "pos": [
+                  750,
+                  320
+                ]
+              },
+              "to": {
+                "pos": [
+                  1130,
+                  320
+                ]
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "FAILS REVIEW stamp (rot −6°)",
+              "in": 7.9,
+              "duration": 0.22,
+              "easing": "eob(1.5)",
+              "from": {
+                "pos": [
+                  1130,
+                  225
+                ],
+                "scale": 1.4
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate",
+              "jolt": [
+                8.05,
+                3,
+                0.12
+              ]
+            },
+            {
+              "layer": "coral dashed send-back",
+              "in": 8.6,
+              "duration": 0.4,
+              "easing": "eio (draw-on)",
+              "from": {
+                "p0": [
+                  1130,
+                  450
+                ]
+              },
+              "to": {
+                "p1": [
+                  1130,
+                  730
+                ]
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "token 2 drops",
+              "in": 8.8,
+              "duration": 0.7,
+              "easing": "eio",
+              "from": {
+                "pos": [
+                  1130,
+                  320
+                ]
+              },
+              "to": {
+                "pos": [
+                  1130,
+                  690
+                ]
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "SEND BACK kicker",
+              "in": 8.8,
+              "duration": 0.2,
+              "easing": "linear alpha",
+              "from": {
+                "pos": [
+                  1250,
+                  620
+                ]
+              },
+              "to": {},
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "RIGHT EMPLOYEE card",
+              "in": 9.1,
+              "duration": 0.25,
+              "easing": "eob(1.8)",
+              "from": {
+                "pos": [
+                  1130,
+                  800
+                ],
+                "scale": 0.7
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate"
+            },
+            {
+              "layer": "FIX plaque (coral, 72px)",
+              "in": 10.0,
+              "duration": 0.22,
+              "easing": "eob(1.5)",
+              "from": {
+                "pos": [
+                  1500,
+                  800
+                ],
+                "scale": 1.4
+              },
+              "to": {
+                "scale": 1
+              },
+              "out": "holds to end of plate",
+              "jolt": [
+                10.18,
+                4,
+                0.16
+              ]
+            },
+            {
+              "layer": "E186 soft-strong freeze",
+              "in": 10.22,
+              "duration": 2.28,
+              "easing": "hold",
+              "from": {},
+              "to": {},
+              "out": "end"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

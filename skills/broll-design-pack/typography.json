@@ -1,0 +1,98 @@
+{
+  "family": "Inter (OTF, bundled in fonts/, SIL OFL)",
+  "weights_used": {
+    "Black": "all labels/plaques/cards",
+    "ExtraBold": "plaque sub-line only (sub=)"
+  },
+  "case": "ALL CAPS for labels; product names keep their own case (e.g. \"Grok Bot\", \"WhatsApp\")",
+  "anchor": "text drawn with anchor \"lm\" (left-middle) or \"mm\" (centre-middle); multi-colour runs via draw_parts()",
+  "line_height": "single-line labels only; plaque height = 1.75 × font size; stacked stub rows step 30 px (stubcard) / 50–78 px (lists)",
+  "letter_spacing": "default (0)",
+  "scale_px": {
+    "hero_stamp": [
+      64,
+      72,
+      84
+    ],
+    "header_plaque": [
+      50,
+      56,
+      58
+    ],
+    "beat_label": [
+      40,
+      42,
+      44,
+      46,
+      50,
+      52
+    ],
+    "caption_plaque": [
+      44,
+      46
+    ],
+    "kicker_small": [
+      26,
+      28,
+      30,
+      32,
+      34,
+      36
+    ],
+    "peek_tab": 36,
+    "card_title": [
+      44,
+      46,
+      60
+    ],
+    "disc_label": "0.36 × disc size (110 → 39 px)",
+    "window_title": 32
+  },
+  "per_plate_sizes": {
+    "179": {
+      "MARKETING TEAM BUILT (card)": 60,
+      "BEFORE": 52,
+      "EACH BOT": 34,
+      "MANAGER": 56,
+      "PLANS": 30,
+      "TEAM YOU NEED / STILL MUST BE HIRED": 34,
+      "+ slot": 50
+    },
+    "180": {
+      "GROUP CHAT (panel title)": 44,
+      "ONE PLACE (tray tag)": 26,
+      "ASSIGN WORK": 40,
+      "PROGRESS REPORTS": 42,
+      "SAME CHAT": 46
+    },
+    "181": {
+      "BUILD FIVE EMPLOYEES": 56,
+      "01–05 discs": 39,
+      "SHARED MEMORY": 40,
+      "GROUP": 26,
+      "EVERYONE SEES PROGRESS": 50
+    },
+    "182": {
+      "RESEARCH / CONTENT": 56,
+      "FINDINGS / POSTS": 32,
+      "HAND OFF": 30
+    },
+    "183": {
+      "MANAGER ASSIGNS / STAFF EXECUTE": 46,
+      "GROUP CHAT (panel title)": 44,
+      "SYNCS": 36,
+      "FULL TASK PROGRESS · WHOLE TEAM": 44
+    },
+    "184": {
+      "EVERY STATUS (board title)": 46,
+      "LEAD": 36,
+      "MANAGER ACCEPT": 40,
+      "YOU": 56,
+      "BEFORE IT COMES TO YOU": 28,
+      "FAILS REVIEW": 40,
+      "SEND BACK": 28,
+      "RIGHT EMPLOYEE": 22,
+      "FIX": 72
+    }
+  }
+}

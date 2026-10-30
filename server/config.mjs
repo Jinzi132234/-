@@ -99,6 +99,7 @@ export function defaultSettings() {
       english: { providerId: 'aihubmix', model: 'claude-opus-5-5', temperature: 0.7 },
       production: { providerId: 'aihubmix', model: 'claude-opus-5-5', temperature: 0.6 },
       motion: { providerId: 'aihubmix', model: 'claude-opus-5-5', temperature: 0.75 },
+      opus: { providerId: 'aihubmix', model: 'claude-opus-5-5', temperature: 0.4 },
     },
     asr: {
       model: 'medium',

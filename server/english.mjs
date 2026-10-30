@@ -33,6 +33,10 @@ export const SKILL_TEXT = readSkill();
 export const VO_LABELS = ['人物口播', 'B字卡', '實操'];
 const MAX_WORDS = 25;
 const WORDS_PER_SECOND = 2.5;
+const MAX_WORDS_BY_TYPE = { 人物口播: 30, B字卡: 35, 實操: 80 };
+const MAX_SECONDS_BY_TYPE = { 人物口播: 12, B字卡: 14, 實操: 36 };
+function maxWordsFor(type) { return MAX_WORDS_BY_TYPE[type] || MAX_WORDS; }
+function maxSecondsFor(type) { return MAX_SECONDS_BY_TYPE[type] || 12; }
 
 const OUTPUT_CONTRACT = `
 
@@ -42,7 +46,13 @@ const OUTPUT_CONTRACT = `
 2. JSON 结构固定为：
    {"beats":[{"type":"人物口播","vo":"English voiceover line","visual":"画面/字卡说明","sourceBlock":"b1"}]}
 3. type 必须是以下三个值之一，使用繁体中文：人物口播 / B字卡 / 實操。
-4. 每个 beat 只对应一个镜头、一个想法。vo 必须是英文、单句或短句，最多 25 个英文单词，朗读不超过 10 秒；想法太长就拆成多个 beat，不要截断意思。
+3a. 實操優先：如果這一段正在演示軟件、界面、點擊、輸入或螢幕操作，口播即使是在解釋概念，也必須標為 實操，畫面用當前的操作畫面承載；不要拆成 B字卡。
+3b. B字卡只在沒有可用操作畫面、或需要獨立概念圖時使用；不要為了配比把可被操作畫面覆蓋的概念硬拆成字卡。
+3c. 操作型章節的目標：實操 70–80%，人物口播主要 opening／轉場／結尾，B字卡只留給無法用操作畫面承載的概念。概念型章節（幾乎沒有可用 UI）則以 B字卡／人物為主，不要硬湊 70% 實操。
+4. 每个 beat 对应一个镜头或一个连续操作段。vo 必须是英文。
+   - 人物口播：目標 8–12 秒（約 10 秒），最多 30 words；不要每句拆一拍，同一段連續說話合併到一個人物段落。
+   - B字卡：最多 35 words，朗读不超过 14 秒。
+   - 實操：可以合并连续点击/输入/讲解为一个 15–36 秒的操作段，最多 80 words；不要每点一下鼠标就拆一拍。
 5. visual 用简体中文写，简洁说明观众看到什么：字卡文字、UI 操作步骤、主持人构图。不要把画面说明写进 vo。
 6. sourceBlock 必须是输入中真实存在的段落 id（例如 b1）。每个 beat 必须能追溯到某一段。
 7. 不要使用连字符或破折号（- — –）作为口播停顿；用逗号、句号或短句。
@@ -51,12 +61,12 @@ const OUTPUT_CONTRACT = `
 
 function modeInstruction(mode) {
   if (mode === 'faceless') {
-    return `镜头模式：无露脸优先。人物口播最多 10%，B字卡约 40–50%，實操约 40–50%。仍然按内容决定，不要为了配比注水。`;
+    return `镜头模式：无露脸优先。操作型章節目標 實操 70–80%，其餘用 B字卡；人物口播最多 10%。概念型章節可以 B字卡 為主，不要硬湊實操。`;
   }
   if (mode === 'auto') {
-    return `镜头模式：按内容自动选择。纯概念讲解多用 B字卡，软件界面/点击演示多用實操，主持人讲解用人物口播；三者的比例由内容决定。`;
+    return `镜头模式：操作優先，按內容自動判斷。操作型章節目標 實操 70–80%；人物口播主要 opening／轉場／結尾；B字卡只用在沒有可用操作畫面的概念。概念型章節可以 B字卡／人物 為主，不要硬湊 70% 實操。`;
   }
-  return `镜头模式：真人出镜课程。默认镜头配比约为 人物口播 30–35%、B字卡 25–30%、實操 35–40%；内容不适合时按实际调整，但不要为了配比注水。`;
+  return `镜头模式：操作優先的真人課程。操作型章節目標 實操 70–80%；人物口播主要 opening、章節轉場、結尾；實操段口播講概念時，只要操作畫面能承載，就留在實操，不要拆成 B字卡。B字卡只用在沒有可用操作畫面的概念。概念型章節可提高 B字卡／人物比例，按內容判斷，不要為了配比注水。`;
 }
 
 export function computeWords(text) {
@@ -115,8 +125,9 @@ function splitSentences(text) {
 }
 
 /** Keep every beat under the hard 25-word limit, splitting at sentence/comma. */
-function splitLongVo(vo) {
-  if (computeWords(vo) <= MAX_WORDS) return [vo];
+function splitLongVo(vo, type = '人物口播') {
+  const limit = maxWordsFor(type);
+  if (computeWords(vo) <= limit) return [vo];
   const chunks = [];
   let current = '';
   const flush = () => {
@@ -125,9 +136,9 @@ function splitLongVo(vo) {
   };
 
   for (const sentence of splitSentences(vo)) {
-    if (computeWords(sentence) <= MAX_WORDS) {
+    if (computeWords(sentence) <= limit) {
       const candidate = current ? `${current} ${sentence}` : sentence;
-      if (computeWords(candidate) <= MAX_WORDS) current = candidate;
+      if (computeWords(candidate) <= limit) current = candidate;
       else {
         flush();
         current = sentence;
@@ -138,19 +149,19 @@ function splitLongVo(vo) {
     const clauses = sentence.split(/(?<=[,;:])\s+/).filter(Boolean);
     let clauseBuffer = '';
     for (const clause of clauses) {
-      if (computeWords(clause) > MAX_WORDS) {
+      if (computeWords(clause) > limit) {
         if (clauseBuffer) {
           chunks.push(clauseBuffer.trim());
           clauseBuffer = '';
         }
         const words = clause.split(/\s+/);
-        for (let i = 0; i < words.length; i += MAX_WORDS) {
-          chunks.push(words.slice(i, i + MAX_WORDS).join(' '));
+        for (let i = 0; i < words.length; i += limit) {
+          chunks.push(words.slice(i, i + limit).join(' '));
         }
         continue;
       }
       const candidate = clauseBuffer ? `${clauseBuffer} ${clause}` : clause;
-      if (computeWords(candidate) <= MAX_WORDS) clauseBuffer = candidate;
+      if (computeWords(candidate) <= limit) clauseBuffer = candidate;
       else {
         if (clauseBuffer) chunks.push(clauseBuffer.trim());
         clauseBuffer = clause;
@@ -179,13 +190,15 @@ export function normalizeBeats(payload, allowedBlockIds = [], { splitLong = true
     const sourceBlock = allowedBlockIds.includes(sourceRaw) ? sourceRaw : '';
     let autoSplit = false;
 
-    const pieces = splitLong ? splitLongVo(vo) : [vo];
+    const pieces = splitLong ? splitLongVo(vo, type) : [vo];
     if (pieces.length > 1) autoSplit = true;
     pieces.forEach((piece, index) => {
       const words = computeWords(piece);
       const chinese = (piece.match(/[\u4e00-\u9fff]/g) || []).length;
+      const estSeconds = Math.max(2, Math.round((words / WORDS_PER_SECOND) * 10) / 10);
       const codes = [];
-      if (words > MAX_WORDS) codes.push('too_long');
+      if (words > maxWordsFor(type)) codes.push('too_long');
+      if (estSeconds > maxSecondsFor(type)) codes.push('too_long_seconds');
       if (chinese > 0) codes.push('chinese_in_vo');
       if (/(?:^|\s)[—–]|\s-\s/.test(piece)) codes.push('dash_pause');
       if (!visual) codes.push('missing_visual');
@@ -196,7 +209,7 @@ export function normalizeBeats(payload, allowedBlockIds = [], { splitLong = true
         visual: visual || '画面待补充',
         sourceBlock,
         words,
-        estSeconds: Math.max(2, Math.round((words / WORDS_PER_SECOND) * 10) / 10),
+        estSeconds,
         autoSplit: autoSplit || index > 0,
         warnings: codes,
       });
@@ -207,6 +220,83 @@ export function normalizeBeats(payload, allowedBlockIds = [], { splitLong = true
     beat.id = `e${index + 1}`;
   });
   return { beats, issues };
+}
+
+/** In a block that already has screen recording, prefer the live UI for concepts too. */
+export function promoteConceptBrollToScreen(beats = []) {
+  const screenBlocks = new Set(
+    beats.filter((beat) => beat.type === '實操' && beat.sourceBlock).map((beat) => beat.sourceBlock),
+  );
+  const uiVisual = /(界面|窗口|按鈕|按钮|點擊|点击|輸入|输入|屏幕|螢幕|软件|軟件|列表|聊天|设置|設置|操作|表单|表單|气泡|氣泡|截图|截圖|页面|頁面)/;
+  return beats.map((beat) => {
+    if (beat.type !== 'B字卡' || !beat.sourceBlock || !screenBlocks.has(beat.sourceBlock)) return beat;
+    if (!uiVisual.test(beat.visual || '')) return beat;
+    return {
+      ...beat,
+      type: '實操',
+      visual: `用當前操作畫面承載；${beat.visual || ''}`.trim(),
+      promotedFromBroll: true,
+    };
+  });
+}
+
+/** Merge consecutive talking-head beats up to a ten-second take. */
+export function mergePersonBeats(beats = []) {
+  const out = [];
+  for (const beat of beats) {
+    const last = out[out.length - 1];
+    const canMerge =
+      last &&
+      last.type === '人物口播' &&
+      beat.type === '人物口播' &&
+      last.sourceBlock === beat.sourceBlock &&
+      !last.warnings?.length &&
+      !beat.warnings?.length &&
+      computeWords(`${last.vo} ${beat.vo}`) <= 25 &&
+      (Number(last.estSeconds) || 0) + (Number(beat.estSeconds) || 0) <= 10;
+    if (!canMerge) {
+      out.push({ ...beat });
+      continue;
+    }
+    last.vo = `${last.vo} ${beat.vo}`.replace(/\s{2,}/g, ' ').trim();
+    last.visual = [last.visual, beat.visual].filter(Boolean).join('；');
+    last.words = computeWords(last.vo);
+    last.estSeconds = Math.round((last.words / WORDS_PER_SECOND) * 10) / 10;
+    last.merged = (last.merged || 1) + 1;
+  }
+  out.forEach((beat, index) => { beat.id = `e${index + 1}`; });
+  return out;
+}
+
+/** Merge consecutive screen-recording beats into fewer, longer takes. *//** Merge consecutive screen-recording beats into fewer, longer takes. */
+export function mergeScreenBeats(beats = []) {
+  const out = [];
+  for (const beat of beats) {
+    const last = out[out.length - 1];
+    const canMerge =
+      last &&
+      last.type === '實操' &&
+      beat.type === '實操' &&
+      last.sourceBlock === beat.sourceBlock &&
+      !last.warnings?.length &&
+      !beat.warnings?.length &&
+      computeWords(`${last.vo} ${beat.vo}`) <= maxWordsFor('實操') &&
+      (Number(last.estSeconds) || 0) + (Number(beat.estSeconds) || 0) <= maxSecondsFor('實操');
+    if (!canMerge) {
+      out.push({ ...beat });
+      continue;
+    }
+    last.vo = `${last.vo} ${beat.vo}`.replace(/\s{2,}/g, ' ').trim();
+    last.visual = [last.visual, beat.visual].filter(Boolean).join('；');
+    last.words = computeWords(last.vo);
+    last.estSeconds = Math.round((last.words / WORDS_PER_SECOND) * 10) / 10;
+    last.autoSplit = false;
+    last.merged = (last.merged || 1) + 1;
+  }
+  out.forEach((beat, index) => {
+    beat.id = `e${index + 1}`;
+  });
+  return out;
 }
 
 function buildSystemPrompt() {
@@ -420,12 +510,15 @@ export async function generateEnglishBeats({
     onProgress?.(index + 1, parts.length);
   }
 
-  all.forEach((beat, index) => {
+  const personMerged = mergePersonBeats(all);
+  const promoted = promoteConceptBrollToScreen(personMerged);
+  const merged = mergeScreenBeats(promoted);
+  merged.forEach((beat, index) => {
     beat.id = `e${index + 1}`;
   });
-  const stats = computeStats(all);
+  const stats = computeStats(merged);
   return {
-    beats: all,
+    beats: merged,
     stats,
     usage: { promptTokens, completionTokens, calls },
     repairCalls,

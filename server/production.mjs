@@ -8,10 +8,15 @@
  */
 import crypto from 'node:crypto';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 
+import ffmpegPath from 'ffmpeg-static';
+import { spawnSync } from 'node:child_process';
+
 import { jobDir } from './jobs.mjs';
-import { chatJson } from './llm.mjs';
+import { readBriefs } from './briefs.mjs';
+import { chat, chatJson } from './llm.mjs';
 import {
   normalizeSpec,
   probeMedia,
@@ -22,6 +27,8 @@ import {
   ttsCachePath,
 } from './video.mjs';
 import { generateOmni, generateVeo } from './veo.mjs';
+import { renderHtmlToMp4 } from './renderer.mjs';
+import { extractPython, renderPythonToMp4, makeContactSheet } from './python-renderer.mjs';
 
 const running = new Map();
 const progress = new Map();
@@ -61,6 +68,26 @@ export function routeForType(type) {
   return 'card';
 }
 
+const FLOW_TEMPLATE = `根據我提供的場景圖、三視圖和文案生成影片。
+
+硬性要求：
+1. 鏡頭角度、視點、構圖全程固定不變，不允許移動相機，不能搖鏡、推拉、旋轉、環繞、切換鏡頭，維持場景圖原本的視角。
+2. 不要字幕，不要文字，不要花字，不要標題，不要任何畫面文字。
+3. 根據文案生成人物說話效果，人物嘴型必須與文案內容、語句節奏、停頓和語氣同步。
+4. 三視圖用來確認結構、比例和細節，可作為輕微參考疊圖，但不能改變主畫面視角，也不能替換場景圖。
+5. 除人物嘴型外，可加入非常輕微的表情變化、眨眼、呼吸、頭部小幅度自然點頭，以及細微光影變化。
+6. 禁止任何相機運動，禁止新增鏡頭，禁止切換角度，禁止特寫切換，禁止環繞拍攝。
+
+文案：
+{{VO}}
+
+生成要求：
+畫面保持專業、自然、穩定，人物口型準確對應文案，語速清晰，表情克制，不誇張。`;
+
+export function flowPromptFor(beat = {}) {
+  return FLOW_TEMPLATE.replace('{{VO}}', String(beat.vo || '').trim());
+}
+
 export function ensureProduction(meta, english) {
   const production = getProduction(meta.id);
   production.beats = production.beats || {};
@@ -78,8 +105,10 @@ export function ensureProduction(meta, english) {
         voHash,
         spec: null,
         prompt: '',
-        videoPrompt: '',
+        videoPrompt: beat.type === '人物口播' ? flowPromptFor(beat) : '',
         refs: {},
+        refUrls: {},
+        approved: false,
         asset: null,
         error: '',
         notes: '',
@@ -93,9 +122,18 @@ export function ensureProduction(meta, english) {
         existing.asset = null;
         existing.segment = null;
         existing.voHash = voHash;
+        if (beat.type === '人物口播') existing.videoPrompt = flowPromptFor(beat);
+      }
+      if (
+        beat.type === '人物口播' &&
+        (!existing.videoPrompt || !String(existing.videoPrompt).includes('鏡頭角度、視點、構圖全程固定不變'))
+      ) {
+        existing.videoPrompt = flowPromptFor(beat);
       }
       existing.route = route;
       existing.refs = existing.refs || {};
+      existing.refUrls = existing.refUrls || {};
+      existing.approved = Boolean(existing.approved);
     }
   }
   for (const id of Object.keys(production.beats)) {
@@ -164,6 +202,7 @@ export function deleteReference(meta, production, beatId, kind) {
     fs.rmSync(path.join(productionDir(meta.id), previous), { force: true });
     delete entry.refs[kind];
   }
+  if (entry.refUrls) delete entry.refUrls[kind];
   entry.updatedAt = new Date().toISOString();
   saveProduction(meta.id, production);
   return entry;
@@ -190,13 +229,48 @@ export function getReferenceFile(meta, production, beatId, kind) {
   return fs.existsSync(file) ? file : null;
 }
 
+function compressReferenceImage(file) {
+  if (!ffmpegPath || !fs.existsSync(file)) return null;
+  const attempts = [1280, 1024, 800, 640];
+  for (const width of attempts) {
+    const out = path.join(os.tmpdir(), `ref-${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`);
+    const result = spawnSync(ffmpegPath, [
+      '-y', '-loglevel', 'error', '-i', file,
+      '-vf', `scale=${width}:-2:force_original_aspect_ratio=decrease`,
+      '-q:v', '3', out,
+    ], { stdio: 'ignore' });
+    if (result.status === 0 && fs.existsSync(out)) {
+      const stat = fs.statSync(out);
+      if (stat.size <= 1200 * 1024 || width === attempts[attempts.length - 1]) {
+        return { file: out, cleanup: true };
+      }
+      fs.rmSync(out, { force: true });
+    }
+  }
+  return null;
+}
+
 function loadReferenceImages(meta, production, beatId) {
   const entry = production.beats?.[beatId];
   const result = [];
   for (const kind of ['character', 'scene', 'face']) {
+    const publicUrl = String(entry.refUrls?.[kind] || '').trim();
+    if (publicUrl) {
+      result.push({ kind, url: publicUrl });
+      continue;
+    }
     const file = getReferenceFile(meta, production, beatId, kind);
     if (!file) continue;
-    result.push({ kind, buffer: fs.readFileSync(file), mimeType: imageMime(file) });
+    const originalSize = fs.statSync(file).size;
+    const compressed = compressReferenceImage(file);
+    if (compressed) {
+      const buffer = fs.readFileSync(compressed.file);
+      fs.rmSync(compressed.file, { force: true });
+      result.push({ kind, buffer, mimeType: 'image/jpeg' });
+      console.log(`[refs] ${beatId}/${kind}: ${Math.round(originalSize / 1024)}KB → ${Math.round(buffer.length / 1024)}KB`);
+    } else {
+      result.push({ kind, buffer: fs.readFileSync(file), mimeType: imageMime(file) });
+    }
   }
   return result;
 }
@@ -361,6 +435,7 @@ export async function generateProduction({
 
   const promptOnly = mode === 'prompt';
   const videoOnly = mode === 'video';
+  const baseOnly = mode === 'base';
   for (const beat of beats) {
     if (signal?.aborted) throw new Error('CANCELLED');
     const entry = production.beats[beat.id] || {
@@ -369,6 +444,7 @@ export async function generateProduction({
       status: 'todo',
     };
     production.beats[beat.id] = entry;
+    if (entry.approved) throw new Error(`第 ${beat.id} 拍已通過，先取消通過才能重新生成。`);
     entry.status = 'generating';
     entry.error = '';
     entry.updatedAt = new Date().toISOString();
@@ -379,9 +455,13 @@ export async function generateProduction({
       let spec;
       let usage = null;
       let warning = '';
-      if (videoOnly && beat.type === '人物口播' && (entry.videoPrompt || entry.spec?.videoPrompt)) {
+      if (beat.type === '人物口播' && (mode === 'prompt' || baseOnly)) {
+        spec = entry.spec || normalizeSpec({ kind: 'talking_head', duration: beat.estSeconds || 6 }, beat);
+        spec.videoPrompt = flowPromptFor(beat);
+      } else if (videoOnly && beat.type === '人物口播' && (entry.videoPrompt || entry.spec?.videoPrompt)) {
         spec = entry.spec || { videoPrompt: entry.videoPrompt };
         if (!spec.videoPrompt) spec.videoPrompt = entry.videoPrompt;
+        spec.videoPrompt = flowPromptFor(beat);
       } else {
         const result = await createSpec({ meta, beat, settings, provider, model, signal });
         spec = result.spec;
@@ -415,9 +495,17 @@ export async function generateProduction({
           entry.status = 'ready';
         }
       } else if (beat.type === '人物口播') {
-        entry.videoPrompt = spec.videoPrompt || entry.videoPrompt || '';
+        entry.videoPrompt = spec.videoPrompt || entry.videoPrompt || flowPromptFor(beat);
         const referenceImages = loadReferenceImages(meta, production, beat.id);
+        const refsReady = Boolean(entry.refs?.character && entry.refs?.scene);
+        if (baseOnly && !refsReady) {
+          throw new Error('请先上传场景图和人物三视图，再生成人物口播视频。');
+        }
+        if (baseOnly && !settings.video?.apiKey) {
+          throw new Error('还没有配置 Veo／Omni 的 API Key，先上传 Base 视频或到设置配置。');
+        }
         const videoPrompt = [spec.videoPrompt, referencePrompt(entry)].filter(Boolean).join(' ');
+        const baseDuration = beat.type === '人物口播' ? 10 : 8;
         if (!promptOnly && settings.video?.apiKey && spec.videoPrompt && referenceImages.length) {
           const videoModel = settings.video.model || 'gemini-omni-1.1-flash';
           const useOmni =
@@ -431,6 +519,7 @@ export async function generateProduction({
                 negativePrompt: spec.negativePrompt,
                 aspectRatio: settings.video.aspectRatio || '16:9',
                 resolution: settings.video.resolution || '1080p',
+                durationSeconds: baseDuration,
                 referenceImages,
                 signal,
                 onProgress: (event) => {
@@ -446,7 +535,7 @@ export async function generateProduction({
                 negativePrompt: spec.negativePrompt,
                 aspectRatio: settings.video.aspectRatio || '16:9',
                 resolution: settings.video.resolution || '1080p',
-                durationSeconds: 8,
+                durationSeconds: baseDuration,
                 referenceImages,
                 signal,
                 onProgress: (event) => {
@@ -454,10 +543,23 @@ export async function generateProduction({
                   saveProduction(meta.id, production);
                 },
               });
-          const asset = assetPathFor(meta.id, beat.id, 'mp4');
+          const asset = assetPathFor(meta.id, beat.id, baseOnly ? 'base.mp4' : 'mp4');
           fs.writeFileSync(asset, result.buffer);
-          entry.asset = path.relative(dir, asset);
-          entry.status = 'ready';
+          const rel = path.relative(dir, asset);
+          if (baseOnly) {
+            entry.baseAsset = rel;
+            try {
+              const info = await probeMedia(asset);
+              entry.baseAssetDuration = Number(info.duration) || 0;
+            } catch {
+              entry.baseAssetDuration = 0;
+            }
+            entry.status = 'base';
+          } else {
+            entry.asset = rel;
+            entry.assetDuration = Number(result.duration) || entry.assetDuration || 0;
+            entry.status = 'ready';
+          }
         } else {
           entry.status = 'prompt';
         }
@@ -553,6 +655,430 @@ function withTimeout(promise, ms, label) {
     promise,
     new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} 超时`)), ms)),
   ]);
+}
+
+function extractVideoUrl(text = '') {
+  const raw = String(text || '').trim();
+  try {
+    const json = JSON.parse(raw.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, ''));
+    const candidate = json.video_url || json.videoUrl || json.url || json.output?.video_url || json.video?.url;
+    if (candidate) return String(candidate);
+  } catch {
+    /* not JSON */
+  }
+  const url = raw.match(/https?:\/\/[^\s"'<>]+\.(?:mp4|webm|mov)(?:\?[^\s"'<>]*)?/i);
+  if (url) return url[0];
+  const data = raw.match(/data:video\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/=\s]+/i);
+  return data ? data[0] : '';
+}
+
+async function saveVideoFromUrl(meta, beat, videoRef) {
+  const dir = productionDir(meta.id);
+  const asset = assetPathFor(meta.id, beat.id, 'mp4');
+  if (/^data:video\//i.test(videoRef)) {
+    const comma = videoRef.indexOf(',');
+    const buffer = Buffer.from(videoRef.slice(comma + 1).replace(/\s+/g, ''), 'base64');
+    fs.writeFileSync(asset, buffer);
+    return path.relative(dir, asset);
+  }
+  const response = await fetch(videoRef, { redirect: 'follow' });
+  if (!response.ok) throw new Error(`Opus 回傳的影片下載失敗：HTTP ${response.status}`);
+  const buffer = Buffer.from(await response.arrayBuffer());
+  if (!buffer.length) throw new Error('Opus 回傳的影片是空的。');
+  fs.writeFileSync(asset, buffer);
+  return path.relative(dir, asset);
+}
+
+function extractHtml(text = '') {
+  let raw = String(text || '').trim();
+  raw = raw.replace(/^```(?:html)?\s*/i, '').replace(/```\s*$/i, '').trim();
+  const start = raw.search(/<!doctype\s+html|<html[\s>]/i);
+  if (start < 0) return '';
+  const end = raw.toLowerCase().lastIndexOf('</html>');
+  return end > start ? raw.slice(start, end + 7).trim() : raw.slice(start).trim();
+}
+
+function imagePart(file) {
+  if (!file || !fs.existsSync(file)) return null;
+  return {
+    type: 'image_url',
+    image_url: { url: `data:image/jpeg;base64,${fs.readFileSync(file).toString('base64')}` },
+  };
+}
+
+async function reviseOpusPython({ provider, model, brief, duration, currentScript, contactFile, referenceFile, signal }) {
+  const images = [imagePart(contactFile), imagePart(referenceFile)].filter(Boolean);
+  const text = `You are reviewing your own Python/Pillow render.
+
+Attached image 1: contact sheet of your CURRENT render.
+Attached image 2: TARGET style reference (full-bleed MODS motion graphics).
+
+BROLL XML:
+${brief.raw}
+
+CURRENT Python:
+${currentScript}
+
+Find the concrete visual problems, then return a COMPLETE revised Python script.
+
+Focus on:
+- card too small / too much empty space → full-bleed stage, main card 55–70% width, 4–8 meaningful elements
+- missing or tiny text → every title/subtitle/bullet verbatim, large and readable
+- weak motion → clear entrances, easing, arrows/lines/counters that animate
+- flat UI → gradients, soft shadows, rounded cards, mac-style chrome
+- visual hierarchy → bold headline 64–110px, secondary 28–42px, body 22–30px
+- keep duration exactly ${duration.toFixed(2)}s at 30fps
+
+Rules:
+- Use from components import * from skills/broll-design-pack and its helpers/palette.
+- Do NOT call components.run(); save frames yourself.
+- Return ONLY the complete Python script, no Markdown, no explanation.
+- Keep it under 160 lines / 6000 characters so the API does not truncate it.
+- Same imports/contract as before: frames/frame_%05d.png or f"frame_{i:05d}.png".
+- No network, subprocess, eval/exec, randomness.
+- It MUST be syntactically complete and save every frame.`;
+  const result = await chat(provider, {
+    model,
+    messages: [{
+      role: 'user',
+      content: [
+        { type: 'text', text },
+        ...images,
+      ],
+    }],
+    omitTemperature: true,
+    maxTokens: 20000,
+    signal,
+    timeoutMs: 300000,
+    retries: 1,
+  });
+  return extractPython(result.text);
+}
+
+export async function startOpusVideo(meta, english, beatId, provider, model, onDone, onError) {
+  if (running.has(meta.id)) throw new Error('这个项目正在处理中。');
+  const controller = new AbortController();
+  running.set(meta.id, { controller, kind: 'opus' });
+  progress.set(meta.id, { pct: 3, message: '正在送出 BROLL 給 Opus 5.5…' });
+  (async () => {
+    const production = ensureProduction(meta, english);
+    const beat = (english.beats || []).find((item) => item.id === beatId);
+    if (!beat) throw new Error('找不到这一拍。');
+    const entry = production.beats[beatId];
+    if (entry.approved) throw new Error('这一拍已通過，先取消通過才能重新生成。');
+    const brief = readBriefs(meta.id).find((item) => item.beatId === beatId);
+    if (!brief?.raw) throw new Error('这一拍还没有 BROLL／AROLL XML。');
+    const timedEnd = Math.max(0, ...(brief.timed || []).map((item) => Number(item.end) || 0));
+    const duration = Math.min(30, Math.max(2, timedEnd || beat.estSeconds || 6));
+    entry.status = 'generating';
+    entry.error = '';
+    entry.opusOutput = '';
+    saveProduction(meta.id, production);
+
+    const packRoot = path.resolve('skills/broll-design-pack');
+    let packExample = '';
+    try {
+      packExample = fs.readFileSync(path.join(packRoot, 'plates', 'plate-184.py'), 'utf8');
+    } catch {
+      packExample = '';
+    }
+    const prompt = `You are Opus 5.5, a senior MODS motion designer and Python/Pillow engineer.
+Turn the BROLL XML below into a FINAL Python 3 script that renders the video frame by frame.
+
+DESIGN PACK:
+Use the local pack at skills/broll-design-pack. Import it with:
+  from components import *
+Available helpers include: bg, card, plaque, stubcard, darkpanel, mac, bot, disc,
+place, comp, fade, dim, p, lerp, eob, eoc, eio, spring, clamp, dashed, partial,
+arrowhead, dashed_arrow, check, peek, tab_out, jolt, F.
+Use the pack's palette (CREAM, INK, CORAL, stages) and its 1920x1080 / 30fps conventions.
+Do NOT call components.run(); this workbench writes frames itself.
+Define build() if needed and frame(t), then save frames from a manual loop.
+Example plate (style/API reference only; do not copy its content):
+${packExample}
+
+HARD OUTPUT RULES:
+- Return ONLY one complete Python script. No Markdown fences, no explanation.
+- 1920×1080, 16:9, exactly 30fps, duration exactly ${duration.toFixed(2)} seconds.
+- Write frames to ./frames/frame_%05d.png (use f"frames/frame_{i:05d}.png"), starting at 00000.
+- Use ONLY: PIL (Pillow), numpy, math, os, sys, json, colorsys, typing, dataclasses.
+- No network, no external files, no subprocess, no eval/exec, no randomness, no current time.
+- Use Pillow drawing: rounded rectangles, gradients, soft shadows via blurred alpha layers, bold kinetic typography, thin vector lines/arrows, mac-style windows.
+- Use system fonts, e.g. /System/Library/Fonts/Supplemental/Arial Bold.ttf and Arial.ttf; wrap font loading in try/except and fall back to ImageFont.load_default().
+- Full-bleed saturated stage: do NOT put a tiny card in a corner with huge empty space. Main card should occupy ~55–65% of the frame. Use 4–8 meaningful elements.
+- Follow the BROLL XML's stage hue, card language, timing, M/I/E codes, icon specs, and end treatment.
+- Render EVERY title, subtitle, bullet, label, and caption from the XML as actual readable text, verbatim. Do NOT replace text with blank bars unless the XML explicitly says blank.
+- No people, faces, talking heads, or photographic footage.
+- The script must finish in under 90 seconds.
+- KEEP THE SCRIPT COMPACT: target 120–160 lines and under 6000 characters. Avoid long helper libraries and excessive supersampling. It MUST be syntactically complete; the last lines must generate and save every frame.
+- Do not stop mid-function. If space is tight, simplify the drawing, not the frame loop.
+
+BROLL XML:
+${brief.raw}`;
+
+    progress.set(meta.id, { pct: 8, message: 'Opus 5.5 正在撰寫 Python/Pillow 動效…' });
+    const result = await chat(provider, {
+      model,
+      messages: [{ role: 'user', content: prompt }],
+      omitTemperature: true,
+      maxTokens: 20000,
+      signal: controller.signal,
+      timeoutMs: 300000,
+      retries: 1,
+    });
+    entry.opusOutput = String(result.text || '').slice(0, 2000);
+    progress.set(meta.id, { pct: 35, message: 'Opus 已回傳，準備渲染…' });
+
+    const directVideo = extractVideoUrl(result.text);
+    const dir = productionDir(meta.id);
+    const asset = assetPathFor(meta.id, beat.id, 'mp4');
+    if (directVideo) {
+      progress.set(meta.id, { pct: 60, message: '下載 Opus 回傳的影片…' });
+      const rel = await saveVideoFromUrl(meta, beat, directVideo);
+      entry.asset = rel;
+    } else {
+      const python = extractPython(result.text);
+      if (python) {
+        const codeDir = path.join(dir, 'opus');
+        fs.mkdirSync(codeDir, { recursive: true });
+        const codePath = path.join(codeDir, `${beat.id}.py`);
+        fs.writeFileSync(codePath, python);
+        entry.opusPy = path.relative(dir, codePath);
+        entry.opusOutput = String(result.text || '').slice(0, 2000);
+        saveProduction(meta.id, production);
+        progress.set(meta.id, { pct: 40, message: '執行 Python/Pillow 動效…' });
+        await renderPythonToMp4({
+          script: python,
+          outFile: asset,
+          duration,
+          onProgress: (pct, message) => {
+            progress.set(meta.id, { pct: Math.min(95, 35 + Math.round(pct * 0.6)), message });
+          },
+        });
+        entry.asset = path.relative(dir, asset);
+        entry.opusRounds = 1;
+        saveProduction(meta.id, production);
+
+        // Two visual-feedback passes: Opus sees the rendered contact sheet,
+        // compares it with the target style, and rewrites the Python script.
+        let currentScript = python;
+        const referenceFile = path.resolve('skills/broll-rules/ref-notes/style-reference.jpg');
+        for (let round = 2; round <= 3; round += 1) {
+          const contactFile = path.join(codeDir, `${beat.id}-round${round - 1}.jpg`);
+          if (!makeContactSheet(asset, contactFile)) break;
+          progress.set(meta.id, { pct: 78, message: `第 ${round - 1} 輪：Opus 看畫面並修正…` });
+          let revised = '';
+          try {
+            revised = await reviseOpusPython({
+              provider,
+              model,
+              brief,
+              duration,
+              currentScript,
+              contactFile,
+              referenceFile,
+              signal: controller.signal,
+            });
+          } catch (error) {
+            entry.opusWarning = `視覺修正略過：${error.message}`;
+            break;
+          }
+          if (!revised) break;
+          currentScript = revised;
+          const roundPath = path.join(codeDir, `${beat.id}-round${round}.py`);
+          fs.writeFileSync(roundPath, revised);
+          entry.opusPy = path.relative(dir, roundPath);
+          entry.opusRounds = round;
+          saveProduction(meta.id, production);
+          progress.set(meta.id, { pct: 82, message: `第 ${round} 輪：重新渲染…` });
+          try {
+            await renderPythonToMp4({
+              script: revised,
+              outFile: asset,
+              duration,
+              onProgress: (pct, message) => {
+                progress.set(meta.id, { pct: Math.min(97, 82 + Math.round(pct * 0.15)), message });
+              },
+            });
+            entry.asset = path.relative(dir, asset);
+            saveProduction(meta.id, production);
+          } catch (error) {
+            entry.opusWarning = `第 ${round} 輪修正失敗，保留上一版：${error.message}`;
+            break;
+          }
+        }
+      } else {
+        const html = extractHtml(result.text);
+        if (!html) {
+          throw new Error(`Opus 回傳的內容不是 Python 或 HTML。回應開頭：${String(result.text || '').slice(0, 160)}`);
+        }
+        const htmlDir = path.join(dir, 'opus');
+        fs.mkdirSync(htmlDir, { recursive: true });
+        const htmlPath = path.join(htmlDir, `${beat.id}.html`);
+        fs.writeFileSync(htmlPath, html);
+        entry.opusHtml = path.relative(dir, htmlPath);
+        progress.set(meta.id, { pct: 40, message: '渲染 HTML 動效…' });
+        await renderHtmlToMp4({
+          html,
+          outFile: asset,
+          duration,
+          onProgress: (pct, message) => {
+            progress.set(meta.id, { pct: Math.min(95, 40 + Math.round(pct * 0.55)), message });
+          },
+        });
+        entry.asset = path.relative(dir, asset);
+      }
+    }
+    entry.status = 'ready';
+    entry.updatedAt = new Date().toISOString();
+    progress.set(meta.id, { pct: 100, message: 'Opus 影片完成' });
+    saveProduction(meta.id, production);
+  })()
+    .then(onDone)
+    .catch((error) => {
+      try {
+        const production = getProduction(meta.id);
+        const entry = production.beats?.[beatId];
+        if (entry) {
+          entry.status = 'error';
+          entry.error = error.message;
+          entry.updatedAt = new Date().toISOString();
+          saveProduction(meta.id, production);
+        }
+      } catch {
+        /* ignore */
+      }
+      progress.delete(meta.id);
+      onError?.(error);
+    })
+    .finally(() => {
+      running.delete(meta.id);
+      setTimeout(() => progress.delete(meta.id), 8000);
+    });
+  return controller;
+}
+
+export async function startOpusPersonVideo(meta, english, beatId, provider, model, onDone, onError) {
+  if (running.has(meta.id)) throw new Error('这个项目正在处理中。');
+  const controller = new AbortController();
+  running.set(meta.id, { controller, kind: 'opus-person' });
+  progress.set(meta.id, { pct: 3, message: '正在準備 Base 影片與 AROLL…' });
+  (async () => {
+    const production = ensureProduction(meta, english);
+    const beat = (english.beats || []).find((item) => item.id === beatId);
+    if (!beat) throw new Error('找不到这一拍。');
+    const entry = production.beats[beatId];
+    if (entry.approved) throw new Error('这一拍已通過，先取消通過才能重新生成。');
+    const brief = readBriefs(meta.id).find((item) => item.beatId === beatId);
+    if (!brief?.raw) throw new Error('这一拍还没有 AROLL XML。');
+    if (!entry.baseAsset) throw new Error('这一拍还没有 Base 視頻，先完成 Base。');
+    const dir = productionDir(meta.id);
+    const baseFile = path.join(dir, entry.baseAsset);
+    if (!fs.existsSync(baseFile)) throw new Error('Base 視頻檔案不存在。');
+    const duration = Math.min(10, Math.max(2, Number(entry.baseAssetDuration) || Number(beat.estSeconds) || 8));
+    const totalFrames = Math.round(duration * 30);
+
+    const framesDir = path.join(dir, 'opus', `${beatId}-baseframes`);
+    fs.rmSync(framesDir, { recursive: true, force: true });
+    fs.mkdirSync(framesDir, { recursive: true });
+    if (!ffmpegPath) throw new Error('找不到 FFmpeg。');
+    const extract = spawnSync(ffmpegPath, [
+      '-y', '-loglevel', 'error', '-i', baseFile,
+      '-vf', `fps=30,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black`,
+      '-start_number', '0', path.join(framesDir, 'frame_%05d.png'),
+    ], { encoding: 'utf8' });
+    if (extract.status !== 0) throw new Error(`Base 抽幀失敗：${(extract.stderr || '').slice(-600)}`);
+
+    entry.status = 'generating';
+    entry.error = '';
+    entry.opusOutput = '';
+    saveProduction(meta.id, production);
+
+    const prompt = `You are Opus 5.5, a senior A-roll motion designer.
+Finish this talking-head A-roll using the provided BASE VIDEO FRAMES and the AROLL XML.
+
+BASE FRAMES:
+- Local folder: base_frames/
+- Files: base_frames/frame_00000.png ... frame_${String(totalFrames - 1).padStart(5, '0')}.png
+- 1920×1080, 30fps, exactly ${duration.toFixed(2)} seconds.
+- These frames are the real person footage. NEVER replace, crop out, or regenerate the face/body/environment.
+- Only add overlays, type, UI cards, lower thirds, stage/PiP treatments, and motion graphics on top.
+
+TASK:
+Write a complete Python 3 / Pillow script that:
+1. Loads each base frame from base_frames/frame_%05d.png.
+2. Draws the AROLL overlays exactly as specified by the XML.
+3. Saves every composited frame to frames/frame_%05d.png (start 00000, ${totalFrames} frames).
+4. Keeps the face visible and unobstructed; follow the AROLL sparse rules.
+5. Uses only PIL, numpy, math, os, sys, json, colorsys, typing, dataclasses.
+6. No subprocess, no network, no external image files, no randomness.
+7. All on-screen text must be verbatim from the XML; do not invent copy.
+8. Return ONLY the Python script, no Markdown fence, no explanation.
+9. Keep it compact and syntactically complete; target under 6000 characters. The last lines must write all ${totalFrames} frames.
+
+AROLL XML:
+${brief.raw}`;
+
+    progress.set(meta.id, { pct: 12, message: 'Opus 5.5 正在設計 A-roll 疊加層…' });
+    const result = await chat(provider, {
+      model,
+      messages: [{ role: 'user', content: prompt }],
+      omitTemperature: true,
+      maxTokens: 20000,
+      signal: controller.signal,
+      timeoutMs: 300000,
+      retries: 1,
+    });
+    entry.opusOutput = String(result.text || '').slice(0, 2000);
+    const python = extractPython(result.text);
+    if (!python) throw new Error(`Opus 沒有回傳可用的 Python 腳本。回應開頭：${String(result.text || '').slice(0, 160)}`);
+    const codeDir = path.join(dir, 'opus');
+    fs.mkdirSync(codeDir, { recursive: true });
+    const codePath = path.join(codeDir, `${beatId}-aroll.py`);
+    fs.writeFileSync(codePath, python);
+    entry.opusPy = path.relative(dir, codePath);
+    saveProduction(meta.id, production);
+
+    progress.set(meta.id, { pct: 35, message: '把 AROLL 疊加到 Base 畫面上…' });
+    const asset = assetPathFor(meta.id, beat.id, 'mp4');
+    await renderPythonToMp4({
+      script: python,
+      outFile: asset,
+      duration,
+      inputDir: framesDir,
+      onProgress: (pct, message) => {
+        progress.set(meta.id, { pct: Math.min(96, 35 + Math.round(pct * 0.6)), message });
+      },
+    });
+    entry.asset = path.relative(dir, asset);
+    entry.assetDuration = duration;
+    entry.status = 'ready';
+    entry.updatedAt = new Date().toISOString();
+    progress.set(meta.id, { pct: 100, message: 'Opus A-roll 完成' });
+    saveProduction(meta.id, production);
+  })()
+    .then(onDone)
+    .catch((error) => {
+      try {
+        const production = getProduction(meta.id);
+        const entry = production.beats?.[beatId];
+        if (entry) {
+          entry.status = 'error';
+          entry.error = error.message;
+          entry.updatedAt = new Date().toISOString();
+          saveProduction(meta.id, production);
+        }
+      } catch {
+        /* ignore */
+      }
+      progress.delete(meta.id);
+      onError?.(error);
+    })
+    .finally(() => {
+      running.delete(meta.id);
+      setTimeout(() => progress.delete(meta.id), 8000);
+    });
+  return controller;
 }
 
 export async function startGenerate(meta, english, beatIds, settings, provider, model, onDone, onError, mode = 'auto') {

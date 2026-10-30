@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="theme-color" content="#f4ebe1" />
 <title>课程视频工作台 · 英文视频转中文文案</title>
-<link rel="stylesheet" href="/styles.css?v=20261026-2405" />
+<link rel="stylesheet" href="/styles.css?v=20261030-1245" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23da7b4a'/%3E%3Cpath d='M12 9.5v13l11-6.5z' fill='%23101318'/%3E%3C/svg%3E" />
 </head>
 <body>
 <div id="app">
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="brand">
       <div class="brand-mark">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20v13H6.5A2.5 2.5 0 0 0 4 19.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="m10 8.5 4.5 2.5L10 13.5z" fill="currentColor" stroke="none"/></svg>
@@ -19,6 +19,7 @@
         <strong>课程视频工作台</strong>
         <span>EN → 中文文案 · LOCAL</span>
       </div>
+      <button class="sidebar-toggle" id="sidebarToggle" title="收起專案欄" aria-label="收起專案欄">‹</button>
     </div>
 
     <button class="new-project" id="newProjectBtn">
@@ -130,15 +131,15 @@
           </div>
           <div class="player-meta" id="playerMeta"></div>
         </aside>
-
+        <div class="col-splitter" id="colSplitter" title="拖曳調整視頻欄寬度"></div>
         <div class="editor-col">
           <nav class="tabs" id="tabs">
-            <button data-tab="subtitles" class="active">字幕 <span class="badge" id="subCount">0</span></button>
-            <button data-tab="copy">文案分段 <span class="badge" id="copyCount">0</span></button>
-            <button data-tab="english">英文分鏡 <span class="badge" id="voCount">0</span></button>
-            <button data-tab="prompts">提示詞 <span class="badge" id="promptCount">0</span></button>
-            <button data-tab="edit">剪輯 <span class="badge" id="editCount">0</span></button>
-            <button data-tab="export">导出</button>
+            <button data-tab="subtitles" class="active"><b class="tab-no">1</b>字幕 <span class="badge" id="subCount">0</span></button>
+            <button data-tab="copy"><b class="tab-no">2</b>文案分段 <span class="badge" id="copyCount">0</span></button>
+            <button data-tab="english"><b class="tab-no">3</b>英文分鏡 <span class="badge" id="voCount">0</span></button>
+            <button data-tab="prompts"><b class="tab-no">4</b>提示詞 <span class="badge" id="promptCount">0</span></button>
+            <button data-tab="edit"><b class="tab-no">5</b>剪輯 <span class="badge" id="editCount">0</span></button>
+            <button data-tab="export"><b class="tab-no">6</b>導出</button>
             <button data-tab="logs">日志</button>
           </nav>
 
@@ -167,7 +168,7 @@
 
           <div class="panel hidden" data-panel="english">
             <div class="panel-toolbar vo-toolbar">
-              <span class="toolbar-hint">中文文案 → 英文 YouTube 口播分鏡</span>
+              <span class="toolbar-hint">中文文案 → 英文 YouTube 口播分鏡 · 點時間碼跳原片</span>
               <div class="spacer"></div>
               <button class="btn small ghost" id="voCopyBtn">複製表格</button>
               <button class="btn small ghost" id="voDownloadBtn">下載 MD</button>
@@ -192,7 +193,7 @@
               <div>
                 <div class="eyebrow">STAGE 3 · PROMPTS</div>
                 <h3>提示詞</h3>
-                <p>人物口播：先做無動效 Base → 再出 AROLL；Broll：直接從英文 VO 出 BROLL；實操不需要提示詞。Opus 5.5 目前用外部交接，做好後上傳成片。</p>
+                <p>人物口播：FLOW 提示詞＋場景圖＋三視圖 → Veo／Omni 生成無動效 Base → AROLL；Broll：直接從英文 VO 出 BROLL；實操不需要提示詞。</p>
               </div>
               <div class="prompt-actions">
                 <button class="btn small ghost" id="promptGenerateAll">生成缺少的 Broll 提示詞</button>
@@ -210,13 +211,15 @@
             <div class="model-map">
               <div><span>轉寫</span><b>Whisper · 本機</b><em>已接入</em></div>
               <div><span>文案／英文分鏡</span><b>DeepSeek Flash</b><em>已接入</em></div>
-              <div><span>Base 人物視頻</span><b>Flow VO</b><em>未接入</em></div>
+              <div><span>Base 人物視頻</span><b id="modelBaseName">Veo／Omni</b><em id="modelBaseStatus">待配置</em></div>
               <div><span>AROLL／BROLL</span><b>SKILL + DeepSeek</b><em>已接入</em></div>
-              <div><span>最終製作</span><b>Opus 5.5</b><em>未接入</em></div>
+              <div><span>最終製作</span><b id="modelOpusName">Opus 5.5</b><em id="modelOpusStatus">待配置</em></div>
               <div><span>剪輯</span><b>FFmpeg · 本機</b><em>已接入</em></div>
             </div>
+            <div class="prompt-summary" id="promptSummary"></div>
             <div class="prompt-filters" id="promptFilters">
               <button class="active" data-filter="all">全部</button>
+              <button data-filter="pending">待處理</button>
               <button data-filter="person">人物口播</button>
               <button data-filter="broll">Broll</button>
               <button data-filter="screen">實操</button>
@@ -352,6 +355,11 @@
 <input type="file" id="prodFileInput" accept="video/*,.mkv,.mov" hidden />
 <input type="file" id="refFileInput" accept="image/png,image/jpeg,image/webp" hidden />
 <input type="file" id="prodBriefInput" accept=".xml,.txt,.md" hidden />
-<script src="/app.js?v=20261026-2405" type="module"></script>
+<div class="image-modal hidden" id="imageModal">
+  <button class="image-modal-close" id="imageModalClose" type="button" title="關閉">×</button>
+  <img id="imageModalImg" alt="" />
+  <div class="image-modal-caption" id="imageModalCaption"></div>
+</div>
+<script src="/app.js?v=20261030-1245" type="module"></script>
 </body>
 </html>

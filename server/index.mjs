@@ -48,11 +48,14 @@ import {
   isProductionRunning,
   renderProduction,
   saveUploadedAsset,
+  saveProduction,
   saveReference,
   saveVideoPrompt,
   deleteReference,
   getReferenceFile,
   startGenerate,
+  startOpusVideo,
+  startOpusPersonVideo,
   startRender,
 } from './production.mjs';
 import { resolveModel } from './config.mjs';
@@ -626,7 +629,7 @@ app.post('/api/jobs/:id/production/generate', asyncRoute(async (req, res) => {
       { status: 400 },
     );
   }
-  const mode = ['auto', 'prompt', 'video'].includes(req.body?.mode) ? req.body.mode : 'auto';
+  const mode = ['auto', 'prompt', 'video', 'base'].includes(req.body?.mode) ? req.body.mode : 'auto';
   const beatIds = Array.isArray(req.body?.beatIds) && req.body.beatIds.length
     ? req.body.beatIds.filter((id) => english.beats.some((beat) => beat.id === id))
     : english.beats.map((beat) => beat.id);
@@ -730,6 +733,29 @@ app.post('/api/jobs/:id/production/reference', (req, res, next) => {
   });
 });
 
+app.post('/api/jobs/:id/production/ref-url', asyncRoute(async (req, res) => {
+  const meta = readMeta(req.params.id);
+  const english = getEnglish(meta.id);
+  const production = ensureProduction(meta, english);
+  const beatId = String(req.body?.beatId || '');
+  const kind = String(req.body?.kind || '');
+  const url = String(req.body?.url || '').trim();
+  if (!['character', 'scene', 'face'].includes(kind)) {
+    throw Object.assign(new Error('參考圖類型無效。'), { status: 400 });
+  }
+  if (url && !/^https?:\/\//i.test(url)) {
+    throw Object.assign(new Error('請填寫 http(s) 公開圖片 URL。'), { status: 400 });
+  }
+  const entry = production.beats?.[beatId];
+  if (!entry) throw Object.assign(new Error('找不到這一拍。'), { status: 404 });
+  entry.refUrls = entry.refUrls || {};
+  if (url) entry.refUrls[kind] = url;
+  else delete entry.refUrls[kind];
+  entry.updatedAt = new Date().toISOString();
+  saveProduction(meta.id, production);
+  res.json({ ok: true, production: productionPublic(meta, english), entry });
+}));
+
 app.delete('/api/jobs/:id/production/reference/:beatId/:kind', asyncRoute(async (req, res) => {
   const meta = readMeta(req.params.id);
   const english = getEnglish(meta.id);
@@ -755,6 +781,46 @@ app.get('/api/jobs/:id/production/asset/:beatId', asyncRoute(async (req, res) =>
   const file = getAssetFile(meta, production, req.params.beatId);
   if (!file) throw Object.assign(new Error('这一拍还没有素材。'), { status: 404 });
   streamVideoFile(req, res, file);
+}));
+
+app.post('/api/jobs/:id/production/opus/:beatId', asyncRoute(async (req, res) => {
+  const meta = readMeta(req.params.id);
+  const english = getEnglish(meta.id);
+  if (!english.beats?.length) throw Object.assign(new Error('请先生成英文分镜。'), { status: 400 });
+  const settings = loadSettings();
+  const resolved = resolveModel(settings, 'opus');
+  if (!resolved.provider?.apiKey) {
+    throw Object.assign(new Error('请先在设定配置 Opus 5.5 的 API Key。'), { status: 400 });
+  }
+  if (isProductionRunning(meta.id)) {
+    throw Object.assign(new Error('这个项目正在制作中。'), { status: 409 });
+  }
+  const beatId = String(req.params.beatId || '');
+  const beat = (english.beats || []).find((item) => item.id === beatId);
+  if (!beat) throw Object.assign(new Error('找不到这一拍。'), { status: 404 });
+  if (beat.type === '人物口播') {
+    startOpusPersonVideo(meta, english, beatId, resolved.provider, resolved.model, () => {}, () => {});
+  } else {
+    startOpusVideo(meta, english, beatId, resolved.provider, resolved.model, () => {}, () => {});
+  }
+  res.status(202).json({ ok: true, beatId, model: `${resolved.provider.name} · ${resolved.model}` });
+}));
+
+app.post('/api/jobs/:id/production/approve/:beatId', asyncRoute(async (req, res) => {
+  const meta = readMeta(req.params.id);
+  const english = getEnglish(meta.id);
+  const production = ensureProduction(meta, english);
+  const entry = production.beats?.[req.params.beatId];
+  if (!entry) throw Object.assign(new Error('找不到這一拍。'), { status: 404 });
+  const approved = Boolean(req.body?.approved);
+  if (approved && !entry.asset && !entry.baseAsset) {
+    throw Object.assign(new Error('這一拍還沒有可通過的影片。'), { status: 400 });
+  }
+  entry.approved = approved;
+  entry.approvedAt = approved ? new Date().toISOString() : '';
+  entry.updatedAt = new Date().toISOString();
+  saveProduction(meta.id, production);
+  res.json({ ok: true, production: productionPublic(meta, english), entry });
 }));
 
 app.get('/api/jobs/:id/production/base/:beatId', asyncRoute(async (req, res) => {

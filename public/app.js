@@ -24,6 +24,8 @@ const state = {
   pendingRef: null,
   pendingBriefBeat: null,
   motionGenerating: new Set(),
+  motionStartedAt: new Map(),
+  motionMessage: '',
   promptDrafts: new Map(),
   saveTimer: null,
   copySaveTimer: null,
@@ -140,6 +142,9 @@ $('#dialogInput').addEventListener('keydown', (event) => {
 /* --------------------------------------------------------------------- init */
 async function init() {
   bindStaticEvents();
+  initColumnSplitter();
+  applyCinema(false);
+  applySidebarCollapsed(localStorage.getItem('dshSidebarCollapsed') === '1');
   try {
     await loadSettings();
   } catch (error) {
@@ -359,6 +364,7 @@ function applyData(data, { force = false } = {}) {
   renderEnglish();
   if (state.tab === 'production') renderProduction();
   renderPrompts();
+  renderModelMap();
   renderEdit();
   renderBriefs();
   renderLogs();
@@ -822,9 +828,18 @@ function findSegmentAt(time) {
 
 function seekTo(seconds) {
   const video = $('#player');
-  video.currentTime = Number(seconds) || 0;
-  video.play().catch(() => {});
-  syncPlayback();
+  const target = Math.max(0, Number(seconds) || 0);
+  const apply = () => {
+    try {
+      video.currentTime = target;
+      video.play().catch(() => {});
+      syncPlayback();
+    } catch {
+      /* metadata not ready yet */
+    }
+  };
+  if (video.readyState >= 1) apply();
+  else video.addEventListener('loadedmetadata', apply, { once: true });
 }
 
 /* -------------------------------------------------------------------- copy */
@@ -1127,6 +1142,23 @@ function updateVoTypeClass(select) {
   else select.classList.add('t3');
 }
 
+function beatSourceRange(beat) {
+  const blocks = state.copy.blocks || [];
+  const block = blocks.find((item) => item.id === beat.sourceBlock);
+  if (!block) return null;
+  const group = (state.english.beats || []).filter((item) => item.sourceBlock === beat.sourceBlock);
+  if (group.length <= 1) return { start: Number(block.start) || 0, end: Number(block.end) || 0 };
+  const total = group.reduce((sum, item) => sum + Math.max(1, Number(item.words) || 1), 0);
+  let cursor = 0;
+  let start = Number(block.start) || 0;
+  for (const item of group) {
+    const span = (Number(block.end) - Number(block.start) || 0) * (Math.max(1, Number(item.words) || 1) / total);
+    if (item.id === beat.id) return { start, end: start + span };
+    start += span;
+  }
+  return null;
+}
+
 function buildVoRow(beat, index) {
   const row = document.createElement('tr');
   row.dataset.beatId = beat.id;
@@ -1134,7 +1166,24 @@ function buildVoRow(beat, index) {
 
   const num = document.createElement('td');
   num.className = 'vo-num';
-  num.textContent = String(index + 1).padStart(2, '0');
+  const numIndex = document.createElement('span');
+  numIndex.textContent = String(index + 1).padStart(2, '0');
+  const range = beatSourceRange(beat);
+  const time = document.createElement('button');
+  time.type = 'button';
+  time.className = 'vo-time';
+  time.textContent = range ? fmtTime(range.start) : '--:--';
+  time.title = range ? '跳到原片這一拍' : '找不到對應時間碼';
+  time.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (range) seekTo(range.start);
+  });
+  num.append(numIndex, time);
+  if (range) {
+    row.dataset.start = String(range.start);
+    row.dataset.end = String(range.end);
+    row.title = '點擊跳到原片這一拍';
+  }
 
   const typeCell = document.createElement('td');
   const select = document.createElement('select');
@@ -1469,6 +1518,126 @@ function typeLabel(type) {
   return type === 'B字卡' ? 'Broll' : type;
 }
 
+function providerHasKey(providerId) {
+  return Boolean((state.settings?.providers || []).find((provider) => provider.id === providerId)?.hasKey);
+}
+
+function taskConfigured(taskKey) {
+  const task = state.settings?.tasks?.[taskKey];
+  if (!task) return false;
+  return Boolean(task.hasKey || task.apiKey || providerHasKey(task.providerId));
+}
+
+function applySidebarCollapsed(on) {
+  const sidebar = $('#sidebar');
+  const toggle = $('#sidebarToggle');
+  if (!sidebar) return;
+  sidebar.classList.toggle('collapsed', Boolean(on));
+  if (toggle) {
+    toggle.textContent = on ? '›' : '‹';
+    toggle.title = on ? '展開專案欄' : '收起專案欄';
+    toggle.setAttribute('aria-label', toggle.title);
+  }
+  localStorage.setItem('dshSidebarCollapsed', on ? '1' : '0');
+}
+
+function applyCinema(on) {
+  const view = $('#jobView');
+  if (!view) return;
+  view.classList.toggle('cinema', Boolean(on));
+  const button = $('#cinemaToggle');
+  if (button) {
+    button.textContent = on ? '分欄模式' : '影院模式';
+    button.classList.toggle('active', Boolean(on));
+  }
+  localStorage.setItem('dshCinema', on ? '1' : '0');
+}
+
+function renderModelMap() {
+  const video = state.settings?.video || {};
+  const opus = state.settings?.tasks?.opus || {};
+  const baseName = document.querySelector('#modelBaseName');
+  const baseStatus = document.querySelector('#modelBaseStatus');
+  const opusName = document.querySelector('#modelOpusName');
+  const opusStatus = document.querySelector('#modelOpusStatus');
+  if (baseName) baseName.textContent = video.model || 'Veo／Omni';
+  if (baseStatus) {
+    baseStatus.textContent = video.hasKey ? '已配置' : '待配置';
+    baseStatus.style.color = video.hasKey ? '#2e7d32' : '';
+  }
+  if (opusName) opusName.textContent = opus.model || 'Opus 5.5';
+  if (opusStatus) {
+    opusStatus.textContent = taskConfigured('opus') ? '已配置' : '待配置';
+    opusStatus.style.color = taskConfigured('opus') ? '#2e7d32' : '';
+  }
+}
+
+async function saveReferenceUrl(beatId, kind, url) {
+  if (!state.currentId) return;
+  try {
+    const data = await api(`/api/jobs/${state.currentId}/production/ref-url`, {
+      method: 'POST',
+      body: JSON.stringify({ beatId, kind, url }),
+    });
+    state.production = data.production;
+    renderPrompts();
+    toast(url ? '公開圖片 URL 已保存' : '已清除公開圖片 URL', 'ok');
+  } catch (error) {
+    toast(error.message, 'error');
+  }
+}
+
+async function toggleApproved(beatId, approved) {
+  if (!state.currentId) return;
+  try {
+    const data = await api(`/api/jobs/${state.currentId}/production/approve/${beatId}`, {
+      method: 'POST',
+      body: JSON.stringify({ approved }),
+    });
+    state.production = data.production;
+    renderPrompts();
+    toast(approved ? '已通過並鎖定，重新生成前要先取消通過' : '已取消通過', 'ok');
+  } catch (error) {
+    toast(error.message, 'error');
+  }
+}
+
+function downloadControl(downloadHref, downloadName) {
+  const download = document.createElement('a');
+  download.className = 'btn small ghost';
+  download.href = downloadHref;
+  download.download = downloadName;
+  download.textContent = '下載保存';
+  return download;
+}
+
+function approvalControls(beatId, entry, downloadHref, downloadName) {
+  const box = document.createElement('div');
+  box.className = 'base-player-actions';
+  const approve = document.createElement('button');
+  approve.type = 'button';
+  approve.className = `btn small ${entry.approved ? 'primary' : 'ghost'}`;
+  approve.textContent = entry.approved ? '已通過 🔒' : '通過並鎖定';
+  approve.title = entry.approved ? '已鎖定，重新生成前要先取消通過' : '標記為通過並鎖定，避免被重新生成覆蓋';
+  approve.addEventListener('click', () => toggleApproved(beatId, !entry.approved));
+  const download = document.createElement('a');
+  download.className = 'btn small ghost';
+  download.href = downloadHref;
+  download.download = downloadName;
+  download.textContent = '下載保存';
+  box.append(approve, download);
+  return box;
+}
+
+function promptNeedsAction(beat, entry = {}, brief = null) {
+  if (beat.type === '人物口播') {
+    const base = entry.baseAsset || entry.asset;
+    return !base || !brief || !entry.asset;
+  }
+  if (beat.type === 'B字卡') return !brief || !entry.asset;
+  return !entry.asset;
+}
+
 function renderPrompts() {
   const list = $('#promptList');
   if (!list) return;
@@ -1477,25 +1646,46 @@ function renderPrompts() {
   const entries = production.beats || {};
   const briefs = state.briefs || [];
   const filter = state.promptFilter || 'all';
+  const briefFor = (beat) => briefs.find((item) => item.beatId === beat.id);
+  const pendingBeats = beats.filter((beat) => promptNeedsAction(beat, entries[beat.id] || {}, briefFor(beat)));
+  const order = { 人物口播: 0, B字卡: 1, 實操: 2 };
   const filtered = beats.filter((beat) => {
+    if (filter === 'pending') return pendingBeats.some((item) => item.id === beat.id);
     if (filter === 'person') return beat.type === '人物口播';
     if (filter === 'broll') return beat.type === 'B字卡';
     if (filter === 'screen') return beat.type === '實操';
     return true;
-  });
+  }).sort((a, b) => (order[a.type] ?? 9) - (order[b.type] ?? 9));
 
   const counts = {
     all: beats.length,
+    pending: pendingBeats.length,
     person: beats.filter((beat) => beat.type === '人物口播').length,
     broll: beats.filter((beat) => beat.type === 'B字卡').length,
     screen: beats.filter((beat) => beat.type === '實操').length,
   };
+  const personBeats = beats.filter((beat) => beat.type === '人物口播');
+  const brollBeats = beats.filter((beat) => beat.type === 'B字卡');
+  const screenBeats = beats.filter((beat) => beat.type === '實操');
+  const basePending = personBeats.filter((beat) => !(entries[beat.id]?.baseAsset || entries[beat.id]?.asset)).length;
+  const arollPending = personBeats.filter((beat) => !briefFor(beat)).length;
+  const personFinalPending = personBeats.filter((beat) => !entries[beat.id]?.asset).length;
+  const brollPromptPending = brollBeats.filter((beat) => !briefFor(beat)).length;
+  const brollFinalPending = brollBeats.filter((beat) => !entries[beat.id]?.asset).length;
+  const screenPending = screenBeats.filter((beat) => !entries[beat.id]?.asset).length;
+  const summary = $('#promptSummary');
+  if (summary) {
+    summary.innerHTML = `
+      <div><b>人物口播 ${personBeats.length}</b><span>待 Base ${basePending} · 待 AROLL ${arollPending} · 待成片 ${personFinalPending}</span></div>
+      <div><b>Broll ${brollBeats.length}</b><span>待 BROLL ${brollPromptPending} · 待成片 ${brollFinalPending}</span></div>
+      <div><b>實操 ${screenBeats.length}</b><span>待錄屏 ${screenPending} · 不需要提示詞</span></div>`;
+  }
   const filterBox = $('#promptFilters');
   if (filterBox) {
     for (const button of filterBox.querySelectorAll('button')) {
       const key = button.dataset.filter;
       button.classList.toggle('active', key === filter);
-      const base = { all: '全部', person: '人物口播', broll: 'Broll', screen: '實操' }[key];
+      const base = { all: '全部', pending: '待處理', person: '人物口播', broll: 'Broll', screen: '實操' }[key];
       button.textContent = `${base} ${counts[key] || 0}`;
     }
   }
@@ -1508,9 +1698,11 @@ function renderPrompts() {
   if (progressLabel) {
     progressLabel.textContent = state.motionBatch
       ? (state.motionBatchMessage || '生成 Broll 提示詞中…')
-      : production.running
-        ? (production.progress?.message || '生成提示詞中…')
-        : '';
+      : state.motionGenerating.size
+        ? (state.motionMessage || '正在生成提示詞，最長 3 分鐘…')
+        : production.running
+          ? (production.progress?.message || '生成提示詞中…')
+          : '';
   }
 
   list.innerHTML = '';
@@ -1524,12 +1716,73 @@ function renderPrompts() {
   }
 
   const fragment = document.createDocumentFragment();
+  let lastType = '';
   filtered.forEach((beat) => {
     const index = beats.findIndex((item) => item.id === beat.id);
     const entry = entries[beat.id] || {};
     const brief = briefs.find((item) => item.beatId === beat.id);
     const isPerson = beat.type === '人物口播';
     const isBroll = beat.type === 'B字卡';
+
+    if (beat.type !== lastType) {
+      lastType = beat.type;
+      const group = document.createElement('div');
+      group.className = 'prompt-group-title';
+      const title = document.createElement('b');
+      title.textContent = `${typeLabel(beat.type)} · ${filtered.filter((item) => item.type === beat.type).length} 拍`;
+      const hint = document.createElement('span');
+      hint.textContent = beat.type === '實操'
+        ? '不需要提示詞，直接上傳錄屏'
+        : beat.type === 'B字卡'
+          ? 'BROLL XML → Opus 製作'
+          : 'FLOW 提示詞 → Base → AROLL → Opus';
+      group.append(title, hint);
+      fragment.appendChild(group);
+    }
+
+    if (beat.type === '實操') {
+      const row = document.createElement('div');
+      row.className = 'screen-row';
+      row.dataset.beatId = beat.id;
+      const num = document.createElement('span');
+      num.className = 's-num';
+      num.textContent = `#${String(index + 1).padStart(2, '0')}`;
+      const type = document.createElement('span');
+      type.className = 's-type';
+      type.textContent = '實操';
+      const vo = document.createElement('span');
+      vo.className = 's-vo';
+      vo.textContent = beat.vo;
+      vo.title = beat.vo;
+      const status = document.createElement('span');
+      status.className = 's-status';
+      status.textContent = entry.error ? '失敗' : entry.asset ? '已上傳' : '待錄屏';
+      const actions = document.createElement('div');
+      actions.className = 's-actions';
+      const upload = document.createElement('button');
+      upload.type = 'button';
+      upload.className = 'btn small primary';
+      upload.textContent = entry.asset ? '重新上傳' : '上傳錄屏';
+      upload.addEventListener('click', () => {
+        state.pendingAssetBeat = beat.id;
+        state.pendingAssetKind = 'asset';
+        $('#prodFileInput').click();
+      });
+      actions.appendChild(upload);
+      if (entry.asset) {
+        const view = document.createElement('a');
+        view.className = 'btn small ghost';
+        view.textContent = '預覽';
+        view.target = '_blank';
+        view.rel = 'noreferrer';
+        view.href = `/api/jobs/${state.currentId}/production/asset/${beat.id}?v=${encodeURIComponent(entry.updatedAt || '')}`;
+        actions.appendChild(view);
+      }
+      row.append(num, type, vo, status, actions);
+      fragment.appendChild(row);
+      return;
+    }
+
     const base = entry.baseAsset || entry.asset;
     const baseIsDedicated = Boolean(entry.baseAsset);
     const flowPrompt = entry.videoPrompt || entry.spec?.videoPrompt || '';
@@ -1557,6 +1810,13 @@ function renderPrompts() {
     else if (isBroll) stateBadge.textContent = '待 BROLL';
     else stateBadge.textContent = entry.asset ? '錄屏已上傳' : '待錄屏';
     head.append(num, type, vo, stateBadge);
+    head.style.cursor = 'pointer';
+    head.title = '點擊展開／收起這一拍';
+    head.addEventListener('click', (event) => {
+      if (event.target.closest('button,a,details')) return;
+      card.classList.toggle('collapsed');
+    });
+    if (!promptNeedsAction(beat, entry, brief)) card.classList.add('collapsed');
 
     const body = document.createElement('div');
     body.className = 'prompt-body';
@@ -1564,6 +1824,12 @@ function renderPrompts() {
     visual.className = 'prompt-visual';
     visual.textContent = `畫面：${beat.visual || '—'}`;
     body.appendChild(visual);
+    if (entry.error) {
+      const error = document.createElement('div');
+      error.className = 'flow-error';
+      error.textContent = entry.error;
+      body.appendChild(error);
+    }
 
     const makeStep = (label, statusText, nodes) => {
       const step = document.createElement('section');
@@ -1642,7 +1908,16 @@ function renderPrompts() {
       return button('下載 XML', 'ghost', () => downloadBriefXml(beat, brief, mode));
     };
 
-    const regenMotion = (mode, label) => button(label, 'ghost', () => generateMotionForBeat(beat.id, mode), state.motionGenerating.has(beat.id));
+    const regenMotion = (mode, label) => {
+      const busy = state.motionGenerating.has(beat.id);
+      return button(
+        busy ? `${mode === 'broll' ? 'BROLL' : 'AROLL'} 生成中…` : label,
+        'ghost',
+        busy ? null : () => generateMotionForBeat(beat.id, mode),
+        busy,
+        busy ? '正在等待模型回傳，最長 3 分鐘' : '',
+      );
+    };
 
     if (isPerson) {
       // 1. FLOW prompt (the video prompt that will be sent to Flow)
@@ -1658,7 +1933,10 @@ function renderPrompts() {
       const flowPre = document.createElement('pre');
       flowPre.className = 'flow-prompt-text';
       flowPre.textContent = flowPrompt || '尚未生成 FLOW 提示詞。';
-      body.appendChild(makeStep('1 · FLOW 提示詞', flowPrompt ? 'DeepSeek · 已生成' : 'DeepSeek · 未生成', [flowActions, flowPre]));
+      const flowNote = document.createElement('div');
+      flowNote.className = 'flow-note';
+      flowNote.textContent = '固定模板：鏡頭全程不動、無字幕、嘴型同步；文案已自動填入這一拍的 English VO。';
+      body.appendChild(makeStep('1 · FLOW 提示詞', flowPrompt ? '固定模板 · 已填入 VO' : '尚未生成', [flowActions, flowPre, flowNote]));
 
       // 2. Two required reference images + Flow VO base video
       const refs = entry.refs || {};
@@ -1677,7 +1955,17 @@ function renderPrompts() {
           const caption = document.createElement('span');
           caption.textContent = label;
           item.append(img, caption);
-          item.addEventListener('click', () => chooseReference(beat.id, kind));
+          item.title = '點擊查看大圖';
+          item.addEventListener('click', () => openImagePreview(img.src, label));
+          const replace = document.createElement('span');
+          replace.className = 'flow-ref-replace';
+          replace.textContent = '更換';
+          replace.title = `更換${label}`;
+          replace.addEventListener('click', (event) => {
+            event.stopPropagation();
+            chooseReference(beat.id, kind);
+          });
+          item.appendChild(replace);
           const remove = document.createElement('span');
           remove.className = 'flow-ref-remove';
           remove.textContent = '×';
@@ -1700,25 +1988,115 @@ function renderPrompts() {
       addRef('scene', '場景圖');
       addRef('character', '人物三視圖');
 
+      const urlGrid = document.createElement('div');
+      urlGrid.className = 'flow-url-grid';
+      const addUrlField = (kind, label, placeholder) => {
+        const wrap = document.createElement('label');
+        wrap.className = 'flow-url-field';
+        const caption = document.createElement('span');
+        caption.textContent = `${label} 公開 URL`;
+        const input = document.createElement('input');
+        input.type = 'url';
+        input.placeholder = placeholder;
+        input.value = entry.refUrls?.[kind] || '';
+        input.addEventListener('change', () => saveReferenceUrl(beat.id, kind, input.value.trim()));
+        input.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            input.blur();
+          }
+        });
+        wrap.append(caption, input);
+        urlGrid.appendChild(wrap);
+      };
+      addUrlField('scene', '場景圖', 'https://.../scene.jpg');
+      addUrlField('character', '人物三視圖', 'https://.../character.jpg');
+      const urlHint = document.createElement('div');
+      urlHint.className = 'flow-note';
+      urlHint.textContent = '用 APIMODELS 時必填公開圖片 URL；本機上傳只作預覽。URL 需可直接被外部讀取。';
+      refGrid.after(urlGrid, urlHint);
+
       const baseActions = document.createElement('div');
       baseActions.className = 'flow-actions';
+      const hasVideoKey = Boolean(state.settings?.video?.hasKey);
+      const videoModel = state.settings?.video?.model || '';
+      const videoLabel = /omni/i.test(videoModel)
+        ? 'Omni 1.1 Flash'
+        : videoModel || 'Veo／Omni';
+      const canGenerateBase = refsReady && Boolean(flowPrompt) && hasVideoKey && !entry.approved;
       const generateBase = button(
-        !refsReady ? '先補兩張參考圖' : !flowPrompt ? '先出 FLOW 提示詞' : '用 Flow VO 生成 Base（未接入）',
-        'ghost',
-        null,
-        true,
-        'Flow VO 模型未接入。接入後會把 FLOW 提示詞＋場景圖＋三視圖一起送出，生成無動效 Base。',
+        `生成人物口播視頻${hasVideoKey ? `（${videoLabel}）` : ''}`,
+        'primary',
+        canGenerateBase ? () => generateProduction([beat.id], 'base') : null,
+        !canGenerateBase,
+        !refsReady
+          ? '先上傳場景圖＋人物三視圖，按鈕才會啟用'
+          : !flowPrompt
+            ? '先產生 FLOW 提示詞，按鈕才會啟用'
+            : !hasVideoKey
+              ? '到設定配置 Veo／Omni API Key 後才能直接生成；也可以先上傳 Base'
+              : entry.approved
+                ? '這一拍已通過並鎖定，先取消通過才能重新生成'
+                : `用 ${videoLabel} 生成無動效 Base`,
       );
       baseActions.appendChild(generateBase);
+      const baseStatus = document.createElement('div');
+      baseStatus.className = 'flow-note';
+      baseStatus.textContent = !refsReady
+        ? '按鈕已保留：先上傳場景圖＋人物三視圖，才會從「不可按」變成可用。'
+        : !flowPrompt
+          ? '參考圖已就緒；先產生 FLOW 提示詞，生成按鈕才會啟用。'
+          : !hasVideoKey
+            ? '參考圖與提示詞已就緒；配置 Veo／Omni Key 後即可按「生成人物口播視頻」，或先上傳 Base。'
+            : '已就緒：按「生成人物口播視頻」會用 FLOW 提示詞＋兩張參考圖生成無動效 Base。';
       baseActions.appendChild(uploadButton('base', base ? '重新上傳 Base 視頻' : '上傳 Base 視頻'));
       const basePreview = previewLink('base', '預覽 Base');
       if (basePreview) baseActions.appendChild(basePreview);
       const baseHint = document.createElement('div');
       baseHint.className = 'flow-note';
       baseHint.textContent = refsReady
-        ? 'Flow VO 會收到：FLOW 提示詞 + 場景圖 + 人物三視圖；生成的是沒有動效的 Base。'
-        : 'Flow VO 需要兩張圖：場景圖 + 人物三視圖。兩張都上傳後才會啟用生成。';
-      body.appendChild(makeStep('2 · 參考圖＋Base 人物視頻', base ? 'Base 已上傳' : refsReady ? '參考圖已就緒' : '缺參考圖', [refGrid, baseActions, baseHint]));
+        ? '生成時會用：FLOW 提示詞 + 場景圖 + 人物三視圖；產出沒有動效的 Base。'
+        : '需要兩張圖：場景圖 + 人物三視圖。兩張都上傳後才會啟用生成。';
+      const basePlayer = document.createElement('div');
+      basePlayer.className = 'base-player';
+      const baseFile = entry.baseAsset || entry.asset;
+      if (entry.status === 'generating') {
+        const progress = document.createElement('div');
+        progress.className = 'base-progress';
+        const label = document.createElement('div');
+        label.className = 'base-progress-label';
+        label.textContent = entry.realtimeMessage || 'Omni 正在生成人物口播，請稍候…';
+        const track = document.createElement('div');
+        track.className = 'base-progress-track';
+        const bar = document.createElement('i');
+        track.appendChild(bar);
+        progress.append(label, track);
+        basePlayer.appendChild(progress);
+      } else if (baseFile) {
+        const label = document.createElement('div');
+        label.className = 'base-player-label';
+        const done = document.createElement('b');
+        done.textContent = entry.baseAsset ? 'Base 已完成' : 'Base 視頻';
+        const meta = document.createElement('span');
+        const seconds = entry.baseAssetDuration || entry.assetDuration;
+        meta.textContent = seconds ? `${Number(seconds).toFixed(1)} 秒 · 可播放／拖動` : '可播放／拖動';
+        label.append(done, meta, downloadControl(
+          `/api/jobs/${state.currentId}/production/base/${beat.id}?v=${encodeURIComponent(entry.updatedAt || '')}`,
+          `${String(index + 1).padStart(2, '0')}-base-${beat.id}.mp4`,
+        ));
+        const video = document.createElement('video');
+        video.className = 'base-video';
+        video.controls = true;
+        video.preload = 'metadata';
+        video.playsInline = true;
+        video.src = entry.baseAsset
+          ? `/api/jobs/${state.currentId}/production/base/${beat.id}?v=${encodeURIComponent(entry.updatedAt || '')}`
+          : `/api/jobs/${state.currentId}/production/asset/${beat.id}?v=${encodeURIComponent(entry.updatedAt || '')}`;
+        basePlayer.append(label, video);
+      }
+      const stepNodes = [refGrid, baseActions, baseStatus, baseHint];
+      if (basePlayer.children.length) stepNodes.splice(1, 0, basePlayer);
+      body.appendChild(makeStep('2 · 參考圖＋Base 人物視頻', base ? 'Base 已上傳' : refsReady ? '參考圖已就緒' : '缺參考圖', stepNodes));
 
       // 3. AROLL prompt after base
       const arollActions = document.createElement('div');
@@ -1739,9 +2117,20 @@ function renderPrompts() {
       arollNodes.push(xmlBlock('aroll'));
       body.appendChild(makeStep('3 · AROLL 提示詞', arollStatus, arollNodes));
 
-      // 4. Opus 5.5 handoff / final upload
+      // 4. Opus 5.5 handoff / direct API render / final upload
       const opusActions = document.createElement('div');
       opusActions.className = 'flow-actions';
+      const opusReady = taskConfigured('opus');
+      const opusBusy = entry.status === 'generating' || entry.approved;
+      if (brief && base) {
+        opusActions.appendChild(button(
+          opusBusy ? 'Opus 5.5 生成中…' : `用 Opus 5.5 生成最終視頻${opusReady ? '' : '（未配置 Key）'}`,
+          'primary',
+          opusReady && !opusBusy ? () => generateOpusVideo(beat.id) : null,
+          !opusReady || opusBusy,
+          opusReady ? 'Base＋AROLL 直接送 Opus 5.5，完成後在下面播放' : '先到設定配置 Opus 5.5',
+        ));
+      }
       if (brief) {
         opusActions.appendChild(button('複製給 Opus 5.5 的交接', 'ghost', async () => {
           const text = `Base video: ${beat.id} (uploaded)\n\nAROLL XML:\n${brief.raw}\n\n把 Base 視頻和 AROLL XML 交給 Opus 5.5 製作最終人物視頻。`;
@@ -1751,13 +2140,49 @@ function renderPrompts() {
         opusActions.appendChild(uploadButton('asset', entry.asset ? '重新上傳最終視頻' : '上傳 Opus 最終視頻'));
         const finalPreview = previewLink('asset', '預覽最終視頻');
         if (finalPreview) opusActions.appendChild(finalPreview);
+        if (opusBusy) {
+          const progress = document.createElement('div');
+          progress.className = 'flow-progress';
+          const pct = Number(production.progress?.pct) || 3;
+          const bar = document.createElement('div');
+          bar.className = 'flow-progress-bar';
+          const fill = document.createElement('div');
+          fill.style.width = `${Math.max(3, Math.min(100, pct))}%`;
+          bar.appendChild(fill);
+          const label = document.createElement('span');
+          label.textContent = production.progress?.message || 'Opus 5.5 正在把 AROLL 疊加到 Base…';
+          progress.append(bar, label);
+          opusActions.appendChild(progress);
+        }
       } else {
         const note = document.createElement('div');
         note.className = 'flow-note';
-        note.textContent = '先出 AROLL，再把 Base 視頻＋AROLL XML 交給 Opus 5.5。';
+        note.textContent = '先出 AROLL，才能把 Base＋AROLL 交給 Opus 5.5。';
         opusActions.appendChild(note);
       }
-      body.appendChild(makeStep('4 · Opus 5.5 製作', `Opus 5.5 · ${entry.asset ? '最終視頻已上傳' : brief ? '待接入／待製作' : '等待 AROLL'}`, [opusActions]));
+      const opusNodes = [opusActions];
+      if (entry.asset) {
+        const finalLabel = document.createElement('div');
+        finalLabel.className = 'base-player-label';
+        const finalDone = document.createElement('b');
+        finalDone.textContent = 'Opus 最終視頻已完成';
+        const finalMeta = document.createElement('span');
+        finalMeta.textContent = entry.assetDuration ? `${Number(entry.assetDuration).toFixed(1)} 秒 · 可播放` : '可播放';
+        finalLabel.append(finalDone, finalMeta, approvalControls(
+          beat.id,
+          entry,
+          `/api/jobs/${state.currentId}/production/asset/${beat.id}?v=${encodeURIComponent(entry.updatedAt || '')}`,
+          `${String(index + 1).padStart(2, '0')}-final-${beat.id}.mp4`,
+        ));
+        const finalVideo = document.createElement('video');
+        finalVideo.className = 'base-video';
+        finalVideo.controls = true;
+        finalVideo.preload = 'metadata';
+        finalVideo.playsInline = true;
+        finalVideo.src = `/api/jobs/${state.currentId}/production/asset/${beat.id}?v=${encodeURIComponent(entry.updatedAt || '')}`;
+        opusNodes.push(finalLabel, finalVideo);
+      }
+      body.appendChild(makeStep('4 · Opus 5.5 製作', `Opus 5.5 · ${entry.asset ? '最終視頻已完成' : brief ? (opusReady ? '已配置 · 待生成' : '未配置 Key') : '等待 AROLL'}`, opusNodes));
     } else if (isBroll) {
       // 1. BROLL from English VO
       const brollActions = document.createElement('div');
@@ -1778,20 +2203,43 @@ function renderPrompts() {
       const opusActions = document.createElement('div');
       opusActions.className = 'flow-actions';
       if (brief) {
-        opusActions.appendChild(button('複製 BROLL 給 Opus 5.5', 'ghost', async () => {
+        const opusReady = taskConfigured('opus');
+        const opusBusy = entry.status === 'generating' || entry.approved;
+        opusActions.appendChild(button(
+          opusBusy ? 'Opus 5.5 製作中…' : `用 Opus 5.5 製作${opusReady ? '' : '（未配置 Key）'}`,
+          'primary',
+          opusReady && !opusBusy ? () => generateOpusVideo(beat.id) : null,
+          !opusReady || opusBusy,
+          opusReady ? '把 BROLL XML 直接交給 Opus 5.5 並取得影片' : '先到設定配置 Opus 5.5',
+        ));
+        opusActions.appendChild(button('複製 BROLL', 'ghost', async () => {
           try { await navigator.clipboard.writeText(brief.raw); toast('已複製 BROLL XML'); }
           catch { toast('浏览器不允许访问剪贴板', 'error'); }
         }));
         opusActions.appendChild(uploadButton('asset', entry.asset ? '重新上傳 B-roll 成片' : '上傳 B-roll 成片'));
         const finalPreview = previewLink('asset', '預覽成片');
         if (finalPreview) opusActions.appendChild(finalPreview);
+        if (opusBusy) {
+          const progress = document.createElement('div');
+          progress.className = 'flow-progress';
+          const pct = Number(production.progress?.pct) || 3;
+          const bar = document.createElement('div');
+          bar.className = 'flow-progress-bar';
+          const fill = document.createElement('div');
+          fill.style.width = `${Math.max(3, Math.min(100, pct))}%`;
+          bar.appendChild(fill);
+          const label = document.createElement('span');
+          label.textContent = production.progress?.message || 'Opus 5.5 正在製作影片…';
+          progress.append(bar, label);
+          opusActions.appendChild(progress);
+        }
       } else {
         const note = document.createElement('div');
         note.className = 'flow-note';
         note.textContent = '先出 BROLL XML，再交給 Opus 5.5 製作 B-roll。';
         opusActions.appendChild(note);
       }
-      body.appendChild(makeStep('2 · Opus 5.5 製作', `Opus 5.5 · ${entry.asset ? 'B-roll 成片已上傳' : brief ? '待接入／待製作' : '等待 BROLL'}`, [opusActions]));
+      body.appendChild(makeStep('2 · Opus 5.5 製作', `Opus 5.5 · ${entry.status === 'generating' ? `生成中 ${Number(production.progress?.pct) || 3}%` : entry.asset ? 'B-roll 成片已上傳' : brief ? (taskConfigured('opus') ? '已配置 · 待製作' : '未配置') : '等待 BROLL'}`, [opusActions]));
     } else {
       const screenActions = document.createElement('div');
       screenActions.className = 'flow-actions';
@@ -2591,14 +3039,56 @@ async function saveManualPrompt(beatId, videoPrompt) {
   toast('提示詞已保存', 'ok');
 }
 
+async function generateOpusVideo(beatId) {
+  if (!state.currentId) return;
+  try {
+    const entry = state.production?.beats?.[beatId];
+    const previousStatus = entry?.status;
+    if (entry) {
+      entry.status = 'generating';
+      entry.error = '';
+    }
+    state.production.running = true;
+    state.production.progress = { pct: 3, message: '正在把 Base＋AROLL 送給 Opus 5.5…' };
+    renderPrompts();
+    await api(`/api/jobs/${state.currentId}/production/opus/${beatId}`, { method: 'POST' });
+    toast('Opus 5.5 正在製作影片…');
+    state.production.progress = { pct: 5, message: 'Opus 5.5 正在製作影片…' };
+    renderPrompts();
+    startPolling();
+  } catch (error) {
+    const entry = state.production?.beats?.[beatId];
+    if (entry) {
+      entry.status = entry.asset ? 'ready' : 'prompt';
+      entry.error = error.message;
+    }
+    state.production.running = false;
+    state.production.progress = null;
+    renderPrompts();
+    toast(error.message, 'error');
+  }
+}
+
 async function generateMotionForBeat(beatId, mode) {
-  if (!state.currentId || state.motionGenerating.has(beatId)) return;
+  if (!state.currentId) return;
+  if (state.motionGenerating.has(beatId)) {
+    const started = state.motionStartedAt.get(beatId) || 0;
+    if (Date.now() - started < 180000) return;
+    state.motionGenerating.delete(beatId);
+    state.motionStartedAt.delete(beatId);
+  }
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 180000);
   state.motionGenerating.add(beatId);
+  state.motionStartedAt.set(beatId, Date.now());
+  state.motionMessage = mode === 'broll' ? '正在生成 BROLL 提示詞（最長 3 分鐘）…' : '正在生成 AROLL 提示詞（最長 3 分鐘）…';
   renderProduction();
+  renderPrompts();
   try {
     const data = await api(`/api/jobs/${state.currentId}/motion`, {
       method: 'POST',
       body: JSON.stringify({ beatId, mode }),
+      signal: controller.signal,
     });
     state.briefs = data.briefs || [];
     state.briefsRenderedKey = '';
@@ -2610,9 +3100,12 @@ async function generateMotionForBeat(beatId, mode) {
       'ok',
     );
   } catch (error) {
-    toast(error.message, 'error');
+    toast(error.name === 'AbortError' ? '生成逾時（3 分鐘），請再按一次或檢查模型 API' : error.message, 'error');
   } finally {
+    clearTimeout(timer);
     state.motionGenerating.delete(beatId);
+    state.motionStartedAt.delete(beatId);
+    state.motionMessage = '';
     renderProduction();
     renderPrompts();
   }
@@ -2648,6 +3141,21 @@ async function removeBriefFromBeat(briefId) {
   renderPrompts();
   renderBriefs();
   toast('已移除這拍的 Grok brief', 'ok');
+}
+
+function openImagePreview(src, label = '') {
+  const modal = $('#imageModal');
+  const img = $('#imageModalImg');
+  const caption = $('#imageModalCaption');
+  if (!modal || !img) return;
+  img.src = src;
+  img.alt = label;
+  if (caption) caption.textContent = label;
+  modal.classList.remove('hidden');
+}
+
+function closeImagePreview() {
+  $('#imageModal')?.classList.add('hidden');
 }
 
 function chooseReference(beatId, kind) {
@@ -2994,7 +3502,7 @@ function renderSimpleSettings(body) {
   const section = document.createElement('section');
   section.className = 'settings-section';
   section.innerHTML = `<h4>固定流程</h4>
-    <p>工作台已鎖定這套流程，不需要選 API／模型，也不會顯示 API 選項。</p>
+    <p>步驟固定；只有「Base 人物視頻」和「Opus 5.5」可以在下面配置。</p>
     <div class="fixed-pipeline">
       <div><span>英文轉寫</span><b>Whisper medium（本機）</b></div>
       <div><span>中文翻譯</span><b>DeepSeek Flash</b></div>
@@ -3008,8 +3516,70 @@ function renderSimpleSettings(body) {
       <div><span>Broll / 剪輯</span><b>本機 FFmpeg</b></div>
       <div><span>旁白</span><b>macOS Samantha</b></div>
     </div>
-    <div class="settings-note">這套配置是固定的；要改模型或 API，請找開發者，不在介面裏開放。</div>`;
+    <div class="settings-note">其他步驟（轉寫／文案／英文／AROLL／BROLL）維持固定，不開放切換。</div>`;
   body.appendChild(section);
+
+  draft.tasks = draft.tasks || {};
+  if (!draft.tasks.opus) {
+    draft.tasks.opus = { providerId: 'aihubmix', model: 'claude-opus-5-5', temperature: 0.4, baseUrl: '' };
+  }
+  const providerById = new Map((draft.providers || []).map((provider) => [provider.id, provider]));
+  const providerOptions = (selected) => (draft.providers || [])
+    .map((provider) => `<option value="${esc(provider.id)}" ${provider.id === selected ? 'selected' : ''}>${esc(provider.name)}</option>`)
+    .join('');
+  const modelSection = document.createElement('section');
+  modelSection.className = 'settings-section';
+  modelSection.innerHTML = `<h4>模型接入</h4>
+    <p>只開放這兩個模型，其他流程仍然固定。</p>
+    <div class="model-config-grid">
+      <div class="model-config">
+        <div class="model-config-head"><b>Base 人物視頻</b><span id="cfgBaseState">${draft.video?.hasKey ? '已保存 Key' : '未配置 Key'}</span></div>
+        <div class="field"><label>平台</label><select id="cfgVideoProvider">
+          <option value="google-omni" ${draft.video?.provider === 'google-omni' ? 'selected' : ''}>Google Gemini / Omni</option>
+          <option value="google-veo" ${draft.video?.provider === 'google-veo' ? 'selected' : ''}>Google Veo</option>
+        </select></div>
+        <div class="field"><label>Model</label><input id="cfgVideoModel" value="${esc(draft.video?.model || '')}" placeholder="gemini-omni-1.1-flash 或 veo-3.1-generate-preview" /></div>
+        <div class="field"><label>Base URL</label><input id="cfgVideoBaseUrl" value="${esc(draft.video?.baseUrl || '')}" placeholder="https://generativelanguage.googleapis.com/v1beta" /></div>
+        <div class="field"><label>API Key</label><input id="cfgVideoKey" type="password" autocomplete="off" placeholder="${draft.video?.hasKey ? '已保存，留空不改' : '貼上 Google API Key'}" /></div>
+        <div class="settings-note">Google 官方：<code>https://generativelanguage.googleapis.com/v1beta</code><br/>APIMODELS：<code>https://api.apimodels.app/v1</code>（影片端點 <code>/video/generations</code>）<br/>APIMODELS 目前不支援本地參考圖，場景圖／三視圖不會送出。</div>
+      </div>
+      <div class="model-config">
+        <div class="model-config-head"><b>Opus 5.5</b><span id="cfgOpusState">${providerById.get(draft.tasks.opus.providerId)?.hasKey || draft.tasks.opus.hasKey ? '已保存 Key' : '未配置 Key'}</span></div>
+        <div class="field"><label>平台</label><select id="cfgOpusProvider">${providerOptions(draft.tasks.opus.providerId)}</select></div>
+        <div class="field"><label>Model</label><input id="cfgOpusModel" value="${esc(draft.tasks.opus.model || '')}" placeholder="claude-opus-5-5 或 anthropic/claude-opus-5.5" /></div>
+        <div class="field"><label>Base URL（可選）</label><input id="cfgOpusBaseUrl" value="${esc(draft.tasks.opus.baseUrl || '')}" placeholder="留空沿用平台" /></div>
+        <div class="field"><label>API Key（可選）</label><input id="cfgOpusKey" type="password" autocomplete="off" placeholder="${draft.tasks.opus.hasKey ? '已保存，留空不改' : '留空沿用平台 Key'}" /></div>
+        <div class="settings-note">Opus 5.5 目前是外部交接；配置後狀態會顯示已配置。</div>
+      </div>
+    </div>`;
+  body.appendChild(modelSection);
+  const videoProvider = modelSection.querySelector('#cfgVideoProvider');
+  const videoModel = modelSection.querySelector('#cfgVideoModel');
+  const videoBaseUrl = modelSection.querySelector('#cfgVideoBaseUrl');
+  const videoKey = modelSection.querySelector('#cfgVideoKey');
+  const opusProvider = modelSection.querySelector('#cfgOpusProvider');
+  const opusModel = modelSection.querySelector('#cfgOpusModel');
+  const opusBaseUrl = modelSection.querySelector('#cfgOpusBaseUrl');
+  const opusKey = modelSection.querySelector('#cfgOpusKey');
+  videoProvider?.addEventListener('change', () => {
+    draft.video = draft.video || {};
+    draft.video.provider = videoProvider.value;
+    const suggested = videoProvider.value === 'google-veo' ? 'veo-3.1-generate-preview' : 'gemini-omni-1.1-flash';
+    if (!videoModel.value.trim() || /^(gemini-omni|veo-3\.1)/i.test(videoModel.value.trim())) videoModel.value = suggested;
+    if (!videoBaseUrl.value.trim()) videoBaseUrl.value = 'https://generativelanguage.googleapis.com/v1beta';
+  });
+  videoModel?.addEventListener('input', () => { draft.video = draft.video || {}; draft.video.model = videoModel.value.trim(); });
+  videoBaseUrl?.addEventListener('input', () => { draft.video = draft.video || {}; draft.video.baseUrl = videoBaseUrl.value.trim(); });
+  videoKey?.addEventListener('input', () => { draft.video = draft.video || {}; draft.video._newKey = videoKey.value; });
+  opusProvider?.addEventListener('change', () => {
+    draft.tasks.opus.providerId = opusProvider.value;
+    if (!opusModel.value.trim() || /claude-opus/i.test(opusModel.value.trim())) {
+      opusModel.value = opusProvider.value === 'openrouter' ? 'anthropic/claude-opus-5.5' : 'claude-opus-5-5';
+    }
+  });
+  opusModel?.addEventListener('input', () => { draft.tasks.opus.model = opusModel.value.trim(); });
+  opusBaseUrl?.addEventListener('input', () => { draft.tasks.opus.baseUrl = opusBaseUrl.value.trim(); });
+  opusKey?.addEventListener('input', () => { draft.tasks.opus._newKey = opusKey.value; });
 
   const output = document.createElement('section');
   output.className = 'settings-section';
@@ -3425,7 +3995,9 @@ async function saveSettings() {
     if (state.job) {
       renderNotice();
       renderPrimaryButton();
-      renderProduction();
+      renderPrompts();
+      renderModelMap();
+      if (state.tab === 'production') renderProduction();
     }
     if ($('#editSubtitles') && !state.editSubtitlesTouched) $('#editSubtitles').checked = state.settings.output?.subtitles !== false;
     checkHealth();
@@ -3438,6 +4010,41 @@ async function saveSettings() {
 }
 
 /* ------------------------------------------------------------------- events */
+function initColumnSplitter() {
+  const view = $('#jobView');
+  const splitter = $('#colSplitter');
+  if (!view || !splitter) return;
+  const saved = Number(localStorage.getItem('dshPlayerWidth') || 0);
+  if (saved > 280) view.style.setProperty('--player-width', `${saved}px`);
+  let dragging = false;
+  const onMove = (event) => {
+    if (!dragging) return;
+    const rect = view.getBoundingClientRect();
+    const width = Math.max(300, Math.min(rect.width * 0.48, event.clientX - rect.left));
+    view.style.setProperty('--player-width', `${Math.round(width)}px`);
+  };
+  const stop = () => {
+    if (!dragging) return;
+    dragging = false;
+    splitter.classList.remove('dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    const value = parseInt(view.style.getPropertyValue('--player-width'), 10);
+    if (value) localStorage.setItem('dshPlayerWidth', String(value));
+  };
+  splitter.addEventListener('pointerdown', (event) => {
+    event.preventDefault();
+    dragging = true;
+    splitter.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    splitter.setPointerCapture?.(event.pointerId);
+  });
+  window.addEventListener('pointermove', onMove);
+  window.addEventListener('pointerup', stop);
+  window.addEventListener('pointercancel', stop);
+}
+
 function bindStaticEvents() {
   $('#newProjectBtn').addEventListener('click', chooseFile);
   $('#dropzone').addEventListener('click', chooseFile);
@@ -3530,10 +4137,24 @@ function bindStaticEvents() {
   $('#segList').addEventListener('input', onTranscriptInput);
   $('#segList').addEventListener('click', (event) => {
     const time = event.target.closest('.time');
-    if (!time) return;
-    const row = time.closest('.seg');
+    if (time) {
+      const row = time.closest('.seg');
+      const segment = state.transcript.segments.find((s) => s.id === row.dataset.id);
+      if (segment) seekTo(segment.start);
+      return;
+    }
+    if (event.target.closest('textarea,button,a,input,select')) return;
+    const row = event.target.closest('.seg');
+    if (!row) return;
     const segment = state.transcript.segments.find((s) => s.id === row.dataset.id);
     if (segment) seekTo(segment.start);
+  });
+  $('#voBody').addEventListener('click', (event) => {
+    if (event.target.closest('textarea,select,button,a,input')) return;
+    const row = event.target.closest('tr[data-start]');
+    if (!row) return;
+    const start = Number(row.dataset.start);
+    if (Number.isFinite(start)) seekTo(start);
   });
   $('#segSearch').addEventListener('input', applyTranscriptFilter);
   $('#showEn').addEventListener('change', (event) => {
@@ -3586,6 +4207,8 @@ function bindStaticEvents() {
     event.preventDefault();
     jumpToStep(step.dataset.step);
   });
+  $('#sidebarToggle')?.addEventListener('click', () => applySidebarCollapsed(!$('#sidebar')?.classList.contains('collapsed')));
+  $('#cinemaToggle')?.addEventListener('click', () => applyCinema(!$('#jobView').classList.contains('cinema')));
   $('#focusToggle').addEventListener('click', () => {
     setFocus(!$('#jobView').classList.contains('focus'));
   });
@@ -3695,6 +4318,10 @@ function bindStaticEvents() {
   $('#settingsModal').addEventListener('click', (event) => {
     if (event.target === $('#settingsModal')) closeSettings();
   });
+  $('#imageModalClose')?.addEventListener('click', closeImagePreview);
+  $('#imageModal')?.addEventListener('click', (event) => {
+    if (event.target === $('#imageModal')) closeImagePreview();
+  });
 
   $('#jobTitle').addEventListener('blur', async () => {
     const title = $('#jobTitle').textContent.trim();
@@ -3734,6 +4361,7 @@ function bindStaticEvents() {
     if (event.key === 'Escape') {
       $('#moreMenu').classList.add('hidden');
       if (!$('#settingsModal').classList.contains('hidden')) closeSettings();
+      closeImagePreview();
     }
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
       event.preventDefault();
