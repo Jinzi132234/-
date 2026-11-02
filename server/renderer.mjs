@@ -12,11 +12,13 @@ if (!process.env.PLAYWRIGHT_BROWSERS_PATH) {
 }
 // Playwright's video recorder looks for its own ffmpeg build. Reuse the
 // bundled ffmpeg-static binary so users do not need `playwright install`.
-const pwFfmpeg = path.join(process.env.PLAYWRIGHT_BROWSERS_PATH, 'ffmpeg-1013', 'ffmpeg-mac');
+const pwFfmpegName = process.platform === 'win32' ? 'ffmpeg-win32-x64.exe' : process.platform === 'darwin' ? 'ffmpeg-mac' : 'ffmpeg-linux';
+const pwFfmpeg = path.join(process.env.PLAYWRIGHT_BROWSERS_PATH, 'ffmpeg-1013', pwFfmpegName);
 try {
   if (ffmpegPath && !fs.existsSync(pwFfmpeg)) {
     fs.mkdirSync(path.dirname(pwFfmpeg), { recursive: true });
-    fs.symlinkSync(ffmpegPath, pwFfmpeg);
+    if (process.platform === 'win32') fs.copyFileSync(ffmpegPath, pwFfmpeg);
+    else fs.symlinkSync(ffmpegPath, pwFfmpeg);
   }
 } catch {
   /* fall back to Playwright's own lookup */
@@ -25,6 +27,10 @@ const { chromium } = await import('playwright-core');
 
 const CHROME_CANDIDATES = [
   process.env.CHROME_PATH,
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+  'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
   '/Users/gold/.agent-browser/browsers/chrome-153.0.8010.36/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing',
 ].filter(Boolean);

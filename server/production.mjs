@@ -30,12 +30,22 @@ import { generateOmni, generateVeo } from './veo.mjs';
 import { renderHtmlToMp4 } from './renderer.mjs';
 
 /** 這台機器實際可用的字體檔。Pillow 的 load_default() 會靜默退回不可縮放的小點陣字，整支片子看起來就像沒做。 */
-const FONT_CANDIDATES = [
-  ['標題黑體', '/System/Library/Fonts/Supplemental/Arial Black.ttf'],
-  ['粗體', '/System/Library/Fonts/Supplemental/Arial Bold.ttf'],
-  ['等寬', '/System/Library/Fonts/Menlo.ttc'],
-  ['等寬備用', '/System/Library/Fonts/Supplemental/Courier New Bold.ttf'],
-];
+const IS_WINDOWS = process.platform === 'win32';
+const FONT_DIR = IS_WINDOWS ? 'C:\\Windows\\Fonts' : '/System/Library/Fonts';
+const FONT_CANDIDATES = IS_WINDOWS
+  ? [
+      ['標題黑體', 'C:\\Windows\\Fonts\\ariblk.ttf'],
+      ['粗體', 'C:\\Windows\\Fonts\\arialbd.ttf'],
+      ['等寬', 'C:\\Windows\\Fonts\\consola.ttf'],
+      ['等寬備用', 'C:\\Windows\\Fonts\\courbd.ttf'],
+      ['中文', 'C:\\Windows\\Fonts\\msyh.ttc'],
+    ]
+  : [
+      ['標題黑體', '/System/Library/Fonts/Supplemental/Arial Black.ttf'],
+      ['粗體', '/System/Library/Fonts/Supplemental/Arial Bold.ttf'],
+      ['等寬', '/System/Library/Fonts/Menlo.ttc'],
+      ['等寬備用', '/System/Library/Fonts/Supplemental/Courier New Bold.ttf'],
+    ];
 function fontBlock() {
   const fonts = FONT_CANDIDATES.filter(([, file]) => fs.existsSync(file));
   return [
@@ -870,7 +880,7 @@ HARD OUTPUT RULES:
 - Use ONLY: PIL (Pillow), numpy, math, os, sys, json, colorsys, typing, dataclasses.
 - No network, no external files, no subprocess, no eval/exec, no randomness, no current time.
 - Use Pillow drawing: rounded rectangles, gradients, soft shadows via blurred alpha layers, bold kinetic typography, thin vector lines/arrows, mac-style windows.
-- Use system fonts, e.g. /System/Library/Fonts/Supplemental/Arial Bold.ttf and Arial.ttf; wrap font loading in try/except and fall back to ImageFont.load_default().
+- Use system fonts, e.g. ${IS_WINDOWS ? 'C:/Windows/Fonts/arialbd.ttf' : '/System/Library/Fonts/Supplemental/Arial Bold.ttf'}; wrap font loading in try/except and fall back to ImageFont.load_default().
 - Full-bleed saturated stage: do NOT put a tiny card in a corner with huge empty space. Main card should occupy ~55–65% of the frame. Use 4–8 meaningful elements.
 - Follow the BROLL XML's stage hue, card language, timing, M/I/E codes, icon specs, and end treatment.
 - Render EVERY title, subtitle, bullet, label, and caption from the XML as actual readable text, verbatim. Do NOT replace text with blank bars unless the XML explicitly says blank.

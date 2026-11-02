@@ -11,6 +11,16 @@ import { getProduction, productionDir } from './production.mjs';
 import { buildCopyMarkdown, buildSrt, clock, safeFilename } from './exports.mjs';
 import { buildVoTable } from './english.mjs';
 
+function zipPath(cwd, target, outFile) {
+  if (process.platform === 'win32') {
+    const psQuote = (value) => `'${String(value).replace(/'/g, "''")}'`;
+    const source = target === '.' ? `${cwd}${path.sep}*` : `${cwd}${path.sep}${target}`;
+    const script = `Compress-Archive -Path ${psQuote(source)} -DestinationPath ${psQuote(outFile)} -Force`;
+    return spawnSync('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', script], { cwd, stdio: 'ignore' });
+  }
+  return spawnSync('/usr/bin/zip', ['-r', '-q', outFile, target], { cwd, stdio: 'ignore' });
+}
+
 function pad(n, width = 2) {
   return String(n).padStart(width, '0');
 }
@@ -391,7 +401,7 @@ function buildShotDocx(meta, timeline, clips, thumbs, outFile) {
   write(path.join(temp, '[Content_Types].xml'), `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`);
 
-  const zipped = spawnSync('/usr/bin/zip', ['-r', '-q', outFile, '.'], { cwd: temp, stdio: 'ignore' });
+  const zipped = zipPath(temp, '.', outFile);
   fs.rmSync(temp, { recursive: true, force: true });
   return zipped.status === 0 && fs.existsSync(outFile);
 }
@@ -724,7 +734,7 @@ export function buildDeliveryBundle(jobId) {
 
   const zipName = `${slug}-delivery-${dateStamp()}.zip`;
   const zipFile = path.join(exportRoot, zipName);
-  const zipped = spawnSync('/usr/bin/zip', ['-r', '-q', zipFile, slug], { cwd: tempRoot, stdio: 'ignore' });
+  const zipped = zipPath(tempRoot, slug, zipFile);
   if (zipped.status !== 0 || !fs.existsSync(zipFile)) {
     throw new Error('打包 ZIP 失败：系统缺少 zip 命令或文件写入失败。');
   }

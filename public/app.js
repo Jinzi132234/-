@@ -3546,7 +3546,7 @@ function renderSimpleSettings(body) {
   const modelSection = document.createElement('section');
   modelSection.className = 'settings-section';
   modelSection.innerHTML = `<h4>模型接入</h4>
-    <p>只開放這兩個模型，其他流程仍然固定。</p>
+    <p>只開放這三個模型，其他流程仍然固定。</p>
     <div class="model-config-grid">
       <div class="model-config">
         <div class="model-config-head"><b>Base 人物視頻</b><span id="cfgBaseState">${draft.video?.hasKey ? '已保存 Key' : '未配置 Key'}</span></div>
@@ -3558,6 +3558,15 @@ function renderSimpleSettings(body) {
         <div class="field"><label>Base URL</label><input id="cfgVideoBaseUrl" value="${esc(draft.video?.baseUrl || '')}" placeholder="https://generativelanguage.googleapis.com/v1beta" /></div>
         <div class="field"><label>API Key</label><input id="cfgVideoKey" type="password" autocomplete="off" placeholder="${draft.video?.hasKey ? '已保存，留空不改' : '貼上 Google API Key'}" /></div>
         <div class="settings-note">Google 官方：<code>https://generativelanguage.googleapis.com/v1beta</code><br/>APIMODELS：<code>https://api.apimodels.app/v1</code>（影片端點 <code>/video/generations</code>）<br/>APIMODELS 目前不支援本地參考圖，場景圖／三視圖不會送出。</div>
+      </div>
+      <div class="model-config">
+        <div class="model-config-head"><b>DeepSeek（文案／分鏡）</b><span id="cfgDeepSeekState">${providerById.get('deepseek')?.hasKey ? '已保存 Key' : '未配置 Key'}</span></div>
+        <div class="field"><label>平台</label><input value="DeepSeek" disabled /></div>
+        <div class="field"><label>Model</label><input id="cfgDeepSeekModel" value="${esc(draft.tasks.english?.model || 'deepseek-flash')}" placeholder="deepseek-flash" /></div>
+        <div class="field"><label>Base URL</label><input id="cfgDeepSeekBaseUrl" value="${esc(providerById.get('deepseek')?.baseUrl || 'https://api.deepseek.com')}" placeholder="https://api.deepseek.com" /></div>
+        <div class="field"><label>API Key</label><input id="cfgDeepSeekKey" type="password" autocomplete="off" placeholder="${providerById.get('deepseek')?.hasKey ? '已保存，留空不改' : '貼上 DeepSeek API Key'}" /></div>
+        <div class="settings-note">用於：中文翻譯、文案分段、英文分鏡、AROLL／BROLL XML。<br/>同一個 DeepSeek Key 會套到這些步驟。</div>
+        <div class="flow-actions"><button type="button" class="btn small ghost" id="cfgDeepSeekTest">測試 DeepSeek 連線</button><span class="test-result" id="cfgDeepSeekTestResult"></span></div>
       </div>
       <div class="model-config">
         <div class="model-config-head"><b>Opus 5.5</b><span id="cfgOpusState">${providerById.get(draft.tasks.opus.providerId)?.hasKey || draft.tasks.opus.hasKey ? '已保存 Key' : '未配置 Key'}</span></div>
@@ -3577,6 +3586,9 @@ function renderSimpleSettings(body) {
   const opusModel = modelSection.querySelector('#cfgOpusModel');
   const opusBaseUrl = modelSection.querySelector('#cfgOpusBaseUrl');
   const opusKey = modelSection.querySelector('#cfgOpusKey');
+  const deepSeekModel = modelSection.querySelector('#cfgDeepSeekModel');
+  const deepSeekBaseUrl = modelSection.querySelector('#cfgDeepSeekBaseUrl');
+  const deepSeekKey = modelSection.querySelector('#cfgDeepSeekKey');
   videoProvider?.addEventListener('change', () => {
     draft.video = draft.video || {};
     draft.video.provider = videoProvider.value;
@@ -3587,6 +3599,60 @@ function renderSimpleSettings(body) {
   videoModel?.addEventListener('input', () => { draft.video = draft.video || {}; draft.video.model = videoModel.value.trim(); });
   videoBaseUrl?.addEventListener('input', () => { draft.video = draft.video || {}; draft.video.baseUrl = videoBaseUrl.value.trim(); });
   videoKey?.addEventListener('input', () => { draft.video = draft.video || {}; draft.video._newKey = videoKey.value; });
+  const applyDeepSeek = () => {
+    const model = deepSeekModel?.value.trim() || 'deepseek-flash';
+    const baseUrl = deepSeekBaseUrl?.value.trim() || 'https://api.deepseek.com';
+    const provider = (draft.providers || []).find((item) => item.id === 'deepseek');
+    if (provider) {
+      provider.baseUrl = baseUrl;
+      provider.models = Array.from(new Set([...(provider.models || []), model]));
+    }
+    for (const key of ['translate', 'copy', 'revise', 'english', 'production', 'motion']) {
+      draft.tasks[key] = draft.tasks[key] || {};
+      draft.tasks[key].providerId = 'deepseek';
+      draft.tasks[key].model = model;
+    }
+  };
+  deepSeekModel?.addEventListener('input', applyDeepSeek);
+  deepSeekBaseUrl?.addEventListener('input', applyDeepSeek);
+  deepSeekKey?.addEventListener('input', () => {
+    const provider = (draft.providers || []).find((item) => item.id === 'deepseek');
+    if (provider) provider._newKey = deepSeekKey.value;
+    if (deepSeekKey.value) {
+      const stateEl = modelSection.querySelector('#cfgDeepSeekState');
+      if (stateEl) stateEl.textContent = '將保存新 Key';
+    }
+  });
+  applyDeepSeek();
+  const deepSeekTest = modelSection.querySelector('#cfgDeepSeekTest');
+  deepSeekTest?.addEventListener('click', async () => {
+    const resultEl = modelSection.querySelector('#cfgDeepSeekTestResult');
+    if (resultEl) {
+      resultEl.className = 'test-result';
+      resultEl.textContent = '測試中…';
+    }
+    try {
+      const result = await api('/api/settings/test', {
+        method: 'POST',
+        body: JSON.stringify({
+          providerId: 'deepseek',
+          baseUrl: deepSeekBaseUrl?.value.trim() || 'https://api.deepseek.com',
+          apiKey: deepSeekKey?.value.trim() || '__KEEP__',
+          model: deepSeekModel?.value.trim() || 'deepseek-flash',
+        }),
+      });
+      if (resultEl) {
+        resultEl.className = `test-result ${result.ok ? 'ok' : 'bad'}`;
+        resultEl.textContent = result.ok ? `可用 · ${result.model} · ${result.latencyMs}ms` : result.error || '不可用';
+      }
+    } catch (error) {
+      if (resultEl) {
+        resultEl.className = 'test-result bad';
+        resultEl.textContent = error.message;
+      }
+    }
+  });
+
   opusProvider?.addEventListener('change', () => {
     draft.tasks.opus.providerId = opusProvider.value;
     if (!opusModel.value.trim() || /claude-opus/i.test(opusModel.value.trim())) {

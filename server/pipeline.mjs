@@ -37,7 +37,7 @@ import {
   writeEnglishWorkingFiles,
 } from './english.mjs';
 
-const PYTHON = process.env.WB_PYTHON || 'python3';
+const PYTHON = process.env.WB_PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
 const running = new Map();
 
 export function isRunning(id) {

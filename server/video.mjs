@@ -2,7 +2,7 @@
  * Local video rendering: B-roll cards, TTS voice-over, beat segments and the
  * final assembled MP4. Claude produces a VideoSpec; FFmpeg renders it.
  */
-import { spawn, execFile } from 'node:child_process';
+import { spawn, execFile, spawnSync } from 'node:child_process';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -13,15 +13,23 @@ import ffprobeStatic from 'ffprobe-static';
 
 export const FFMPEG = ffmpegPath;
 export const FFPROBE = ffprobeStatic.path;
-const FONT_FILE = '/System/Library/Fonts/Hiragino Sans GB.ttc';
-const FONT_NAME = 'Hiragino Sans GB';
-const SAY = '/usr/bin/say';
+const IS_WINDOWS = process.platform === 'win32';
+const FONT_FILE = IS_WINDOWS ? 'C:\\Windows\\Fonts\\msyh.ttc' : '/System/Library/Fonts/Hiragino Sans GB.ttc';
+const FONT_NAME = IS_WINDOWS ? 'Microsoft YaHei' : 'Hiragino Sans GB';
+const SAY = IS_WINDOWS ? '' : '/usr/bin/say';
 
-const CJK_FONT_FALLBACKS = [
-  '/System/Library/Fonts/Hiragino Sans GB.ttc',
-  '/System/Library/Fonts/STHeiti Medium.ttc',
-  '/System/Library/Fonts/Supplemental/Songti.ttc',
-];
+const CJK_FONT_FALLBACKS = IS_WINDOWS
+  ? [
+      'C:\\Windows\\Fonts\\msyh.ttc',
+      'C:\\Windows\\Fonts\\msyhbd.ttc',
+      'C:\\Windows\\Fonts\\simhei.ttf',
+      'C:\\Windows\\Fonts\\arial.ttf',
+    ]
+  : [
+      '/System/Library/Fonts/Hiragino Sans GB.ttc',
+      '/System/Library/Fonts/STHeiti Medium.ttc',
+      '/System/Library/Fonts/Supplemental/Songti.ttc',
+    ];
 
 function existingFont() {
   return CJK_FONT_FALLBACKS.find((file) => fs.existsSync(file)) || FONT_FILE;
@@ -111,21 +119,44 @@ export async function synthesizeTts(text, outWav, { voice = 'Samantha', rate = 1
       /* regenerate */
     }
   }
-  const aiff = `${outWav}.aiff`;
-  const args = ['-v', voice, '-r', String(rate), '-o', aiff, String(text || '')];
-  await new Promise((resolve) => {
-    const child = spawn(SAY, args, { stdio: ['ignore', 'ignore', 'pipe'] });
-    let stderr = '';
-    child.stderr.on('data', (chunk) => (stderr += chunk.toString()));
-    child.on('error', () => resolve(false));
-    child.on('close', (code) => resolve(code === 0 && fs.existsSync(aiff)));
-  });
-  if (!fs.existsSync(aiff)) {
+  const tempAudio = path.join(os.tmpdir(), `wb-tts-${Date.now()}-${Math.random().toString(36).slice(2)}${IS_WINDOWS ? '.wav' : '.aiff'}`);
+  let spoken = false;
+  if (IS_WINDOWS) {
+    try {
+      const textFile = path.join(os.tmpdir(), `wb-tts-${Date.now()}-${Math.random().toString(36).slice(2)}.txt`);
+      fs.writeFileSync(textFile, String(text || ''), 'utf8');
+      const quote = (value) => `'${String(value).replace(/'/g, "''")}'`;
+      const script = [
+        'Add-Type -AssemblyName System.Speech',
+        '$s = New-Object System.Speech.Synthesis.SpeechSynthesizer',
+        `$s.SetOutputToWaveFile(${quote(tempAudio)})`,
+        `$s.Speak([System.IO.File]::ReadAllText(${quote(textFile)}, [System.Text.Encoding]::UTF8))`,
+        '$s.Dispose()',
+      ].join('; ');
+      const result = spawnSync('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', script], {
+        timeout: 60000,
+        encoding: 'utf8',
+      });
+      spoken = result.status === 0 && fs.existsSync(tempAudio);
+      fs.rmSync(textFile, { force: true });
+    } catch {
+      spoken = false;
+    }
+  } else if (SAY) {
+    const args = ['-v', voice, '-r', String(rate), '-o', tempAudio, String(text || '')];
+    await new Promise((resolve) => {
+      const child = spawn(SAY, args, { stdio: ['ignore', 'ignore', 'pipe'] });
+      child.on('error', () => resolve(false));
+      child.on('close', (code) => resolve(code === 0 && fs.existsSync(tempAudio)));
+    });
+    spoken = fs.existsSync(tempAudio);
+  }
+  if (!spoken) {
     await runFfmpeg(['-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo', '-t', '3', '-c:a', 'pcm_s16le', outWav]);
     return 3;
   }
-  await runFfmpeg(['-i', aiff, '-ar', '48000', '-ac', '2', '-c:a', 'pcm_s16le', outWav]);
-  fs.rmSync(aiff, { force: true });
+  await runFfmpeg(['-i', tempAudio, '-ar', '48000', '-ac', '2', '-c:a', 'pcm_s16le', outWav]);
+  fs.rmSync(tempAudio, { force: true });
   const info = await probeMedia(outWav);
   return info.duration || 3;
 }

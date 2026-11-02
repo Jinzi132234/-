@@ -259,7 +259,7 @@ app.get('/api/health', asyncRoute(async (req, res) => {
   let asr = { ok: false, detail: '检查中' };
   try {
     const python = await new Promise((resolve, reject) => {
-      const child = spawn(process.env.WB_PYTHON || 'python3', ['-c', 'import faster_whisper,sys;print(faster_whisper.__version__)'], {
+      const child = spawn(process.env.WB_PYTHON || (process.platform === 'win32' ? 'python' : 'python3'), ['-c', 'import faster_whisper,sys;print(faster_whisper.__version__)'], {
         timeout: 15000,
       });
       let out = '';

@@ -81,7 +81,8 @@ export async function renderPythonToMp4({
       `import sys\n\ndef _audit(event, args):\n    if event.startswith(("socket.", "subprocess.", "os.system", "os.exec", "os.spawn")):\n        raise RuntimeError("blocked: " + event)\n\nsys.addaudithook(_audit)\nimport runpy\nrunpy.run_path("main.py", run_name="__main__")\n`,
     );
     onProgress?.(10, '執行 Python/Pillow 動畫…');
-    const run = spawnSync('python3', ['-B', 'run.py'], {
+    const python = process.env.WB_PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
+    const run = spawnSync(python, ['-B', 'run.py'], {
       cwd: temp,
       timeout: Math.max(120000, (seconds + 30) * 1000),
       maxBuffer: 20 * 1024 * 1024,

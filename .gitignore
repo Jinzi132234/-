@@ -6,3 +6,5 @@ data/
 .env
 .chrome-profile/
 .playwright/
+
+dist/
